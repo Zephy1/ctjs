@@ -2,7 +2,8 @@ package com.chattriggers.ctjs.internal.engine.module
 
 import com.chattriggers.ctjs.api.client.Player
 import com.chattriggers.ctjs.api.message.ChatLib
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.GUIRenderer
+import com.chattriggers.ctjs.api.render.RenderUtils
 import com.chattriggers.ctjs.api.render.Text
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UScreen
@@ -18,31 +19,31 @@ object ModulesGui : UScreen(unlocalizedName = "Modules") {
     override fun onDrawScreen(matrixStack: UMatrixStack, mouseX: Int, mouseY: Int, partialTicks: Float) {
         super.onDrawScreen(matrixStack, mouseX, mouseY, partialTicks)
 
-        Renderer.pushMatrix()
+        RenderUtils.pushMatrix()
 
-        val middle = Renderer.screen.getWidth() / 2f
-        val width = (Renderer.screen.getWidth() - 100f).coerceAtMost(500f)
+        val middle = GUIRenderer.screen.getWidth() / 2f
+        val width = (GUIRenderer.screen.getWidth() - 100f).coerceAtMost(500f)
 
-        Renderer.drawRect(
+        GUIRenderer.drawRect(
+            0f,
+            0f,
+            GUIRenderer.screen.getWidth().toFloat(),
+            GUIRenderer.screen.getHeight().toFloat(),
             0x50000000,
-            0f,
-            0f,
-            Renderer.screen.getWidth().toFloat(),
-            Renderer.screen.getHeight().toFloat()
         )
 
-        if (-window.scroll > window.height - Renderer.screen.getHeight() + 20)
-            window.scroll = -window.height + Renderer.screen.getHeight() - 20
+        if (-window.scroll > window.height - GUIRenderer.screen.getHeight() + 20)
+            window.scroll = -window.height + GUIRenderer.screen.getHeight() - 20
         if (-window.scroll < 0) window.scroll = 0f
 
         if (-window.scroll > 0) {
-            Renderer.drawRect(0xaa000000, Renderer.screen.getWidth() - 20f, Renderer.screen.getHeight() - 20f, 20f, 20f)
-            Renderer.drawString("^", Renderer.screen.getWidth() - 12f, Renderer.screen.getHeight() - 12f)
+            GUIRenderer.drawRect(GUIRenderer.screen.getWidth() - 20f, GUIRenderer.screen.getHeight() - 20f, 20f, 20f, 0xAA000000)
+            GUIRenderer.drawString("^", GUIRenderer.screen.getWidth() - 12f, GUIRenderer.screen.getHeight() - 12f)
         }
 
-        Renderer.drawRect(0x50000000, middle - width / 2f, window.scroll + 95f, width, window.height - 90)
+        GUIRenderer.drawRect(middle - width / 2f, window.scroll + 95f, width, window.height - 90, 0x50000000)
 
-        Renderer.drawRect(0xaa000000, middle - width / 2f, window.scroll + 95f, width, 25f)
+        GUIRenderer.drawRect(middle - width / 2f, window.scroll + 95f, width, 25f, 0xAA000000)
         window.title.draw((middle - width / 2f + 5) / 2f, (window.scroll + 100f) / 2f)
         window.exit.draw((middle + width / 2f - 17) / 2f, (window.scroll + 99f) / 2f)
 
@@ -51,22 +52,24 @@ object ModulesGui : UScreen(unlocalizedName = "Modules") {
             window.height += it.draw(middle - width / 2f, window.scroll + window.height, width)
         }
 
-        Renderer.popMatrix()
+        RenderUtils.popMatrix()
     }
 
     override fun onMouseClicked(mouseX: Double, mouseY: Double, mouseButton: Int) {
         super.onMouseClicked(mouseX, mouseY, mouseButton)
 
-        var width = Renderer.screen.getWidth() - 100f
+        var width = GUIRenderer.screen.getWidth() - 100f
         if (width > 500) width = 500f
 
-        if (mouseX > Renderer.screen.getWidth() - 20 && mouseY > Renderer.screen.getHeight() - 20) {
+        if (mouseX > GUIRenderer.screen.getWidth() - 20 && mouseY > GUIRenderer.screen.getHeight() - 20) {
             window.scroll = 0f
             return
         }
 
-        if (mouseX > Renderer.screen.getWidth() / 2f + width / 2f - 25 && mouseX < Renderer.screen.getWidth() / 2f + width / 2f
-            && mouseY > window.scroll + 95 && mouseY < window.scroll + 120
+        if (mouseX > GUIRenderer.screen.getWidth() / 2f + width / 2f - 25 &&
+            mouseX < GUIRenderer.screen.getWidth() / 2f + width / 2f &&
+            mouseY > window.scroll + 95 &&
+            mouseY < window.scroll + 120
         ) {
             Player.toMC()?.closeScreen()
             return

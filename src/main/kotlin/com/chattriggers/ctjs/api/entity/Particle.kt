@@ -1,9 +1,9 @@
 package com.chattriggers.ctjs.api.entity
 
-import com.chattriggers.ctjs.api.CTWrapper
-import com.chattriggers.ctjs.api.render.Renderer
-import com.chattriggers.ctjs.internal.mixins.ParticleAccessor
 import com.chattriggers.ctjs.MCParticle
+import com.chattriggers.ctjs.api.CTWrapper
+import com.chattriggers.ctjs.api.render.GUIRenderer
+import com.chattriggers.ctjs.internal.mixins.ParticleAccessor
 import com.chattriggers.ctjs.internal.utils.asMixin
 import java.awt.Color
 
@@ -18,9 +18,9 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
     var lastY by mixed::lastY
     var lastZ by mixed::lastZ
 
-    val renderX get() = lastX + (x - lastX) * Renderer.partialTicks
-    val renderY get() = lastY + (y - lastY) * Renderer.partialTicks
-    val renderZ get() = lastZ + (z - lastZ) * Renderer.partialTicks
+    val renderX get() = lastX + (x - lastX) * GUIRenderer.partialTicks
+    val renderY get() = lastY + (y - lastY) * GUIRenderer.partialTicks
+    val renderZ get() = lastZ + (z - lastZ) * GUIRenderer.partialTicks
 
     var motionX by mixed::velocityX
     var motionY by mixed::velocityY
@@ -99,6 +99,5 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
         mcValue.markDead()
     }
 
-    override fun toString() =
-        "Particle(type=${mcValue.javaClass.simpleName}, pos=($x, $y, $z), color=[$red, $green, $blue, $alpha], age=$age)"
+    override fun toString() = "Particle(type=${mcValue.javaClass.simpleName}, pos=($x, $y, $z), color=[$red, $green, $blue, $alpha], age=$age)"
 }

@@ -1,10 +1,10 @@
 package com.chattriggers.ctjs.api.entity
 
+import com.chattriggers.ctjs.MCTeam
 import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.api.message.TextComponent
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.GUIRenderer
 import com.chattriggers.ctjs.internal.NameTagOverridable
-import com.chattriggers.ctjs.MCTeam
 import com.chattriggers.ctjs.internal.utils.asMixin
 import net.minecraft.client.network.PlayerListEntry
 import net.minecraft.entity.player.PlayerEntity
@@ -44,14 +44,14 @@ class PlayerMP(override val mcValue: PlayerEntity) : LivingEntity(mcValue) {
     }
 
     /**
-     * Draws the player in the GUI. Takes the same parameters as [Renderer.drawPlayer]
+     * Draws the player in the GUI. Takes the same parameters as [GUIRenderer.drawPlayer]
      * minus `player`.
      *
-     * @see Renderer.drawPlayer
+     * @see GUIRenderer.drawPlayer
      */
     fun draw(obj: NativeObject) = apply {
         obj["player"] = this
-        Renderer.drawPlayer(obj)
+        GUIRenderer.drawPlayer(obj)
     }
 
     private fun getPlayerName(playerListEntry: PlayerListEntry?): TextComponent {
@@ -59,8 +59,8 @@ class PlayerMP(override val mcValue: PlayerEntity) : LivingEntity(mcValue) {
             ?: TextComponent(
                 MCTeam.decorateName(
                     playerListEntry?.scoreboardTeam,
-                    Text.of(playerListEntry?.profile?.name)
-                )
+                    Text.of(playerListEntry?.profile?.name),
+                ),
             )
     }
 

@@ -1,19 +1,20 @@
 package com.chattriggers.ctjs.api.entity
 
-import com.chattriggers.ctjs.api.CTWrapper
-import com.chattriggers.ctjs.api.message.TextComponent
-import com.chattriggers.ctjs.api.render.Renderer
-import com.chattriggers.ctjs.api.world.Chunk
-import com.chattriggers.ctjs.api.world.World
-import com.chattriggers.ctjs.api.world.block.BlockPos
 import com.chattriggers.ctjs.MCDimensionType
 import com.chattriggers.ctjs.MCEntity
 import com.chattriggers.ctjs.MCLivingEntity
+import com.chattriggers.ctjs.api.CTWrapper
+import com.chattriggers.ctjs.api.message.TextComponent
+import com.chattriggers.ctjs.api.render.GUIRenderer
+import com.chattriggers.ctjs.api.world.Chunk
+import com.chattriggers.ctjs.api.world.World
+import com.chattriggers.ctjs.api.world.block.BlockPos
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.registry.RegistryKey
 import net.minecraft.util.math.MathHelper
+import net.minecraft.util.math.Vec3d
 import net.minecraft.world.dimension.DimensionTypes
-import java.util.*
+import java.util.UUID
 import kotlin.math.sqrt
 
 open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
@@ -23,7 +24,9 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun getZ() = mcValue.pos.z
 
-    fun getPos() = BlockPos(getX(), getY(), getZ())
+    fun getBlockPos() = BlockPos(getX(), getY(), getZ())
+
+	fun getPos() = Vec3d(getX(), getY(), getZ())
 
     fun getRotation() = mcValue.rotationClient
 
@@ -33,11 +36,15 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun getLastZ() = mcValue.lastRenderZ
 
-    fun getRenderX() = getLastX() + (getX() - getLastX()) * Renderer.partialTicks
+    fun getLastPos() = Vec3d(getLastX(), getLastY(), getLastZ())
 
-    fun getRenderY() = getLastY() + (getY() - getLastY()) * Renderer.partialTicks
+    fun getRenderX() = getLastX() + (getX() - getLastX()) * GUIRenderer.partialTicks
 
-    fun getRenderZ() = getLastZ() + (getZ() - getLastZ()) * Renderer.partialTicks
+    fun getRenderY() = getLastY() + (getY() - getLastY()) * GUIRenderer.partialTicks
+
+    fun getRenderZ() = getLastZ() + (getZ() - getLastZ()) * GUIRenderer.partialTicks
+
+    fun getRenderPos() = Vec3d(getRenderX(), getRenderY(), getRenderZ())
 
     /**
      * Gets the pitch, the horizontal direction the entity is facing towards.
@@ -45,7 +52,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
      *
      * @return the entity's pitch
      */
-    fun getPitch() = MathHelper.wrapDegrees(mcValue.getPitch(Renderer.partialTicks))
+    fun getPitch() = MathHelper.wrapDegrees(mcValue.getPitch(GUIRenderer.partialTicks))
 
     /**
      * Gets the yaw, the vertical direction the entity is facing towards.
@@ -53,7 +60,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
      *
      * @return the entity's yaw
      */
-    fun getYaw() = MathHelper.wrapDegrees(mcValue.getYaw(Renderer.partialTicks))
+    fun getYaw() = MathHelper.wrapDegrees(mcValue.getYaw(GUIRenderer.partialTicks))
 
     /**
      * Gets the entity's x motion.
@@ -79,14 +86,14 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
      */
     fun getMotionZ(): Double = mcValue.velocity.z
 
+    fun getMotion(): Vec3d = mcValue.velocity
+
     /**
      * Returns the entity this entity is riding, if one exists
      *
      * @return an Entity or null
      */
-    fun getRiding(): Entity? {
-        return mcValue.vehicle?.let(::fromMC)
-    }
+    fun getRiding(): Entity? = mcValue.vehicle?.let(::fromMC)
 
     /**
      * Returns a list of all entity riding this entity
@@ -174,7 +181,9 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
     fun distanceTo(other: MCEntity): Float = mcValue.distanceTo(other)
 
     fun distanceTo(blockPos: BlockPos): Double = distanceTo(
-        blockPos.x.toDouble(), blockPos.y.toDouble(), blockPos.z.toDouble(),
+        blockPos.x.toDouble(),
+        blockPos.y.toDouble(),
+        blockPos.z.toDouble(),
     )
 
     fun distanceTo(x: Double, y: Double, z: Double): Double = sqrt(mcValue.squaredDistanceTo(x, y, z))
@@ -210,10 +219,10 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
     fun isInLava() = mcValue.isInLava
 
     @JvmOverloads
-    fun getLookVector(partialTicks: Float = Renderer.partialTicks) = mcValue.getRotationVec(partialTicks)
+    fun getLookVector(partialTicks: Float = GUIRenderer.partialTicks) = mcValue.getRotationVec(partialTicks)
 
     @JvmOverloads
-    fun getEyePosition(partialTicks: Float = Renderer.partialTicks) = mcValue.eyePos
+    fun getEyePosition(partialTicks: Float = GUIRenderer.partialTicks) = mcValue.eyePos
 
     fun canBeCollidedWith() = mcValue.isCollidable
 

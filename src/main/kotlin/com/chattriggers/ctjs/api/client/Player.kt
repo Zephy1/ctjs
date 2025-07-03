@@ -6,7 +6,7 @@ import com.chattriggers.ctjs.api.entity.Team
 import com.chattriggers.ctjs.api.inventory.Inventory
 import com.chattriggers.ctjs.api.inventory.Item
 import com.chattriggers.ctjs.api.message.TextComponent
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.GUIRenderer
 import com.chattriggers.ctjs.api.world.PotionEffect
 import com.chattriggers.ctjs.api.world.Scoreboard
 import com.chattriggers.ctjs.api.world.World
@@ -20,8 +20,9 @@ import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.hit.EntityHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Vec2f
+import net.minecraft.util.math.Vec3d
 import org.mozilla.javascript.NativeObject
-import java.util.*
+import java.util.UUID
 
 object Player {
     @JvmStatic
@@ -55,7 +56,10 @@ object Player {
     fun getZ(): Double = toMC()?.z ?: 0.0
 
     @JvmStatic
-    fun getPos(): BlockPos = BlockPos(getX(), getY(), getZ())
+    fun getBlockPos(): BlockPos = BlockPos(getX(), getY(), getZ())
+
+    @JvmStatic
+    fun getPos(): Vec3d = Vec3d(getX(), getY(), getZ())
 
     @JvmStatic
     fun getRotation() = toMC()?.rotationClient ?: Vec2f(0f, 0f)
@@ -70,13 +74,19 @@ object Player {
     fun getLastZ(): Double = toMC()?.lastRenderZ ?: 0.0
 
     @JvmStatic
-    fun getRenderX(): Double = getLastX() + (getX() - getLastX()) * Renderer.partialTicks
+    fun getLastPos(): Vec3d = Vec3d(getLastX(), getLastY(), getLastZ())
 
     @JvmStatic
-    fun getRenderY(): Double = getLastY() + (getY() - getLastY()) * Renderer.partialTicks
+    fun getRenderX(): Double = getLastX() + (getX() - getLastX()) * GUIRenderer.partialTicks
 
     @JvmStatic
-    fun getRenderZ(): Double = getLastZ() + (getZ() - getLastZ()) * Renderer.partialTicks
+    fun getRenderY(): Double = getLastY() + (getY() - getLastY()) * GUIRenderer.partialTicks
+
+    @JvmStatic
+    fun getRenderZ(): Double = getLastZ() + (getZ() - getLastZ()) * GUIRenderer.partialTicks
+
+    @JvmStatic
+    fun getRenderPos(): Vec3d = Vec3d(getRenderX(), getRenderY(), getRenderZ())
 
     /**
      * Gets the player's x motion.
@@ -104,6 +114,15 @@ object Player {
      */
     @JvmStatic
     fun getMotionZ(): Double = toMC()?.velocity?.z ?: 0.0
+
+    /**
+     * Gets the player's motion as a [Vec3d].
+     * This is the amount the player will move in the x, y, and z directions next tick.
+     *
+     * @return the player's motion as a [Vec3d]
+     */
+    @JvmStatic
+    fun getMotion(): Vec3d = Vec3d(getMotionX(), getMotionY(), getMotionZ())
 
     /**
      * Gets the player's camera pitch.
@@ -236,8 +255,7 @@ object Player {
      * @return a list of the active [PotionEffect]s
      */
     @JvmStatic
-    fun getActivePotionEffects(): List<PotionEffect> =
-        toMC()?.activeStatusEffects?.values?.map(::PotionEffect).orEmpty()
+    fun getActivePotionEffects(): List<PotionEffect> = toMC()?.activeStatusEffects?.values?.map(::PotionEffect).orEmpty()
 
     /**
      * Gets the current object that the player is looking at,
@@ -339,15 +357,15 @@ object Player {
     fun getContainer(): Inventory? = (Client.getMinecraft().currentScreen as? HandledScreen<*>)?.let(::Inventory)
 
     /**
-     * Draws the player in the GUI. Takes the same parameters as [Renderer.drawPlayer]
+     * Draws the player in the GUI. Takes the same parameters as [GUIRenderer.drawPlayer]
      * minus `player`.
      *
-     * @see Renderer.drawPlayer
+     * @see GUIRenderer.drawPlayer
      */
     @JvmStatic
     fun draw(obj: NativeObject) = apply {
         obj["player"] = this
-        Renderer.drawPlayer(obj)
+        GUIRenderer.drawPlayer(obj)
     }
 
     class ArmorWrapper {

@@ -10,11 +10,14 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderLayer
-import net.minecraft.client.render.RenderLayers
 import net.minecraft.client.toast.ToastManager
 import net.minecraft.util.Identifier
-import org.mozilla.javascript.*
 import net.minecraft.client.toast.Toast
+import org.mozilla.javascript.Callable
+import org.mozilla.javascript.Context
+import org.mozilla.javascript.NativeObject
+import org.mozilla.javascript.Scriptable
+import org.mozilla.javascript.Undefined
 
 // https://github.com/Edgeburn/Toasts
 /**
@@ -36,22 +39,30 @@ class Toast(config: NativeObject) : Toast {
     private var titleBacker: TextComponent? = null
     var title: Any?
         get() = titleBacker
-        set(value) { titleBacker = value?.let { TextComponent(it) } }
+        set(value) {
+            titleBacker = value?.let { TextComponent(it) }
+        }
 
     private var descriptionBacker: TextComponent? = null
     var description: Any?
         get() = descriptionBacker
-        set(value) { descriptionBacker = value?.let { TextComponent(it) } }
+        set(value) {
+            descriptionBacker = value?.let { TextComponent(it) }
+        }
 
     private var backgroundBacker: Identifier? = Identifier.ofVanilla("toast/advancement")
     var background: Any?
         get() = backgroundBacker
-        set(value) { backgroundBacker = toIdentifier(value) }
+        set(value) {
+            backgroundBacker = toIdentifier(value)
+        }
 
     private var iconBacker: Identifier? = null
     var icon: Any?
         get() = iconBacker
-        set(value) { iconBacker = toIdentifier(value) }
+        set(value) {
+            iconBacker = toIdentifier(value)
+        }
 
     private var toastWidth = config.getOrNull("width")?.let {
         require(it is Number) { "Toast \"width\" must be a number" }
@@ -74,7 +85,9 @@ class Toast(config: NativeObject) : Toast {
     }
     private val jsReceiver = if (customRenderFunction != null) {
         Context.javaToJS(this, Context.getContext().topCallScope) as Scriptable
-    } else null
+    } else {
+        null
+    }
 
     private var startTime: Long? = null
     private var visibility: Toast.Visibility = Toast.Visibility.HIDE
@@ -97,9 +110,9 @@ class Toast(config: NativeObject) : Toast {
     override fun getVisibility(): Toast.Visibility? = visibility
 
     override fun update(manager: ToastManager?, time: Long) {
-       if (startTime == null) {
-           startTime = time
-       }
+        if (startTime == null) {
+            startTime = time
+        }
 
         val duration = displayTime * (manager?.notificationDisplayTimeMultiplier ?: 1.0)
         val elapsed = time - startTime!!
@@ -108,7 +121,7 @@ class Toast(config: NativeObject) : Toast {
 
     override fun draw(context: DrawContext, textRenderer: TextRenderer, startTime: Long) {
         if (customRenderFunction != null) {
-            Renderer.withMatrix(context.matrices) {
+            GUIRenderer.withMatrix(context.matrices) {
                 try {
                     JSLoader.invoke(customRenderFunction!!, emptyArray(), thisObj = jsReceiver!!)
                 } catch (e: Throwable) {
@@ -127,19 +140,19 @@ class Toast(config: NativeObject) : Toast {
             iconBacker?.let { it: Identifier ->
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
                 val iconSize = height - ICON_PADDING * 2
-                context.drawGuiTexture(RenderLayer::getGuiTextured, it, ICON_PADDING,ICON_PADDING, iconSize,iconSize)
+                context.drawGuiTexture(RenderLayer::getGuiTextured, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
             }
 
             val textX = if (icon == null) ICON_PADDING else height
             var textY = ICON_PADDING
 
             titleBacker?.let {
-                context.drawText(textRenderer, it, textX, textY, 0xffffff, false)
+                context.drawText(textRenderer, it, textX, textY, 0xFFFFFF, false)
                 textY += textRenderer.fontHeight + 1
             }
 
             descriptionBacker?.let {
-                context.drawText(textRenderer, it, textX, textY, 0xffffff, false)
+                context.drawText(textRenderer, it, textX, textY, 0xFFFFFF, false)
             }
         }
     }
@@ -153,7 +166,7 @@ class Toast(config: NativeObject) : Toast {
             is Identifier -> value
             null -> null
             else -> throw IllegalArgumentException(
-                "Toast \"background\" must be an Image or a string corresponding to a resource identifier"
+                "Toast \"background\" must be an Image or a string corresponding to a resource identifier",
             )
         }
     }

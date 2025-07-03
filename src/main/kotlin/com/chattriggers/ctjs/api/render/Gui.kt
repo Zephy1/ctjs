@@ -277,15 +277,15 @@ class Gui @JvmOverloads constructor(
 
         @Suppress("UNCHECKED_CAST")
         val drawContexts = drawContextsField.get(this) as List<DrawContext>
-        Renderer.pushMatrix(UMatrixStack(drawContexts.last().matrices))
+        RenderUtils.pushMatrix(UMatrixStack(drawContexts.last().matrices))
 
-        Renderer.partialTicks = partialTicks
+        GUIRenderer.partialTicks = partialTicks
 
         this.mouseX = mouseX
         this.mouseY = mouseY
         onDraw?.trigger(arrayOf(mouseX, mouseY, partialTicks))
 
-        Renderer.popMatrix()
+        RenderUtils.popMatrix()
     }
 
     /**
@@ -308,7 +308,9 @@ class Gui @JvmOverloads constructor(
 
     override fun shouldPause() = doesPauseGame
 
-    fun setDoesPauseGame(doesPauseGame: Boolean) = apply { this.doesPauseGame = doesPauseGame }
+    fun setDoesPauseGame(doesPauseGame: Boolean) = apply {
+        this.doesPauseGame = doesPauseGame
+    }
 
     /**
      * Add a base Minecraft button to the gui

@@ -12,8 +12,8 @@ class Text {
 
     private val lines = mutableListOf<String>()
 
-    private var color = 0xffffffff
-    private var backgroundColor = 0xff000000
+    private var color = 0xFFFFFFFF
+    private var backgroundColor = 0xFF000000
     private var formatted = true
     private var shadow = false
     private var align = Align.LEFT
@@ -33,7 +33,7 @@ class Text {
 
     constructor(string: String, config: NativeObject) {
         setString(string)
-        setColor(config.getOption("color", 0xffffffff).toLong())
+        setColor(config.getOption("color", 0xFFFFFFFF).toLong())
         setFormatted(config.getOption("formatted", true).toBoolean())
         setShadow(config.getOption("shadow", false).toBoolean())
         setAlign(config.getOption("align", Align.LEFT))
@@ -55,7 +55,9 @@ class Text {
 
     fun getColor(): Long = color
 
-    fun setColor(color: Long) = apply { this.color = Renderer.fixAlpha(color) }
+    fun setColor(color: Long) = apply {
+        this.color = RenderUtils.fixAlpha(color)
+    }
 
     fun getFormatted(): Boolean = formatted
 
@@ -66,7 +68,9 @@ class Text {
 
     fun getShadow(): Boolean = shadow
 
-    fun setShadow(shadow: Boolean) = apply { this.shadow = shadow }
+    fun setShadow(shadow: Boolean) = apply {
+        this.shadow = shadow
+    }
 
     fun getAlign(): Align = align
 
@@ -98,11 +102,15 @@ class Text {
 
     fun getX(): Float = x
 
-    fun setX(x: Float) = apply { this.x = x }
+    fun setX(x: Float) = apply {
+        this.x = x
+    }
 
     fun getY(): Float = y
 
-    fun setY(y: Float) = apply { this.y = y }
+    fun setY(y: Float) = apply {
+        this.y = y
+    }
 
     /**
      * Gets the width of the text
@@ -116,11 +124,15 @@ class Text {
 
     fun getMaxLines(): Int = maxLines
 
-    fun setMaxLines(maxLines: Int) = apply { this.maxLines = maxLines }
+    fun setMaxLines(maxLines: Int) = apply {
+        this.maxLines = maxLines
+    }
 
     fun getScale(): Float = scale
 
-    fun setScale(scale: Float) = apply { this.scale = scale }
+    fun setScale(scale: Float) = apply {
+        this.scale = scale
+    }
 
     /**
      * Sets the maximum width of the text, splitting it into multiple lines if necessary.
@@ -146,57 +158,76 @@ class Text {
     }
 
     @JvmOverloads
-    fun draw(x: Float? = null, y: Float? = null) = apply {
+    fun draw(
+        x: Float? = null,
+        y: Float? = null,
+    ) = apply {
         draw(x, y, null, null)
     }
 
-    internal fun draw(x: Float? = null, y: Float? = null, backgroundX: Float? = null, backgroundWidth: Float? = null) =
-        apply {
-            Renderer.pushMatrix()
-            Renderer.enableBlend()
-            Renderer.scale(scale, scale, scale)
+    internal fun draw(
+        x: Float? = null,
+        y: Float? = null,
+        backgroundX: Float? = null,
+        backgroundWidth: Float? = null,
+    ) = apply {
+        RenderUtils
+            .pushMatrix()
+            .enableBlend()
+            .scale(scale, scale, scale)
 
-            var longestLine = lines.maxOf { Renderer.getStringWidth(it) * scale }
-            if (maxWidth != 0)
-                longestLine = longestLine.coerceAtMost(maxWidth.toFloat())
-            width = longestLine
+        var longestLine = lines.maxOf { RenderUtils.getStringWidth(it) * scale }
+        if (maxWidth != 0) {
+            longestLine = longestLine.coerceAtMost(maxWidth.toFloat())
+        }
+        width = longestLine
 
-            var yHolder = y ?: this.y
+        var yHolder = y ?: this.y
 
-            val xHolder = when (align) {
-                Align.CENTER -> (x ?: this.x) - width / 2
-                Align.RIGHT -> (x ?: this.x) - width
-                else -> x ?: this.x
-            }
+        val xHolder = when (align) {
+            Align.CENTER -> (x ?: this.x) - width / 2
+            Align.RIGHT -> (x ?: this.x) - width
+            else -> x ?: this.x
+        }
 
-            if (background)
-                Renderer.drawRect(
-                    backgroundColor,
+        if (background) {
+            GUIRenderer
+                .drawRect(
                     backgroundX ?: xHolder,
                     yHolder,
                     backgroundWidth ?: width,
-                    getHeight()
+                    getHeight(),
+                    backgroundColor,
                 )
-
-            for (i in 0 until maxLines) {
-                if (i >= lines.size) break
-                Renderer.drawString(lines[i], xHolder, yHolder, color, shadow)
-                yHolder += scale * 10
-            }
-            Renderer.disableBlend()
-            Renderer.popMatrix()
         }
+
+        for (i in 0 until maxLines) {
+            if (i >= lines.size) break
+            GUIRenderer.drawString(lines[i], xHolder, yHolder, color, textShadow = shadow)
+            yHolder += scale * 10
+        }
+        RenderUtils
+            .disableBlend()
+            .popMatrix()
+    }
     private fun updateFormatting() {
         string =
-            if (formatted) ChatLib.addColor(string)
-            else ChatLib.replaceFormatting(string)
+            if (formatted) {
+                ChatLib.addColor(string)
+            } else {
+                ChatLib.replaceFormatting(string)
+            }
 
         lines.clear()
 
         string.split("\n").forEach { line ->
             if (maxWidth > 0) {
                 lines.addAll(
-                    Renderer.getFontRenderer().textHandler.wrapLines(line, maxWidth, Style.EMPTY).map { it.string }
+                    RenderUtils
+                        .getFontRenderer()
+                        .textHandler
+                        .wrapLines(line, maxWidth, Style.EMPTY)
+                        .map { it.string },
                 )
             } else {
                 lines.add(line)
@@ -210,9 +241,11 @@ class Text {
             "lines=$lines, color=$color, scale=$scale, " +
             "formatted=$formatted, shadow=$shadow, " + //align=$align, " +
             "width=$width, maxWidth=$maxWidth, maxLines=$maxLines" +
-            "}"
+        "}"
 
     enum class Align {
-        LEFT, CENTER, RIGHT
+        LEFT,
+        CENTER,
+        RIGHT,
     }
 }

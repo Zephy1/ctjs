@@ -85,8 +85,16 @@
     loadClass("com.chattriggers.ctjs.api.render.Gui");
     loadClass("com.chattriggers.ctjs.api.render.Image");
     loadClass("com.chattriggers.ctjs.api.render.Rectangle");
-    loadClass("com.chattriggers.ctjs.api.render.Renderer");
-    loadClass("com.chattriggers.ctjs.api.render.Renderer3d");
+    loadClass("com.chattriggers.ctjs.api.render.GUIRenderer");
+    loadClass("com.chattriggers.ctjs.api.render.WorldRenderer");
+    loadClass("com.chattriggers.ctjs.api.render.RenderUtils");
+    loadClass("com.chattriggers.ctjs.api.render.CTRenderLayers");
+    loadClass("com.chattriggers.ctjs.api.render.CTRenderPipelines");
+    loadClass("com.chattriggers.ctjs.api.render.DrawMode");
+    loadClass("com.chattriggers.ctjs.api.render.VertexFormat");
+    loadClass("com.chattriggers.ctjs.api.render.RenderSnippet");
+    loadClass("com.chattriggers.ctjs.api.render.HudRenderLayer");
+    loadClass("com.chattriggers.ctjs.api.render.PipelineBuilder");
     loadClass("com.chattriggers.ctjs.api.render.Shape");
     loadClass("com.chattriggers.ctjs.api.render.Text");
     loadClass("com.chattriggers.ctjs.api.render.Toast");
@@ -179,7 +187,7 @@
         return easeOut(this, to, speed, jump);
     };
 
-    global.easeColor = (start, finish, speed, jump) => Renderer.getColor(
+    global.easeColor = (start, finish, speed, jump) => RenderUtils.getColor(
         easeOut((start >> 16) & 0xFF, (finish >> 16) & 0xFF, speed, jump),
         easeOut((start >> 8) & 0xFF, (finish >> 8) & 0xFF, speed, jump),
         easeOut(start & 0xFF, finish & 0xFF, speed, jump),
@@ -284,9 +292,8 @@
                 case "object": {
                     if (Array.isArray(anyValue)) return "[object Array(" + anyValue.length + ")]";
                 }
-                default:
-                    return String(anyValue);
             }
+            return String(anyValue);
         };
 
         _.formats = {

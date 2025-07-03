@@ -1,18 +1,16 @@
 package com.chattriggers.ctjs.api.commands
 
+import com.chattriggers.ctjs.MCEntity
+import com.chattriggers.ctjs.MCNbtCompound
+import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.api.client.Player
-import com.chattriggers.ctjs.api.commands.DynamicCommands.argument
-import com.chattriggers.ctjs.api.commands.DynamicCommands.buildCommand
-import com.chattriggers.ctjs.api.commands.DynamicCommands.custom
-import com.chattriggers.ctjs.api.commands.DynamicCommands.literal
-import com.chattriggers.ctjs.api.commands.DynamicCommands.message
-import com.chattriggers.ctjs.api.commands.DynamicCommands.redirect
 import com.chattriggers.ctjs.api.entity.Entity
 import com.chattriggers.ctjs.api.entity.PlayerMP
 import com.chattriggers.ctjs.api.inventory.Item
 import com.chattriggers.ctjs.api.inventory.ItemType
 import com.chattriggers.ctjs.api.inventory.nbt.NBTBase
 import com.chattriggers.ctjs.api.inventory.nbt.NBTTagCompound
+import com.chattriggers.ctjs.api.message.ChatLib
 import com.chattriggers.ctjs.api.message.TextComponent
 import com.chattriggers.ctjs.api.world.World
 import com.chattriggers.ctjs.api.world.block.BlockFace
@@ -21,15 +19,17 @@ import com.chattriggers.ctjs.internal.commands.CommandCollection
 import com.chattriggers.ctjs.internal.commands.DynamicCommand
 import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.mixins.commands.EntitySelectorAccessor
-import com.chattriggers.ctjs.MCEntity
-import com.chattriggers.ctjs.MCNbtCompound
-import com.chattriggers.ctjs.api.client.Client
-import com.chattriggers.ctjs.api.message.ChatLib
 import com.chattriggers.ctjs.internal.utils.asMixin
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.ImmutableStringReader
 import com.mojang.brigadier.StringReader
-import com.mojang.brigadier.arguments.*
+import com.mojang.brigadier.arguments.ArgumentType
+import com.mojang.brigadier.arguments.BoolArgumentType
+import com.mojang.brigadier.arguments.DoubleArgumentType
+import com.mojang.brigadier.arguments.FloatArgumentType
+import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.LongArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType
 import com.mojang.brigadier.suggestion.Suggestions
@@ -38,8 +38,33 @@ import com.mojang.brigadier.tree.CommandNode
 import net.minecraft.block.pattern.CachedBlockPosition
 import net.minecraft.command.CommandSource
 import net.minecraft.command.EntitySelector
-import net.minecraft.command.argument.*
+import net.minecraft.command.argument.AngleArgumentType
 import net.minecraft.command.argument.AngleArgumentType.Angle
+import net.minecraft.command.argument.BlockPosArgumentType
+import net.minecraft.command.argument.BlockPredicateArgumentType
+import net.minecraft.command.argument.BlockStateArgument
+import net.minecraft.command.argument.BlockStateArgumentType
+import net.minecraft.command.argument.ColorArgumentType
+import net.minecraft.command.argument.ColumnPosArgumentType
+import net.minecraft.command.argument.EntityArgumentType
+import net.minecraft.command.argument.GameModeArgumentType
+import net.minecraft.command.argument.IdentifierArgumentType
+import net.minecraft.command.argument.ItemPredicateArgumentType
+import net.minecraft.command.argument.ItemSlotArgumentType
+import net.minecraft.command.argument.ItemStackArgument
+import net.minecraft.command.argument.ItemStackArgumentType
+import net.minecraft.command.argument.MessageArgumentType
+import net.minecraft.command.argument.NbtCompoundArgumentType
+import net.minecraft.command.argument.NbtElementArgumentType
+import net.minecraft.command.argument.NbtPathArgumentType
+import net.minecraft.command.argument.NumberRangeArgumentType
+import net.minecraft.command.argument.PosArgument
+import net.minecraft.command.argument.RotationArgumentType
+import net.minecraft.command.argument.SwizzleArgumentType
+import net.minecraft.command.argument.TimeArgumentType
+import net.minecraft.command.argument.UuidArgumentType
+import net.minecraft.command.argument.Vec2ArgumentType
+import net.minecraft.command.argument.Vec3ArgumentType
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.BuiltinRegistries
@@ -182,8 +207,9 @@ object DynamicCommands : CommandCollection() {
     fun buildCommand(name: String, builder: Function? = null): RootCommand {
         require(currentNode == null) { "Command.buildCommand() called while already building a command" }
         val node = DynamicCommand.Node.Root(name)
-        if (builder != null)
+        if (builder != null) {
             processNode(node, builder)
+        }
         return node
     }
 
@@ -254,32 +280,28 @@ object DynamicCommands : CommandCollection() {
      */
     @JvmStatic
     @JvmOverloads
-    fun double(min: Double = Double.MIN_VALUE, max: Double = Double.MAX_VALUE): DoubleArgumentType =
-        DoubleArgumentType.doubleArg(min, max)
+    fun double(min: Double = Double.MIN_VALUE, max: Double = Double.MAX_VALUE): DoubleArgumentType = DoubleArgumentType.doubleArg(min, max)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#brigadier:float">brigadier:float</a>
      */
     @JvmStatic
     @JvmOverloads
-    fun float(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): FloatArgumentType =
-        FloatArgumentType.floatArg(min, max)
+    fun float(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): FloatArgumentType = FloatArgumentType.floatArg(min, max)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#brigadier:integer">brigadier:integer</a>
      */
     @JvmStatic
     @JvmOverloads
-    fun integer(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE): IntegerArgumentType =
-        IntegerArgumentType.integer(min, max)
+    fun integer(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE): IntegerArgumentType = IntegerArgumentType.integer(min, max)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#brigadier:long">brigadier:long</a>
      */
     @JvmStatic
     @JvmOverloads
-    fun long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE): LongArgumentType =
-        LongArgumentType.longArg(min, max)
+    fun long(min: Long = Long.MIN_VALUE, max: Long = Long.MAX_VALUE): LongArgumentType = LongArgumentType.longArg(min, max)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#brigadier:string">brigadier:string</a>
@@ -313,9 +335,7 @@ object DynamicCommands : CommandCollection() {
      * @see <a href="https://minecraft.wiki/w/Argument_types#minecraft:block_pos">minecraft:block_pos</a>
      */
     @JvmStatic
-    fun blockPos(): ArgumentType<PosArgument> {
-        return wrapArgument(BlockPosArgumentType.blockPos(), ::PosArgumentWrapper)
-    }
+    fun blockPos(): ArgumentType<PosArgument> = wrapArgument(BlockPosArgumentType.blockPos(), ::PosArgumentWrapper)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#minecraft:block_predicate">minecraft:block_predicate</a>
@@ -359,7 +379,7 @@ object DynamicCommands : CommandCollection() {
             "minecraft:the_nether",
             "minecraft:the_end",
             "minecraft:overworld_caves",
-        )
+        ),
     ) { name ->
         Entity.DimensionType.entries.first { it.toMC().value.toString() == name }
     }
@@ -506,16 +526,14 @@ object DynamicCommands : CommandCollection() {
      */
     @JvmStatic
     @JvmOverloads
-    fun vec2(centerIntegers: Boolean = true) =
-        wrapArgument(Vec2ArgumentType.vec2(centerIntegers), ::PosArgumentWrapper)
+    fun vec2(centerIntegers: Boolean = true) = wrapArgument(Vec2ArgumentType.vec2(centerIntegers), ::PosArgumentWrapper)
 
     /**
      * @see <a href="https://minecraft.wiki/w/Argument_types#minecraft:vec3">minecraft:vec3</a>
      */
     @JvmStatic
     @JvmOverloads
-    fun vec3(centerIntegers: Boolean = true) =
-        wrapArgument(Vec3ArgumentType.vec3(centerIntegers), ::PosArgumentWrapper)
+    fun vec3(centerIntegers: Boolean = true) = wrapArgument(Vec3ArgumentType.vec3(centerIntegers), ::PosArgumentWrapper)
 
     /**
      * Allows choosing from a set list of strings. When suggested to the user, this
@@ -542,13 +560,13 @@ object DynamicCommands : CommandCollection() {
                 while (reader.canRead()) {
                     val ch = reader.read()
                     optionChars.removeIf { it[offset] != ch }
-                    if (optionChars.isEmpty())
+                    if (optionChars.isEmpty()) {
                         reader.fail(start)
+                    }
                     offset += 1
 
                     val found = optionChars.find { it.length == offset }
-                    if (found != null)
-                        return found
+                    if (found != null) return found
                 }
 
                 reader.fail(start)
@@ -556,7 +574,7 @@ object DynamicCommands : CommandCollection() {
 
             override fun <S : Any?> listSuggestions(
                 context: CommandContext<S>,
-                builder: SuggestionsBuilder
+                builder: SuggestionsBuilder,
             ): CompletableFuture<Suggestions> {
                 options.forEach(builder::suggest)
                 return builder.buildFuture()
@@ -611,7 +629,7 @@ object DynamicCommands : CommandCollection() {
     @JvmStatic
     fun custom(obj: NativeObject): ArgumentType<Any> {
         val parse = obj["parse"] as? Function ?: error(
-            "Object provided to Commands.custom() must contain a \"parse\" function"
+            "Object provided to Commands.custom() must contain a \"parse\" function",
         )
 
         val suggest = obj["suggest"]?.let {
@@ -635,19 +653,23 @@ object DynamicCommands : CommandCollection() {
 
             override fun <S : Any?> listSuggestions(
                 context: CommandContext<S>?,
-                builder: SuggestionsBuilder?
+                builder: SuggestionsBuilder?,
             ): CompletableFuture<Suggestions> {
                 return if (suggest != null) {
                     @Suppress("UNCHECKED_CAST")
                     JSLoader.invoke(suggest, arrayOf(context, builder)) as CompletableFuture<Suggestions>
-                } else super.listSuggestions(context, builder)
+                } else {
+                    super.listSuggestions(context, builder)
+                }
             }
 
             override fun getExamples(): MutableCollection<String> {
                 return if (getExamples != null) {
                     @Suppress("UNCHECKED_CAST")
                     JSLoader.invoke(getExamples, emptyArray()) as MutableCollection<String>
-                } else super.getExamples()
+                } else {
+                    super.getExamples()
+                }
             }
 
             override fun toString() = obj.toString()
@@ -658,16 +680,13 @@ object DynamicCommands : CommandCollection() {
      * Throw a detailed error given the reader, meant to be used with [custom]
      */
     @JvmStatic
-    fun error(reader: ImmutableStringReader, message: String): Nothing {
-        throw SimpleCommandExceptionType(TextComponent(message)).createWithContext(reader)
-    }
+    fun error(reader: ImmutableStringReader, message: String): Nothing = throw SimpleCommandExceptionType(TextComponent(message)).createWithContext(reader)
 
     /**
      * Throw a detailed error given the reader, meant to be used with [custom]
      */
     @JvmStatic
-    fun error(reader: ImmutableStringReader, message: TextComponent): Nothing =
-        throw SimpleCommandExceptionType(message).createWithContext(reader)
+    fun error(reader: ImmutableStringReader, message: TextComponent): Nothing = throw SimpleCommandExceptionType(message).createWithContext(reader)
 
     private fun getMockCommandSource(): ServerCommandSource {
         return ServerCommandSource(
@@ -675,11 +694,14 @@ object DynamicCommands : CommandCollection() {
                 override fun sendMessage(message: Text?) {
                     ChatLib.chat(message)
                 }
+
                 override fun shouldReceiveFeedback() = true
+
                 override fun shouldTrackOutput() = false
+
                 override fun shouldBroadcastConsoleToOps() = false
             },
-            Player.getPos().toVec3d(),
+            Player.getBlockPos().toVec3d(),
             Player.getRotation(),
             null,
             0,
@@ -708,7 +730,7 @@ object DynamicCommands : CommandCollection() {
     data class AngleArgumentWrapper(val angle: Angle) {
         @JvmOverloads
         fun getAngle(entity: Entity = Player.asPlayerMP()!!) = angle.getAngle(
-            getMockCommandSource().withRotation(entity.getRotation())
+            getMockCommandSource().withRotation(entity.getRotation()),
         )
     }
 
@@ -731,8 +753,7 @@ object DynamicCommands : CommandCollection() {
     }
 
     data class BlockStateArgumentWrapper(val impl: BlockStateArgument) {
-        fun test(blockPos: BlockPos): Boolean =
-            impl.test(CachedBlockPosition(World.toMC(), blockPos.toMC(), true))
+        fun test(blockPos: BlockPos): Boolean = impl.test(CachedBlockPosition(World.toMC(), blockPos.toMC(), true))
 
         override fun toString() = "BlockStateArgument"
     }
@@ -749,15 +770,12 @@ object DynamicCommands : CommandCollection() {
             }
         }
 
-        fun getEntities(): List<Entity> {
-            return getUnfilteredEntities().filter {
-                it.toMC().type.isEnabled(World.toMC()!!.enabledFeatures)
-            }
+        fun getEntities(): List<Entity> = getUnfilteredEntities().filter {
+            it.toMC().type.isEnabled(World.toMC()!!.enabledFeatures)
         }
 
         private fun getUnfilteredEntities(): List<Entity> {
-            if (!mixed.includesNonPlayers)
-                return getPlayers()
+            if (!mixed.includesNonPlayers) return getPlayers()
 
             if (mixed.playerName != null) {
                 val entity = World.getAllEntitiesOfType(PlayerEntity::class.java).find {
@@ -773,11 +791,10 @@ object DynamicCommands : CommandCollection() {
                 return listOfNotNull(entity)
             }
 
-            val position = mixed.positionOffset.apply(Player.getPos().toVec3d())
+            val position = mixed.positionOffset.apply(Player.getBlockPos().toVec3d())
             val predicate = getPositionPredicate(position)
             if (mixed.senderOnly) {
-                if (predicate.test(Player.toMC()!!))
-                    return listOf(Player.asPlayerMP()!!)
+                if (predicate.test(Player.toMC()!!)) return listOf(Player.asPlayerMP()!!)
                 return emptyList()
             }
 
@@ -803,11 +820,10 @@ object DynamicCommands : CommandCollection() {
                 return listOfNotNull(entity) as List<PlayerMP>
             }
 
-            val position = mixed.positionOffset.apply(Player.getPos().toVec3d())
+            val position = mixed.positionOffset.apply(Player.getBlockPos().toVec3d())
             val predicate = getPositionPredicate(position)
             if (mixed.senderOnly) {
-                if (predicate.test(Player.toMC()!!))
-                    return listOf(Player.asPlayerMP()!!)
+                if (predicate.test(Player.toMC()!!)) return listOf(Player.asPlayerMP()!!)
                 return emptyList()
             }
 
@@ -817,19 +833,19 @@ object DynamicCommands : CommandCollection() {
         }
 
         private fun <T : MCEntity> getEntities(pos: Vec3d, entities: MutableList<T>): List<T> {
-            if (entities.size > 1)
+            if (entities.size > 1) {
                 mixed.sorter.accept(pos, entities)
+            }
             return entities.subList(0, min(mixed.limit, entities.size))
         }
 
         private fun appendEntitiesFromWorld(
             entities: MutableList<MCEntity>,
             pos: Vec3d,
-            predicate: Predicate<MCEntity>
+            predicate: Predicate<MCEntity>,
         ) {
             val limit = if (mixed.sorter == EntitySelector.ARBITRARY) mixed.limit else Int.MAX_VALUE
-            if (entities.size >= limit)
-                return
+            if (entities.size >= limit) return
 
             val min = pos.add(Vec3d(-1000.0, -1000.0, -1000.0))
             val max = pos.add(Vec3d(1000.0, 1000.0, 1000.0))
@@ -843,8 +859,9 @@ object DynamicCommands : CommandCollection() {
                 val box = mixed.box!!.offset(pos)
                 predicate = predicate.and { box.intersects(it.boundingBox) }
             }
-            if (!mixed.distance.isDummy)
+            if (!mixed.distance.isDummy) {
                 predicate = predicate.and { mixed.distance.testSqrt(it.squaredDistanceTo(pos)) }
+            }
             return predicate
         }
     }
@@ -861,8 +878,7 @@ object DynamicCommands : CommandCollection() {
         var text = impl.contents
 
         fun format(): TextComponent {
-            if (impl.selectors.isEmpty())
-                return TextComponent(text)
+            if (impl.selectors.isEmpty()) return TextComponent(text)
 
             var component = TextComponent(text.substring(0, impl.selectors[0].start))
             var i = impl.selectors[0].start
@@ -870,17 +886,20 @@ object DynamicCommands : CommandCollection() {
             for (selector in impl.selectors) {
                 val entities = EntitySelectorWrapper(selector.selector).getEntities()
                 val nameComponent = EntitySelector.getNames(entities.map(Entity::toMC))
-                if (i < selector.start)
+                if (i < selector.start) {
                     component = component.withText(text.substring(i, selector.start))
+                }
 
-                if (nameComponent != null)
+                if (nameComponent != null) {
                     component = component.withText(nameComponent)
+                }
 
                 i = selector.end
             }
 
-            if (i < text.length)
+            if (i < text.length) {
                 component = component.withText(text.drop(i))
+            }
 
             return component
         }
@@ -890,11 +909,14 @@ object DynamicCommands : CommandCollection() {
 
     data class NbtPathWrapper(private val impl: NbtPathArgumentType.NbtPath) {
         fun get(nbt: NBTBase) = impl.get(nbt.toMC())
+
         fun count(nbt: NBTBase) = impl.count(nbt.toMC())
+
         fun getOrInit(nbt: NBTBase, supplier: () -> NBTBase) = impl.getOrInit(nbt.toMC()) { supplier().toMC() }
+
         fun put(nbt: NBTBase, source: NBTBase) = impl.put(nbt.toMC(), source.toMC())
-        fun insert(index: Int, compound: NBTTagCompound, elements: List<NBTBase>) =
-            impl.insert(index, compound.toMC() as MCNbtCompound, elements.map(NBTBase::toMC))
+
+        fun insert(index: Int, compound: NBTTagCompound, elements: List<NBTBase>) = impl.insert(index, compound.toMC() as MCNbtCompound, elements.map(NBTBase::toMC))
 
         fun remove(element: NBTBase) = impl.remove(element.toMC())
 

@@ -1,7 +1,7 @@
 package com.chattriggers.ctjs.internal.mixins;
 
 import com.chattriggers.ctjs.internal.engine.CTEvents;
-import com.chattriggers.ctjs.api.render.Renderer;
+import com.chattriggers.ctjs.api.render.GUIRenderer;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
@@ -16,19 +16,34 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
-    @Inject(method = "reload", at = @At("TAIL"))
+    @Inject(
+        method = "reload",
+        at = @At(
+            value = "TAIL"
+        )
+    )
     private void injectReload(ResourceManager manager, CallbackInfo ci, @Local EntityRendererFactory.Context context) {
-        Renderer.initializePlayerRenderers$ctjs(context);
+        GUIRenderer.initializePlayerRenderers$ctjs(context);
     }
 
     @Inject(
         method = "render(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
-        at = @At("HEAD"),
+        at = @At(
+            value = "HEAD"
+        ),
         cancellable = true
     )
-    private void injectRender(Entity entity, double x, double y, double z, float tickDelta,
-                              MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light,
-                              CallbackInfo ci) {
+    private void injectRender(
+        Entity entity,
+        double x,
+        double y,
+        double z,
+        float tickDelta,
+        MatrixStack matrices,
+        VertexConsumerProvider vertexConsumers,
+        int light,
+        CallbackInfo ci
+    ) {
         CTEvents.RENDER_ENTITY.invoker().render(matrices, entity, tickDelta, ci);
     }
 }

@@ -11,13 +11,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void injectRenderScoreboard(DrawContext matrices, ScoreboardObjective objective, CallbackInfo ci) {
-        if (!Scoreboard.getShouldRender())
+        if (!Scoreboard.getShouldRender()) {
             ci.cancel();
+        }
     }
 
     @Inject(
@@ -29,6 +35,6 @@ public class InGameHudMixin {
         )
     )
     private void injectRenderOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        CTEvents.RENDER_OVERLAY.invoker().render(context.getMatrices(), tickCounter.getDynamicDeltaTicks());
+        CTEvents.RENDER_HUD_OVERLAY.invoker().render(context.getMatrices(), tickCounter.getDynamicDeltaTicks());
     }
 }

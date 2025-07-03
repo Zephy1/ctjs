@@ -1,7 +1,7 @@
 package com.chattriggers.ctjs.api.message
 
 import com.chattriggers.ctjs.api.client.Client
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.RenderUtils
 import com.chattriggers.ctjs.internal.listeners.ClientListener
 import com.chattriggers.ctjs.internal.mixins.ChatHudAccessor
 import com.chattriggers.ctjs.internal.utils.asMixin
@@ -63,7 +63,6 @@ object ChatLib {
         }.withRecursive().chat()
     }
 
-
     /**
      * Replaces the easier to type '&' color codes with proper color codes in a string.
      *
@@ -93,8 +92,11 @@ object ChatLib {
     @JvmStatic
     @JvmOverloads
     fun command(text: String, clientSide: Boolean = false) {
-        if (clientSide) ClientCommandInternals.executeCommand(text)
-        else Client.getMinecraft().networkHandler?.sendChatCommand(text)
+        if (clientSide) {
+            ClientCommandInternals.executeCommand(text)
+        } else {
+            Client.getMinecraft().networkHandler?.sendChatCommand(text)
+        }
     }
 
     /**
@@ -117,7 +119,7 @@ object ChatLib {
     @JvmStatic
     @JvmOverloads
     fun getChatBreak(separator: String = "-"): String {
-        val len = Renderer.getStringWidth(separator)
+        val len = RenderUtils.getStringWidth(separator)
         val times = getChatWidth() / len
         return separator.repeat(times)
     }
@@ -128,9 +130,7 @@ object ChatLib {
      * @return the width of chat
      */
     @JvmStatic
-    fun getChatWidth(): Int {
-        return Client.getChatGui()?.width ?: 0
-    }
+    fun getChatWidth(): Int = Client.getChatGui()?.width ?: 0
 
     /**
      * Remove all formatting
@@ -139,9 +139,7 @@ object ChatLib {
      * @return the unformatted string
      */
     @JvmStatic
-    fun removeFormatting(text: String): String {
-        return text.replace("[\u00a7&][0-9a-fk-or]".toRegex(), "")
-    }
+    fun removeFormatting(text: String): String = text.replace("[\u00a7&][0-9a-fk-or]".toRegex(), "")
 
     /**
      * Replaces Minecraft formatted text with normal formatted text
@@ -150,9 +148,7 @@ object ChatLib {
      * @return the unformatted string
      */
     @JvmStatic
-    fun replaceFormatting(text: String): String {
-        return text.replace("\u00a7(?![^0-9a-fk-or]|$)".toRegex(), "&")
-    }
+    fun replaceFormatting(text: String): String = text.replace("\u00a7(?![^0-9a-fk-or]|$)".toRegex(), "&")
 
     /**
      * Get a message that will be perfectly centered in chat.
@@ -162,18 +158,18 @@ object ChatLib {
      */
     @JvmStatic
     fun getCenteredText(text: String): String {
-        val textWidth = Renderer.getStringWidth(addColor(text))
+        val textWidth = RenderUtils.getStringWidth(addColor(text))
         val chatWidth = getChatWidth()
 
-        if (textWidth >= chatWidth)
-            return text
+        if (textWidth >= chatWidth) return text
 
         val spaceWidth = (chatWidth - textWidth) / 2f
-        val spaceBuilder = StringBuilder().apply {
-            repeat((spaceWidth / Renderer.getStringWidth(" ")).roundToInt()) {
-                append(' ')
+        val spaceBuilder = StringBuilder()
+            .apply {
+                repeat((spaceWidth / RenderUtils.getStringWidth(" ")).roundToInt()) {
+                    append(' ')
+                }
             }
-        }
 
         return spaceBuilder.append(text).toString()
     }
@@ -187,7 +183,6 @@ object ChatLib {
     fun copyToClipboard(text: String) {
         Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(text), null)
     }
-
 
     /**
      * Edits an already sent chat message matched by [regexp].
@@ -276,16 +271,18 @@ object ChatLib {
                 for (replacement in replacements) {
                     val message = replacement as? TextComponent ?: TextComponent(replacement)
                     val line = ChatHudLine(next.creationTick, message, null, indicator)
-                    if (message.getChatLineId() != -1)
+                    if (message.getChatLineId() != -1) {
                         chatLineIds[line] = message.getChatLineId()
+                    }
 
                     it.add(line)
                 }
             }
         }
 
-        if (edited)
+        if (edited) {
             chatHudAccessor!!.invokeRefresh()
+        }
     }
 
     /**
@@ -366,8 +363,9 @@ object ChatLib {
             }
         }
 
-        if (removed)
+        if (removed) {
             chatHudAccessor!!.invokeRefresh()
+        }
     }
 
     /**
@@ -392,9 +390,17 @@ object ChatLib {
     @JvmOverloads
     fun addToSentMessageHistory(index: Int = -1, message: String) {
         if (index == -1) {
-            Client.getMinecraft().inGameHud.chatHud.addToMessageHistory(message)
+            Client
+                .getMinecraft()
+                .inGameHud
+                .chatHud
+                .addToMessageHistory(message)
         } else {
-            Client.getMinecraft().inGameHud.chatHud.messageHistory.add(index, message)
+            Client
+                .getMinecraft()
+                .inGameHud
+                .chatHud.messageHistory
+                .add(index, message)
         }
     }
 

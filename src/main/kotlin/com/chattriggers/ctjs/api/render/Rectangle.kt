@@ -9,33 +9,44 @@ class Rectangle(
     private var width: Float,
     private var height: Float
 ) {
-
     private val shadow = Shadow(this)
     private val outline = Outline(this)
 
     fun getColor(): Long = color
 
-    fun setColor(color: Long) = apply { this.color = Renderer.fixAlpha(color) }
+    fun setColor(color: Long) = apply {
+        this.color = RenderUtils.fixAlpha(color)
+    }
 
     fun getX(): Float = x
 
-    fun setX(x: Float) = apply { this.x = x }
+    fun setX(x: Float) = apply {
+        this.x = x
+    }
 
     fun getY(): Float = y
 
-    fun setY(y: Float) = apply { this.y = y }
+    fun setY(y: Float) = apply {
+        this.y = y
+    }
 
     fun getWidth(): Float = width
 
-    fun setWidth(width: Float) = apply { this.width = width }
+    fun setWidth(width: Float) = apply {
+        this.width = width
+    }
 
     fun getHeight(): Float = height
 
-    fun setHeight(height: Float) = apply { this.height = height }
+    fun setHeight(height: Float) = apply {
+        this.height = height
+    }
 
     fun isShadow(): Boolean = shadow.on
 
-    fun setShadow(shadow: Boolean) = apply { this.shadow.on = shadow }
+    fun setShadow(shadow: Boolean) = apply {
+        this.shadow.on = shadow
+    }
 
     fun getShadowOffset(): Vec2f = shadow.offset
 
@@ -47,13 +58,19 @@ class Rectangle(
         shadow.offset = Vec2f(x, y)
     }
 
-    fun setShadowOffsetX(x: Float) = apply { shadow.offset = Vec2f(x, shadow.offset.y) }
+    fun setShadowOffsetX(x: Float) = apply {
+        shadow.offset = Vec2f(x, shadow.offset.y)
+	}
 
-    fun setShadowOffsetY(y: Float) = apply { shadow.offset = Vec2f(shadow.offset.y, y) }
+    fun setShadowOffsetY(y: Float) = apply {
+        shadow.offset = Vec2f(shadow.offset.y, y)
+    }
 
     fun getShadowColor(): Long = shadow.color
 
-    fun setShadowColor(color: Long) = apply { shadow.color = color }
+    fun setShadowColor(color: Long) = apply {
+        shadow.color = color
+    }
 
     fun setShadow(color: Long, x: Float, y: Float) = apply {
         setShadow(true)
@@ -63,15 +80,21 @@ class Rectangle(
 
     fun getOutline(): Boolean = outline.on
 
-    fun setOutline(outline: Boolean) = apply { this.outline.on = outline }
+    fun setOutline(outline: Boolean) = apply {
+        this.outline.on = outline
+    }
 
     fun getOutlineColor(): Long = outline.color
 
-    fun setOutlineColor(color: Long) = apply { outline.color = color }
+    fun setOutlineColor(color: Long) = apply {
+        outline.color = color
+    }
 
     fun getThickness(): Float = outline.thickness
 
-    fun setThickness(thickness: Float) = apply { outline.thickness = thickness }
+    fun setThickness(thickness: Float) = apply {
+        outline.thickness = thickness
+    }
 
     fun setOutline(color: Long, thickness: Float) = apply {
         setOutline(true)
@@ -82,30 +105,30 @@ class Rectangle(
     fun draw() = apply {
         shadow.draw()
         outline.draw()
-        Renderer.drawRect(color, x, y, width, height)
+        GUIRenderer.drawRect(x, y, width, height, color)
     }
 
     private class Shadow(
         val rect: Rectangle,
         var on: Boolean = false,
         var color: Long = 0x50000000,
-        var offset: Vec2f = Vec2f(5f, 5f)
+        var offset: Vec2f = Vec2f(5f, 5f),
     ) {
         fun draw() {
             if (!on) return
-            Renderer.drawRect(
-                color,
+            GUIRenderer.drawRect(
                 rect.x + offset.x,
                 rect.y + rect.height,
                 rect.width,
-                offset.y
-            )
-            Renderer.drawRect(
+                offset.y,
                 color,
+            )
+            GUIRenderer.drawRect(
                 rect.x + rect.width,
                 rect.y + offset.y,
                 offset.x,
-                rect.height - offset.y
+                rect.height - offset.y,
+                color,
             )
         }
     }
@@ -113,17 +136,17 @@ class Rectangle(
     private class Outline(
         val rect: Rectangle,
         var on: Boolean = false,
-        var color: Long = 0xffF000000,
-        var thickness: Float = 5f
+        var color: Long = 0xFF000000,
+        var thickness: Float = 5f,
     ) {
         fun draw() {
             if (!on) return
-            Renderer.drawRect(
-                color,
+            GUIRenderer.drawRect(
                 rect.x - thickness,
                 rect.y - thickness,
                 rect.width + thickness * 2,
-                rect.height + thickness * 2
+                rect.height + thickness * 2,
+                color,
             )
         }
     }

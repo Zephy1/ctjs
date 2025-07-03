@@ -8,7 +8,7 @@ import com.chattriggers.ctjs.api.entity.BlockEntity
 import com.chattriggers.ctjs.api.entity.Entity
 import com.chattriggers.ctjs.api.entity.Particle
 import com.chattriggers.ctjs.api.entity.PlayerMP
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.GUIRenderer
 import com.chattriggers.ctjs.api.world.block.Block
 import com.chattriggers.ctjs.api.world.block.BlockPos
 import com.chattriggers.ctjs.api.world.block.BlockType
@@ -66,7 +66,7 @@ object World {
     fun isRaining(): Boolean = toMC()?.isRaining ?: false
 
     @JvmStatic
-    fun getRainingStrength(): Float = toMC()?.getRainGradient(Renderer.partialTicks) ?: -1f
+    fun getRainingStrength(): Float = toMC()?.getRainGradient(GUIRenderer.partialTicks) ?: -1f
 
     @JvmStatic
     fun getTime(): Long = toMC()?.time ?: -1L
@@ -95,9 +95,7 @@ object World {
      * @return the [Block] at the location
      */
     @JvmStatic
-    fun getBlockAt(pos: BlockPos): Block {
-        return Block(BlockType(getBlockStateAt(pos).block), pos)
-    }
+    fun getBlockAt(pos: BlockPos): Block = Block(BlockType(getBlockStateAt(pos).block), pos)
 
     /**
      * Gets the [BlockState] at a location in the world.
@@ -106,9 +104,7 @@ object World {
      * @return the [BlockState] at the location
      */
     @JvmStatic
-    fun getBlockStateAt(pos: BlockPos): BlockState {
-        return toMC()!!.getBlockState(pos.toMC())
-    }
+    fun getBlockStateAt(pos: BlockPos): BlockState = toMC()!!.getBlockState(pos.toMC())
 
     /**
      * Gets the skylight level at the given position. This is the value seen in the debug (F3) menu
@@ -128,9 +124,7 @@ object World {
      * @return the skylight level at the location
      */
     @JvmStatic
-    fun getSkyLightLevel(pos: BlockPos): Int {
-        return toMC()?.getLightLevel(LightType.SKY, pos.toMC()) ?: 0
-    }
+    fun getSkyLightLevel(pos: BlockPos): Int = toMC()?.getLightLevel(LightType.SKY, pos.toMC()) ?: 0
 
     /**
      * Gets the block light level at the given position. This is the value seen in the debug (F3) menu
@@ -150,9 +144,7 @@ object World {
      * @return the block light level at the location
      */
     @JvmStatic
-    fun getBlockLightLevel(pos: BlockPos): Int {
-        return toMC()?.getLightLevel(LightType.BLOCK, pos.toMC()) ?: 0
-    }
+    fun getBlockLightLevel(pos: BlockPos): Int = toMC()?.getLightLevel(LightType.BLOCK, pos.toMC()) ?: 0
 
     /**
      * Gets all of the players in the world, and returns their wrapped versions.
@@ -197,8 +189,10 @@ object World {
     fun getAllBlockEntities(): List<BlockEntity> {
         val chunks = toMC()
             ?.asMixin<ClientWorldAccessor>()
-            ?.chunkManager?.asMixin<ClientChunkManagerAccessor>()
-            ?.chunks?.asMixin<ClientChunkMapAccessor>()
+            ?.chunkManager
+            ?.asMixin<ClientChunkManagerAccessor>()
+            ?.chunks
+            ?.asMixin<ClientChunkMapAccessor>()
             ?.chunks ?: return emptyList()
 
         val blockEntities = mutableListOf<BlockEntity>()
@@ -362,7 +356,7 @@ object World {
                 z,
                 xSpeed,
                 ySpeed,
-                zSpeed
+                zSpeed,
             )
 
             return fx?.let(::Particle)

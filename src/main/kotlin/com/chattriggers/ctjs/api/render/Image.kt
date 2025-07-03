@@ -37,7 +37,7 @@ class Image(var image: BufferedImage?) {
 
     internal fun getIdOrRegister(): Identifier {
         if (identifier == null) {
-            identifier = Identifier.of(CTJS.MOD_ID,"image${nextIdentifierIndex++}")
+            identifier = Identifier.of(CTJS.MOD_ID, "image${nextIdentifierIndex++}")
             if (texture != null) {
                 Client.getMinecraft().textureManager.registerTexture(identifier!!, texture!!.texture)
             } else {
@@ -61,6 +61,18 @@ class Image(var image: BufferedImage?) {
         image = null
     }
 
+    fun getImageSize(
+        width: Float? = null,
+        height: Float? = null,
+    ): Pair<Float, Float> {
+        return when {
+            width == null && height == null -> textureWidth.toFloat() to textureHeight.toFloat()
+            width == null -> height!! / aspectRatio to height
+            height == null -> width to width * aspectRatio
+            else -> width to height
+        }
+    }
+
     @JvmOverloads
     fun draw(
         x: Float,
@@ -68,15 +80,10 @@ class Image(var image: BufferedImage?) {
         width: Float? = null,
         height: Float? = null,
     ) = apply {
-        val (drawWidth, drawHeight) = when {
-            width == null && height == null -> textureWidth.toFloat() to textureHeight.toFloat()
-            width == null -> height!! / aspectRatio to height
-            height == null -> width to width * aspectRatio
-            else -> width to height
+        val (drawWidth, drawHeight) = getImageSize(width, height)
+        if (texture != null) {
+            GUIRenderer.drawImage(this, x, y, drawWidth, drawHeight)
         }
-
-        if (texture != null)
-            Renderer.drawImage(this, x, y, drawWidth, drawHeight)
     }
 
     private data class Texture(val texture: NativeImageBackedTexture, val buffer: ByteBuffer)
@@ -112,13 +119,11 @@ class Image(var image: BufferedImage?) {
         @JvmStatic
         @JvmOverloads
         fun fromUrl(url: String, cachedImageName: String? = null): Image {
-            if (cachedImageName == null)
-                return Image(getImageFromUrl(url))
+            if (cachedImageName == null) return Image(getImageFromUrl(url))
 
             val resourceFile = File(CTJS.assetsDir, cachedImageName)
 
-            if (resourceFile.exists())
-                return Image(ImageIO.read(resourceFile))
+            if (resourceFile.exists()) return Image(ImageIO.read(resourceFile))
 
             val image = getImageFromUrl(url)
             ImageIO.write(image, "png", resourceFile)
@@ -141,7 +146,7 @@ class Image(var image: BufferedImage?) {
                 val buffer = MemoryUtil.memAlloc(it.size())
                 buffer.put(it.toByteArray())
                 buffer.rewind()
-                Texture(NativeImageBackedTexture( { "ct:${UUID.randomUUID()}" }, NativeImage.read(buffer)), buffer)
+                Texture(NativeImageBackedTexture({ "ct:${UUID.randomUUID()}" }, NativeImage.read(buffer)), buffer)
             }
         }
     }

@@ -70,9 +70,16 @@ private val providedTypes = mutableMapOf(
     "Gui" to "com.chattriggers.ctjs.api.render.Gui",
     "Image" to "com.chattriggers.ctjs.api.render.Image",
     "Rectangle" to "com.chattriggers.ctjs.api.render.Rectangle",
-    "Renderer" to "com.chattriggers.ctjs.api.render.Renderer",
-    "Renderer3d" to "com.chattriggers.ctjs.api.render.Renderer3d",
-    "Shape" to "com.chattriggers.ctjs.api.render.Shape",
+    "GUIRenderer" to "com.chattriggers.ctjs.api.render.GUIRenderer",
+    "WorldRenderer" to "com.chattriggers.ctjs.api.render.WorldRenderer",
+    "RenderUtils" to "com.chattriggers.ctjs.api.render.RenderUtils",
+    "CTRenderLayers" to "com.chattriggers.ctjs.api.render.CTRenderLayers",
+    "CTRenderPipelines" to "com.chattriggers.ctjs.api.render.CTRenderPipelines",
+    "DrawMode" to "com.chattriggers.ctjs.api.render.DrawMode",
+    "VertexFormat" to "com.chattriggers.ctjs.api.render.VertexFormat",
+    "RenderSnippet" to "com.chattriggers.ctjs.api.render.RenderSnippet",
+    "HudRenderLayer" to "com.chattriggers.ctjs.api.render.HudRenderLayer",
+    "PipelineBuilder" to "com.chattriggers.ctjs.api.render.PipelineBuilder",
     "Text" to "com.chattriggers.ctjs.api.render.Text",
     "CancellableEvent" to "com.chattriggers.ctjs.api.triggers.CancellableEvent",
 
@@ -138,45 +145,55 @@ val prologue = """
     }
 
     interface RegisterTypes {
+      // client
       chat(...args: (string | unknown)[]): com.chattriggers.ctjs.api.triggers.ChatTrigger;
       actionBar(...args: (string | unknown)[]): com.chattriggers.ctjs.api.triggers.ChatTrigger;
-      worldLoad(): com.chattriggers.ctjs.api.triggers.Trigger;
-      worldUnload(): com.chattriggers.ctjs.api.triggers.Trigger;
-      clicked(mouseX: number, mouseY: number, button: number, isPressed: boolean): com.chattriggers.ctjs.api.triggers.Trigger;
-      scrolled(mouseX: number, mouseY: number, scrollDelta: number): com.chattriggers.ctjs.api.triggers.Trigger;
-      dragged(mouseXDelta: number, mouseYDelta: number, mouseX: number, mouseY: number, mouseButton: number): com.chattriggers.ctjs.api.triggers.Trigger;
-      soundPlay(position: com.chattriggers.ctjs.api.vec.Vec3f, name: string, volume: number, pitch: number, category: net.minecraft.sound.SoundCategory, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.SoundPlayTrigger;
       tick(ticksElapsed: number): com.chattriggers.ctjs.api.triggers.Trigger;
       step(stepsElapsed: number): com.chattriggers.ctjs.api.triggers.StepTrigger;
-      renderWorld(partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
-      preRenderWorld(partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
-      postRenderWorld(partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
-      renderOverlay(): com.chattriggers.ctjs.api.triggers.Trigger;
-      renderPlayerList(event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
-      drawBlockHighlight(position: BlockPos, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
       gameLoad(): com.chattriggers.ctjs.api.triggers.Trigger;
       gameUnload(): com.chattriggers.ctjs.api.triggers.Trigger;
-      command(...args: string[]): com.chattriggers.ctjs.api.triggers.CommandTrigger;
-      guiOpened(screen: net.minecraft.client.gui.screen.Screen, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
-      guiClosed(screen: net.minecraft.client.gui.screen.Screen): com.chattriggers.ctjs.api.triggers.Trigger;
-      dropItem(item: Item, entireStack: boolean, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
       messageSent(message: string, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
       itemTooltip(lore: TextComponent[], item: Item, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
       playerInteract(interaction: com.chattriggers.ctjs.api.entity.PlayerInteraction, interactionTarget: Entity | Block | Item, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
-      entityDamage(entity: Entity, attacker: PlayerMP): com.chattriggers.ctjs.api.triggers.Trigger;
-      entityDeath(entity: Entity): com.chattriggers.ctjs.api.triggers.Trigger;
-      guiRender(mouseX: number, mouseY: number, screen: net.minecraft.client.gui.screen.Screen): com.chattriggers.ctjs.api.triggers.Trigger;
-      guiKey(char: String, keyCode: number, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
-      guiMouseClick(mouseX: number, mouseY: number, mouseButton: number, isPressed: boolean, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
-      guiMouseDrag(mouseXDelta: number, mouseYDelta: number, mouseX: number, mouseY: number, mouseButton: number, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
       packetSent(packet: net.minecraft.network.packet.Packet<unknown>, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.PacketTrigger;
       packetReceived(packet: net.minecraft.network.packet.Packet<unknown>, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.PacketTrigger;
       serverConnect(): com.chattriggers.ctjs.api.triggers.Trigger;
       serverDisconnect(): com.chattriggers.ctjs.api.triggers.Trigger;
-      renderEntity(entity: Entity, partialTicks: number, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.RenderEntityTrigger;
+      dropItem(item: Item, entireStack: boolean, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      
+      // gui
+      guiOpened(screen: net.minecraft.client.gui.screen.Screen, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      guiClosed(screen: net.minecraft.client.gui.screen.Screen): com.chattriggers.ctjs.api.triggers.Trigger;
+      clicked(moseX: number, mouseY: number, button: number, isPressed: boolean): com.chattriggers.ctjs.api.triggers.Trigger;
+      scrolled(mouseX: number, mouseY: number, scrollDelta: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      dragged(mouseXDelta: number, mouseYDelta: number, mouseX: number, mouseY: number, mouseButton: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      guiKey(char: String, keyCode: number, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      guiMouseClick(mouseX: number, mouseY: number, mouseButton: number, isPressed: boolean, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      guiMouseDrag(mouseXDelta: number, mouseYDelta: number, mouseX: number, mouseY: number, mouseButton: number, screen: net.minecraft.client.gui.screen.Screen, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      
+      // rendering
+      preRenderWorld(partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      postRenderWorld(partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      preRenderGui(mouseX: number, mouseY: number, screen: net.minecraft.client.gui.screen.Screen, partialTicks: number, drawContext: net.minecraft.client.gui.DrawContext): com.chattriggers.ctjs.api.triggers.Trigger;
+      postRenderGui(mouseX: number, mouseY: number, screen: net.minecraft.client.gui.screen.Screen, partialTicks: number, drawContext: net.minecraft.client.gui.DrawContext): com.chattriggers.ctjs.api.triggers.Trigger;
+      renderBlockHighlight(position: BlockPos, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.EventTrigger;
       renderBlockEntity(blockEntity: BlockEntity, partialTicks: number, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.RenderBlockEntityTrigger;
-      postGuiRender(mouseX: number, mouseY: number, screen: net.minecraft.client.gui.screen.Screen): com.chattriggers.ctjs.api.triggers.Trigger;
+      renderEntity(entity: Entity, partialTicks: number, event: CancellableEvent): com.chattriggers.ctjs.api.triggers.RenderEntityTrigger;
+      renderPlayerList(event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      renderHudOverlay(): com.chattriggers.ctjs.api.triggers.Trigger;
+      renderScreenOverlay(drawContext: net.minecraft.client.gui.DrawContext, partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      renderHideableScreenOverlay(drawContext: net.minecraft.client.gui.DrawContext, partialTicks: number): com.chattriggers.ctjs.api.triggers.Trigger;
+      
+      // world
+      worldLoad(): com.chattriggers.ctjs.api.triggers.Trigger;
+      worldUnload(): com.chattriggers.ctjs.api.triggers.Trigger;
+      soundPlay(position: com.chattriggers.ctjs.api.vec.Vec3f, name: string, volume: number, pitch: number, category: net.minecraft.sound.SoundCategory, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.SoundPlayTrigger;
       spawnParticle(particle: Particle, event: org.spongepowered.asm.mixin.injection.callback.CallbackInfo): com.chattriggers.ctjs.api.triggers.EventTrigger;
+      entityDamage(entity: Entity, attacker: PlayerMP): com.chattriggers.ctjs.api.triggers.Trigger;
+      entityDeath(entity: Entity): com.chattriggers.ctjs.api.triggers.Trigger;
+      
+      // misc
+      command(...args: string[]): com.chattriggers.ctjs.api.triggers.CommandTrigger;
     }
   
     declare global {
