@@ -105,7 +105,7 @@ object RenderUtils {
      */
     @JvmStatic
     fun begin(renderLayer: RenderLayer = CTRenderLayers.CT_QUADS()) = apply {
-        pushMatrix().blendFunction(BlendFunction.PANORAMA)
+        pushMatrix().blendFunc(BlendFunction.PANORAMA)
 
         colorized = null
         ucWorldRenderer.beginRenderLayer(renderLayer)
@@ -363,7 +363,7 @@ object RenderUtils {
     }
 
     @JvmStatic
-    fun depthTestFunction(function: DepthTestFunction) = apply {
+    fun depthFunc(function: DepthTestFunction) = apply {
         PipelineBuilder.setDepthTestFunction(function)
     }
 
@@ -378,7 +378,7 @@ object RenderUtils {
     }
 
     @JvmStatic
-    fun blendFunction(function: BlendFunction) = apply {
+    fun blendFunc(function: BlendFunction) = apply {
         PipelineBuilder.setBlendFunction(function)
     }
 
@@ -438,7 +438,7 @@ object RenderUtils {
         val srcFactorAlpha = getSourceFactorFromInt(sourceFactorAlpha)
         val dstFactorAlpha = getDestFactorFromInt(destFactorAlpha)
 
-        blendFunction(BlendFunction(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha))
+        blendFunc(BlendFunction(srcFactor, dstFactor, srcFactorAlpha, dstFactorAlpha))
     }
 
     @JvmStatic
@@ -448,7 +448,7 @@ object RenderUtils {
         sourceFactorAlpha: SourceFactor,
         destFactorAlpha: DestFactor,
     ) = apply {
-        blendFunction(BlendFunction(sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha))
+        blendFunc(BlendFunction(sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha))
     }
 
     @JvmStatic
