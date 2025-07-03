@@ -3,7 +3,27 @@ package com.chattriggers.ctjs.internal.launch.generation
 import codes.som.koffee.ClassAssembly
 import codes.som.koffee.MethodAssembly
 import codes.som.koffee.insns.InstructionAssembly
-import codes.som.koffee.insns.jvm.*
+import codes.som.koffee.insns.jvm._return
+import codes.som.koffee.insns.jvm.aastore
+import codes.som.koffee.insns.jvm.aload
+import codes.som.koffee.insns.jvm.aload_0
+import codes.som.koffee.insns.jvm.anewarray
+import codes.som.koffee.insns.jvm.areturn
+import codes.som.koffee.insns.jvm.checkcast
+import codes.som.koffee.insns.jvm.dload
+import codes.som.koffee.insns.jvm.dreturn
+import codes.som.koffee.insns.jvm.dup
+import codes.som.koffee.insns.jvm.fload
+import codes.som.koffee.insns.jvm.freturn
+import codes.som.koffee.insns.jvm.iload
+import codes.som.koffee.insns.jvm.invokedynamic
+import codes.som.koffee.insns.jvm.invokestatic
+import codes.som.koffee.insns.jvm.invokevirtual
+import codes.som.koffee.insns.jvm.ireturn
+import codes.som.koffee.insns.jvm.ldc
+import codes.som.koffee.insns.jvm.lload
+import codes.som.koffee.insns.jvm.lreturn
+import codes.som.koffee.insns.jvm.pop
 import codes.som.koffee.insns.sugar.JumpCondition
 import codes.som.koffee.insns.sugar.ifStatement
 import com.chattriggers.ctjs.CTJS
@@ -27,17 +47,19 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
                     .startsWith("Lcom/llamalad7/mixinextras/sugar/ref/")
             ) {
                 when (it.descriptor) {
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.BOOLEAN -> com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.BYTE -> com.llamalad7.mixinextras.sugar.ref.LocalByteRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.CHAR -> com.llamalad7.mixinextras.sugar.ref.LocalCharRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.DOUBLE -> com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.FLOAT -> com.llamalad7.mixinextras.sugar.ref.LocalFloatRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.INT -> com.llamalad7.mixinextras.sugar.ref.LocalIntRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.LONG -> com.llamalad7.mixinextras.sugar.ref.LocalLongRef::class.descriptor()
-                    com.chattriggers.ctjs.internal.launch.Descriptor.Primitive.SHORT -> com.llamalad7.mixinextras.sugar.ref.LocalShortRef::class.descriptor()
+                    Descriptor.Primitive.BOOLEAN -> com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef::class.descriptor()
+                    Descriptor.Primitive.BYTE -> com.llamalad7.mixinextras.sugar.ref.LocalByteRef::class.descriptor()
+                    Descriptor.Primitive.CHAR -> com.llamalad7.mixinextras.sugar.ref.LocalCharRef::class.descriptor()
+                    Descriptor.Primitive.DOUBLE -> com.llamalad7.mixinextras.sugar.ref.LocalDoubleRef::class.descriptor()
+                    Descriptor.Primitive.FLOAT -> com.llamalad7.mixinextras.sugar.ref.LocalFloatRef::class.descriptor()
+                    Descriptor.Primitive.INT -> com.llamalad7.mixinextras.sugar.ref.LocalIntRef::class.descriptor()
+                    Descriptor.Primitive.LONG -> com.llamalad7.mixinextras.sugar.ref.LocalLongRef::class.descriptor()
+                    Descriptor.Primitive.SHORT -> com.llamalad7.mixinextras.sugar.ref.LocalShortRef::class.descriptor()
                     else -> com.llamalad7.mixinextras.sugar.ref.LocalRef::class.descriptor()
                 }
-            } else it.descriptor
+            } else {
+                it.descriptor
+            }
         }
     }
 
@@ -53,8 +75,9 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
         val (targetMethod, parameters, returnType, isStatic) = signature
 
         var modifiers = private
-        if (isStatic)
+        if (isStatic) {
             modifiers += static
+        }
 
         val nameForInjection = targetMethod.name.original.replace('<', '$').replace('>', '$')
         val methodNode = method(
@@ -118,30 +141,22 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
     private fun generateBoxIfNecessary(descriptor: Descriptor) {
         when (descriptor) {
             Descriptor.Primitive.VOID -> throw IllegalStateException("Cannot use Void as a parameter type")
-            Descriptor.Primitive.BOOLEAN ->
-                invokestatic(java.lang.Boolean::class, "valueOf", java.lang.Boolean::class, boolean)
-            Descriptor.Primitive.CHAR ->
-                invokestatic(java.lang.Character::class, "valueOf", java.lang.Character::class, char)
-            Descriptor.Primitive.BYTE ->
-                invokestatic(java.lang.Byte::class, "valueOf", java.lang.Byte::class, byte)
-            Descriptor.Primitive.SHORT ->
-                invokestatic(java.lang.Short::class, "valueOf", java.lang.Short::class, short)
-            Descriptor.Primitive.INT ->
-                invokestatic(java.lang.Integer::class, "valueOf", java.lang.Integer::class, int)
-            Descriptor.Primitive.FLOAT ->
-                invokestatic(java.lang.Float::class, "valueOf", java.lang.Float::class, float)
-            Descriptor.Primitive.LONG ->
-                invokestatic(java.lang.Long::class, "valueOf", java.lang.Long::class, long)
-            Descriptor.Primitive.DOUBLE ->
-                invokestatic(java.lang.Double::class, "valueOf", java.lang.Double::class, double)
-            else -> {}
+            Descriptor.Primitive.BOOLEAN -> invokestatic(java.lang.Boolean::class, "valueOf", java.lang.Boolean::class, boolean)
+            Descriptor.Primitive.CHAR -> invokestatic(Character::class, "valueOf", Character::class, char)
+            Descriptor.Primitive.BYTE -> invokestatic(java.lang.Byte::class, "valueOf", java.lang.Byte::class, byte)
+            Descriptor.Primitive.SHORT -> invokestatic(java.lang.Short::class, "valueOf", java.lang.Short::class, short)
+            Descriptor.Primitive.INT -> invokestatic(Integer::class, "valueOf", Integer::class, int)
+            Descriptor.Primitive.FLOAT -> invokestatic(java.lang.Float::class, "valueOf", java.lang.Float::class, float)
+            Descriptor.Primitive.LONG -> invokestatic(java.lang.Long::class, "valueOf", java.lang.Long::class, long)
+            Descriptor.Primitive.DOUBLE -> invokestatic(java.lang.Double::class, "valueOf", java.lang.Double::class, double)
+            else -> throw IllegalStateException("Unexpected primitive type: $descriptor")
         }
     }
 
     context(MethodAssembly)
     private fun generateUnboxIfNecessary(descriptor: Descriptor) {
         when (descriptor) {
-            Descriptor.Primitive.VOID -> {}
+            Descriptor.Primitive.VOID -> { }
             Descriptor.Primitive.BOOLEAN -> {
                 checkcast(java.lang.Boolean::class)
                 invokevirtual(java.lang.Boolean::class, "booleanValue", boolean)
@@ -157,7 +172,7 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
                     Descriptor.Primitive.LONG -> invokevirtual(java.lang.Number::class, "longValue", long)
                     Descriptor.Primitive.FLOAT -> invokevirtual(java.lang.Number::class, "floatValue", float)
                     Descriptor.Primitive.DOUBLE -> invokevirtual(java.lang.Number::class, "doubleValue", double)
-                    else -> throw IllegalStateException()
+                    else -> throw IllegalStateException("Unexpected primitive type: $descriptor")
                 }
             }
             else -> checkcast(descriptor.toMappedType())
@@ -187,7 +202,9 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
                 // Compiler bug
                 @Suppress("USELESS_CAST")
                 2 as Int
-            } else 1
+            } else {
+                1
+            }
         }
         generateLoad(parameterDescriptors[parameterIndex], localIndex)
     }
@@ -221,7 +238,6 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
     companion object {
         private var counter = 0
 
-        fun assembleIndyName(methodName: String, injectionType: String) =
-            "invokeDynamic_${methodName}_${injectionType}_${counter++}"
+        fun assembleIndyName(methodName: String, injectionType: String) = "invokeDynamic_${methodName}_${injectionType}_${counter++}"
     }
 }

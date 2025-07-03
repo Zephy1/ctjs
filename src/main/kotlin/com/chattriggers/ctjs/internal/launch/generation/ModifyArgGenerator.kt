@@ -5,7 +5,6 @@ import com.chattriggers.ctjs.internal.launch.At
 import com.chattriggers.ctjs.internal.launch.ModifyArg
 import com.chattriggers.ctjs.internal.utils.descriptorString
 import org.objectweb.asm.tree.MethodNode
-import kotlin.math.sign
 import org.spongepowered.asm.mixin.injection.ModifyArg as SPModifyArg
 
 internal class ModifyArgGenerator(
@@ -24,12 +23,15 @@ internal class ModifyArgGenerator(
         val targetDescriptor = atTarget.descriptor
         requireNotNull(targetDescriptor.parameters)
 
-        if (modifyArg.index !in targetDescriptor.parameters.indices)
+        if (modifyArg.index !in targetDescriptor.parameters.indices) {
             error("ModifyArg received an out-of-bounds index ${modifyArg.index}")
+        }
 
         val parameters = if (modifyArg.captureAllParams == true) {
             targetDescriptor.parameters.mapTo(mutableListOf(), ::Parameter)
-        } else mutableListOf(Parameter(targetDescriptor.parameters[modifyArg.index]))
+        } else {
+            mutableListOf(Parameter(targetDescriptor.parameters[modifyArg.index]))
+        }
 
         val returnType = targetDescriptor.parameters[modifyArg.index]
 
@@ -48,20 +50,26 @@ internal class ModifyArgGenerator(
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPModifyArg::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
-            if (modifyArg.slice != null)
+            if (modifyArg.slice != null) {
                 visit("slice", modifyArg.slice)
+            }
             visit("at", Utils.createAtAnnotation(modifyArg.at))
             visit("index", modifyArg.index)
-            if (modifyArg.remap != null)
+            if (modifyArg.remap != null) {
                 visit("remap", modifyArg.remap)
-            if (modifyArg.require != null)
+            }
+            if (modifyArg.require != null) {
                 visit("require", modifyArg.require)
-            if (modifyArg.expect != null)
+            }
+            if (modifyArg.expect != null) {
                 visit("expect", modifyArg.expect)
-            if (modifyArg.allow != null)
+            }
+            if (modifyArg.allow != null) {
                 visit("allow", modifyArg.allow)
-            if (modifyArg.constraints != null)
+            }
+            if (modifyArg.constraints != null) {
                 visit("constraints", modifyArg.constraints)
+            }
         }
     }
 

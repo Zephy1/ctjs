@@ -37,17 +37,22 @@ internal class ModifyArgsGenerator(
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPModifyArgs::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
-            if (modifyArgs.slice != null)
+            if (modifyArgs.slice != null) {
                 visit("slice", modifyArgs.slice)
+            }
             visit("at", Utils.createAtAnnotation(modifyArgs.at))
-            if (modifyArgs.remap != null)
+            if (modifyArgs.remap != null) {
                 visit("remap", modifyArgs.remap)
-            if (modifyArgs.expect != null)
+            }
+            if (modifyArgs.expect != null) {
                 visit("expect", modifyArgs.expect)
-            if (modifyArgs.allow != null)
+            }
+            if (modifyArgs.allow != null) {
                 visit("allow", modifyArgs.allow)
-            if (modifyArgs.constraints != null)
+            }
+            if (modifyArgs.constraints != null) {
                 visit("constraints", modifyArgs.constraints)
+            }
         }
     }
 

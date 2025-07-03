@@ -72,8 +72,8 @@ data class At(
                             Opcodes.GETFIELD,
                             Opcodes.GETSTATIC,
                             Opcodes.PUTFIELD,
-                            Opcodes.PUTSTATIC
-                        )
+                            Opcodes.PUTSTATIC,
+                        ),
                     ) {
                         "At targeting FIELD expects its opcode to be one of: GETFIELD, GETSTATIC, PUTFIELD, PUTSTATIC"
                     }
@@ -104,7 +104,7 @@ data class At(
                     ConstantTarget(key, type)
                 } ?: error("At targeting CONSTANT expects a typeValue arg")
             }
-            else -> error("Invalid At.value for Utils.getAtTarget: ${value}")
+            else -> error("Invalid At.value for Utils.getAtTarget: $value")
         }
     }
 

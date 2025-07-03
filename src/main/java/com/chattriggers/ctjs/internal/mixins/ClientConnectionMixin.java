@@ -29,13 +29,16 @@ public abstract class ClientConnectionMixin {
         cancellable = true
     )
     private void injectHandlePacket(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo ci) {
-        if (getSide() == NetworkSide.CLIENTBOUND)
+        if (getSide() == NetworkSide.CLIENTBOUND) {
             CTEvents.PACKET_RECEIVED.invoker().receive(packet, ci);
+        }
     }
 
     @Inject(
         method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V",
-        at = @At("HEAD"),
+        at = @At(
+            value = "HEAD"
+        ),
         cancellable = true
     )
     private void injectSendPacket(Packet<?> packet, @Nullable PacketCallbacks callbacks, CallbackInfo ci) {

@@ -28,16 +28,31 @@ public class ItemStackMixin implements TooltipOverridable, Skippable {
     @Unique
     private boolean shouldSkipFabricEvent = false;
 
-    @Inject(method = "getTooltip", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "getTooltip",
+        at = @At(
+            value = "HEAD"),
+        cancellable = true
+    )
     private void injectGetTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> cir) {
-        if (shouldOverrideTooltip)
+        if (shouldOverrideTooltip) {
             cir.setReturnValue(Objects.requireNonNull(overriddenTooltip));
+        }
     }
 
-    @Inject(method = "getTooltip", at = @At(value = "RETURN", ordinal = 1, shift = At.Shift.BEFORE), cancellable = true)
+    @Inject(
+        method = "getTooltip",
+        at = @At(
+            value = "RETURN",
+            ordinal = 1,
+            shift = At.Shift.BEFORE
+        ),
+        cancellable = true
+    )
     private void cancelFabricEvent(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> cir, @Local List<Text> list) {
-        if (shouldSkipFabricEvent)
+        if (shouldSkipFabricEvent) {
             cir.setReturnValue(list);
+        }
     }
 
     @Override

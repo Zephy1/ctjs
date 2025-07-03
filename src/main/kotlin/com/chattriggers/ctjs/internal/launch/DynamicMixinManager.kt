@@ -7,9 +7,12 @@ import com.chattriggers.ctjs.internal.engine.module.ModuleManager
 import com.chattriggers.ctjs.internal.launch.generation.DynamicMixinGenerator
 import com.chattriggers.ctjs.internal.launch.generation.GenerationContext
 import com.chattriggers.ctjs.internal.launch.generation.Utils
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.add
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.putJsonArray
+import kotlinx.serialization.json.putJsonObject
 import org.spongepowered.asm.mixin.Mixins
-import org.spongepowered.asm.service.MixinService
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.net.URI
@@ -38,10 +41,12 @@ internal object DynamicMixinManager {
                 }
             }
 
-            for ((field, isMutable) in details.fieldWideners)
+            for ((field, isMutable) in details.fieldWideners) {
                 Utils.widenField(mappedClass, field, isMutable)
-            for ((method, isMutable) in details.methodWideners)
+            }
+            for ((method, isMutable) in details.methodWideners) {
                 Utils.widenMethod(mappedClass, method, isMutable)
+            }
         }
     }
 

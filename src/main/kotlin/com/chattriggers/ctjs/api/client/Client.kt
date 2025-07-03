@@ -83,7 +83,7 @@ object Client {
                     getMinecraft().isInSingleplayer -> TitleScreen()
                     getMinecraft().currentServerEntry?.isRealm == true -> RealmsMainScreen(TitleScreen())
                     else -> MultiplayerScreen(TitleScreen())
-                }
+                },
             )
         }
     }
@@ -182,7 +182,9 @@ object Client {
         return if (isInChat()) {
             val chatGui = getMinecraft().currentScreen as ChatScreen
             chatGui.asMixin<ChatScreenAccessor>().chatField.text
-        } else ""
+        } else {
+            ""
+        }
     }
 
     /**
@@ -195,7 +197,9 @@ object Client {
         if (isInChat()) {
             val chatGui = getMinecraft().currentScreen as ChatScreen
             chatGui.asMixin<ChatScreenAccessor>().chatField.text = message
-        } else currentGui.set(ChatScreen(message))
+        } else {
+            currentGui.set(ChatScreen(message))
+        }
     }
 
     @JvmStatic
@@ -216,10 +220,12 @@ object Client {
     fun showTitle(title: String?, subtitle: String?, fadeIn: Int, time: Int, fadeOut: Int) {
         getMinecraft().inGameHud.apply {
             setTitleTicks(fadeIn, time, fadeOut)
-            if (title != null)
+            if (title != null) {
                 setTitle(TextComponent(title))
-            if (subtitle != null)
+            }
+            if (subtitle != null) {
                 setSubtitle(TextComponent(subtitle))
+            }
         }
     }
 
@@ -249,10 +255,14 @@ object Client {
      */
     @JvmStatic
     fun getKeyBindFromKey(keyCode: Int): KeyBind? {
-        return KeyBind.getKeyBinds().find { it.getKeyCode() == keyCode }
-            ?: getMinecraft().options.allKeys
-                .find { it.asMixin<KeyBindingAccessor>().boundKey.code == keyCode }
-                ?.let(::KeyBind)
+        return KeyBind.getKeyBinds().find {
+            it.getKeyCode() == keyCode
+        } ?: getMinecraft()
+            .options
+            .allKeys
+            .find {
+                it.asMixin<KeyBindingAccessor>().boundKey.code == keyCode
+            }?.let(::KeyBind)
     }
 
     /**
@@ -279,11 +289,16 @@ object Client {
      */
     @JvmStatic
     fun getKeyBindFromDescription(description: String): KeyBind? {
-        return KeyBind.getKeyBinds()
-            .find { it.getDescription() == description }
-            ?: getMinecraft().options.allKeys
-                .find { it.translationKey == description }
-                ?.let(::KeyBind)
+        return KeyBind
+            .getKeyBinds()
+            .find {
+                it.getDescription() == description
+            } ?: getMinecraft()
+            .options
+            .allKeys
+            .find {
+                it.translationKey == description
+            }?.let(::KeyBind)
     }
 
     class CurrentGuiWrapper {
@@ -316,7 +331,9 @@ object Client {
             val screen: Screen? = get()
             return if (screen is HandledScreen<*>) {
                 screen.asMixin<HandledScreenAccessor>().invokeGetSlotAt(getMouseX(), getMouseY())?.let(::Slot)
-            } else null
+            } else {
+                null
+            }
         }
 
         /**
@@ -329,9 +346,7 @@ object Client {
 
     class CameraWrapper {
         fun getX(): Double = getMinecraft().gameRenderer.camera.pos.x
-
         fun getY(): Double = getMinecraft().gameRenderer.camera.pos.y
-
         fun getZ(): Double = getMinecraft().gameRenderer.camera.pos.z
     }
 }

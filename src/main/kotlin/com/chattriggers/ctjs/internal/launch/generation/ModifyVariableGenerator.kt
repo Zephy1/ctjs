@@ -45,24 +45,33 @@ internal class ModifyVariableGenerator(
         node.visitAnnotation(SPModifyVariable::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
             visit("at", Utils.createAtAnnotation(modifyVariable.at))
-            if (modifyVariable.slice != null)
+            if (modifyVariable.slice != null) {
                 visit("slice", Utils.createSliceAnnotation(modifyVariable.slice!!))
-            if (modifyVariable.print != null)
+            }
+            if (modifyVariable.print != null) {
                 visit("print", modifyVariable.print)
-            if (modifyVariable.ordinal != null)
+            }
+            if (modifyVariable.ordinal != null) {
                 visit("ordinal", modifyVariable.ordinal)
-            if (modifyVariable.index != null)
+            }
+            if (modifyVariable.index != null) {
                 visit("index", modifyVariable.index)
-            if (modifyVariable.remap != null)
+            }
+            if (modifyVariable.remap != null) {
                 visit("remap", modifyVariable.remap)
-            if (modifyVariable.require != null)
+            }
+            if (modifyVariable.require != null) {
                 visit("require", modifyVariable.require)
-            if (modifyVariable.expect != null)
+            }
+            if (modifyVariable.expect != null) {
                 visit("expect", modifyVariable.expect)
-            if (modifyVariable.allow != null)
+            }
+            if (modifyVariable.allow != null) {
                 visit("allow", modifyVariable.allow)
-            if (modifyVariable.constraints != null)
+            }
+            if (modifyVariable.constraints != null) {
                 visit("constraints", modifyVariable.constraints)
+            }
             visitEnd()
         }
     }

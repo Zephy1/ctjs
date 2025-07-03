@@ -1,6 +1,10 @@
 package com.chattriggers.ctjs.api.client
 
-import com.chattriggers.ctjs.*
+import com.chattriggers.ctjs.MCChatVisibility
+import com.chattriggers.ctjs.MCCloudRenderMode
+import com.chattriggers.ctjs.MCDifficulty
+import com.chattriggers.ctjs.MCGraphicsMode
+import com.chattriggers.ctjs.MCParticlesMode
 import com.chattriggers.ctjs.api.CTWrapper
 import com.chattriggers.ctjs.api.world.World
 import gg.essential.universal.UMinecraft

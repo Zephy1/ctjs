@@ -12,7 +12,11 @@ import com.chattriggers.ctjs.internal.launch.IInjector
 import com.chattriggers.ctjs.internal.launch.Mixin
 import com.chattriggers.ctjs.internal.launch.MixinDetails
 import org.apache.commons.io.FileUtils
-import org.mozilla.javascript.*
+import org.mozilla.javascript.Callable
+import org.mozilla.javascript.Context
+import org.mozilla.javascript.ImporterTopLevel
+import org.mozilla.javascript.ScriptRuntime
+import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.commonjs.module.ModuleScriptProvider
 import org.mozilla.javascript.commonjs.module.Require
 import org.mozilla.javascript.commonjs.module.provider.StrongCachingModuleScriptProvider
@@ -93,8 +97,9 @@ object JSLoader {
     }
 
     fun entrySetup(): Unit = wrapInContext {
-        if (!mixinLibsLoaded)
+        if (!mixinLibsLoaded) {
             loadMixinLibs()
+        }
 
         val moduleProvidedLibs = saveResource(
             "/assets/ctjs/js/moduleProvidedLibs.js",
@@ -202,7 +207,8 @@ object JSLoader {
                     moduleScope,
                     mixinProvidedLibs,
                     "mixinProvided",
-                    1, null
+                    1,
+                    null,
                 )
             } catch (e: Throwable) {
                 e.printTraceToConsole()
@@ -235,17 +241,17 @@ object JSLoader {
                     Array<Any?>::class.java,
                 )
             }
-        } else null
+        } else {
+            null
+        }
 
         return callback
     }
 
     @JvmStatic
-    fun invokeMixin(func: Callable, args: Array<Any?>): Any? {
-        return wrapInContext {
+    fun invokeMixin(func: Callable, args: Array<Any?>): Any? = wrapInContext {
             Context.jsToJava(func.call(it, moduleScope, moduleScope, args), Any::class.java)
         }
-    }
 
     fun registerInjector(mixin: Mixin, injector: IInjector): MixinCallback? {
         return if (mixinsFinalized) {
@@ -271,13 +277,15 @@ object JSLoader {
     }
 
     fun registerFieldWidener(mixin: Mixin, fieldName: String, isMutable: Boolean) {
-        if (!mixinsFinalized)
+        if (!mixinsFinalized) {
             mixins.getOrPut(mixin, ::MixinDetails).fieldWideners[fieldName] = isMutable
+        }
     }
 
     fun registerMethodWidener(mixin: Mixin, methodName: String, isMutable: Boolean) {
-        if (!mixinsFinalized)
+        if (!mixinsFinalized) {
             mixins.getOrPut(mixin, ::MixinDetails).methodWideners[methodName] = isMutable
+        }
     }
 
     /**
@@ -303,8 +311,6 @@ object JSLoader {
     private class CTRequire(
         moduleProvider: ModuleScriptProvider,
     ) : Require(Context.getContext(), moduleScope, moduleProvider, null, null, false) {
-        fun loadCTModule(cachedName: String, uri: URI): Scriptable {
-            return getExportedModuleInterface(Context.getContext(), cachedName, uri, null, false)
-        }
+        fun loadCTModule(cachedName: String, uri: URI): Scriptable = getExportedModuleInterface(Context.getContext(), cachedName, uri, null, false)
     }
 }

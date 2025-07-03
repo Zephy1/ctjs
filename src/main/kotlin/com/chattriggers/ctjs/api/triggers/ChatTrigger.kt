@@ -18,7 +18,9 @@ class ChatTrigger(method: Any, type: ITriggerType) : Trigger(method, type) {
      * @param bool Boolean to set
      * @return the trigger object for method chaining
      */
-    fun triggerIfCanceled(bool: Boolean) = apply { triggerIfCanceled = bool }
+    fun triggerIfCanceled(bool: Boolean) = apply {
+        triggerIfCanceled = bool
+    }
 
     /**
      * Sets the chat criteria for [matchesChatCriteria].
@@ -35,32 +37,38 @@ class ChatTrigger(method: Any, type: ITriggerType) : Trigger(method, type) {
 
         when (chatCriteria) {
             is CharSequence -> {
-                if (!formattedForced)
+                if (!formattedForced) {
                     formatted = Regex("[&\u00a7]") in chatCriteria
+                }
 
                 val replacedCriteria = Regex.escape(chatCriteria.toString().replace("\n", "->newLine<-"))
                     .replace(Regex("\\\$\\{[^*]+?}"), "\\\\E(.+)\\\\Q")
                     .replace(Regex("\\$\\{\\*?}"), "\\\\E(?:.+)\\\\Q")
 
-                if (caseInsensitive)
+                if (caseInsensitive) {
                     flags.add(RegexOption.IGNORE_CASE)
+                }
 
-                if ("" != chatCriteria)
+                if ("" != chatCriteria) {
                     source = replacedCriteria
+                }
             }
             is NativeRegExp -> {
-                if (chatCriteria["ignoreCase"] as Boolean || caseInsensitive)
+                if (chatCriteria["ignoreCase"] as Boolean || caseInsensitive) {
                     flags.add(RegexOption.IGNORE_CASE)
+                }
 
-                if (chatCriteria["multiline"] as Boolean)
+                if (chatCriteria["multiline"] as Boolean) {
                     flags.add(RegexOption.MULTILINE)
+                }
 
                 source = (chatCriteria["source"] as String).let {
                     if ("" == it) ".+" else it
                 }
 
-                if (!formattedForced)
+                if (!formattedForced) {
                     formatted = Regex("[&\u00a7]") in source
+                }
             }
             else -> throw IllegalArgumentException("Expected String or Regexp Object")
         }
@@ -166,8 +174,9 @@ class ChatTrigger(method: Any, type: ITriggerType) : Trigger(method, type) {
         caseInsensitive = true
 
         // Reparse criteria if setCriteria has already been called
-        if (::chatCriteria.isInitialized)
+        if (::chatCriteria.isInitialized) {
             setCriteria(chatCriteria)
+        }
     }
 
     /**
@@ -194,15 +203,19 @@ class ChatTrigger(method: Any, type: ITriggerType) : Trigger(method, type) {
 
     // helper method to get the proper chat message based on the presence of color codes
     private fun getChatMessage(chatMessage: TextComponent) =
-        if (formatted)
+        if (formatted) {
             chatMessage.formattedText.replace("\u00a7", "&")
-        else chatMessage.unformattedText
+        } else {
+            chatMessage.unformattedText
+        }
 
     // helper method to get the variables to pass through
     private fun getVariables(chatMessage: String) =
-        if (::criteriaPattern.isInitialized)
+        if (::criteriaPattern.isInitialized) {
             matchesChatCriteria(chatMessage.replace("\n", "->newLine<-"))
-        else ArrayList()
+        } else {
+            ArrayList()
+        }
 
     /**
      * A method to check whether a received chat message

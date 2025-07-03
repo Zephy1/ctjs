@@ -41,11 +41,9 @@ class TextAreaWriter(
         customColor = null
     }
 
-    override fun flush() {
-    }
+    override fun flush() { }
 
-    override fun close() {
-    }
+    override fun close() { }
 
     @JvmOverloads
     fun println(s: Any, logType: LogType = LogType.INFO, end: String = "\n", customColor: Color? = null) {

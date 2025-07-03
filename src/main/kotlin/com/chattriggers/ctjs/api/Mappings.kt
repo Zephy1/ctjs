@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.transformer.ClassInfo
 import org.spongepowered.asm.service.MixinService
 import java.io.ByteArrayInputStream
 import java.net.URI
-import java.net.URL
 import java.nio.file.Files
 import java.util.zip.ZipFile
 
@@ -52,7 +51,7 @@ object Mappings {
             clazz.fields.forEach { field ->
                 fields[field.unmappedName] = MappedField(
                     name = Mapping.fromMapped(field),
-                    type = Mapping(field.unmappedType.descriptor, field.mappedType.descriptor)
+                    type = Mapping(field.unmappedType.descriptor, field.mappedType.descriptor),
                 )
             }
 
@@ -75,15 +74,15 @@ object Mappings {
                                 param.lvIndex,
                             )
                         },
-                        returnType = Mapping(unmappedType.returnType.descriptor, mappedType.returnType.descriptor)
-                    )
+                        returnType = Mapping(unmappedType.returnType.descriptor, mappedType.returnType.descriptor),
+                    ),
                 )
             }
 
             unmappedClasses[clazz.unmappedName] = MappedClass(
                 name = Mapping.fromMapped(clazz),
                 fields,
-                methods
+                methods,
             )
 
             if (CTJS.isDevelopment) {
@@ -125,8 +124,8 @@ object Mappings {
                     MappedParameter(
                         Mapping(paramName, paramName),
                         Mapping(paramType, mapClassName(paramType) ?: paramType),
-                        lvtIndex
-                    )
+                        lvtIndex,
+                    ),
                 )
 
                 if (type == Type.DOUBLE_TYPE || type == Type.LONG_TYPE) {
@@ -142,8 +141,8 @@ object Mappings {
                 MappedMethod(
                     Mapping(methodName, methodName),
                     params,
-                    Mapping(returnType, mapClassName(returnType) ?: returnType)
-                )
+                    Mapping(returnType, mapClassName(returnType) ?: returnType),
+                ),
             )
         }
 
@@ -166,9 +165,7 @@ object Mappings {
      * it either does not exist or is not mapped.
      */
     @JvmStatic
-    fun unmapClassName(className: String): String? {
-        return mappedToUnmappedClassNames[normalizeClassName(className)]
-    }
+    fun unmapClassName(className: String): String? = mappedToUnmappedClassNames[normalizeClassName(className)]
 
     /**
      * Gets the mapped class name from an unmapped class name or null if the class
@@ -180,7 +177,9 @@ object Mappings {
 
     private fun normalizeClassName(className: String) = (if (className.startsWith('L') && className.endsWith(';')) {
         className.drop(1).dropLast(1)
-    } else className).replace('.', '/')
+    } else {
+        className
+    }).replace('.', '/')
 
     internal data class Mapping(val original: String, val mapped: String) {
         val value: String
@@ -224,8 +223,7 @@ object Mappings {
         fun findMethods(name: String, classInfo: ClassInfo?): List<MappedMethod>? {
             methods[name]?.let { return it }
 
-            if (classInfo == null)
-                return null
+            if (classInfo == null) return null
 
             val unmappedSuperClass = mappedToUnmappedClassNames[classInfo.superName]
             if (unmappedSuperClass != null) {

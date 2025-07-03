@@ -8,7 +8,6 @@ import com.chattriggers.ctjs.internal.engine.CTEvents
 import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.utils.Initializer
 import gg.essential.universal.UDesktop
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.option.KeyBinding
@@ -65,12 +64,13 @@ object ConsoleHostProcess : Initializer {
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_GRAVE_ACCENT,
                 "ctjs.key.category",
-            )
+            ),
         )
 
         CTEvents.RENDER_GAME.register {
-            if (keybind.wasPressed())
+            if (keybind.wasPressed()) {
                 show()
+            }
         }
     }
 
@@ -172,8 +172,7 @@ object ConsoleHostProcess : Initializer {
         process.destroy()
     }
 
-    fun onConsoleSettingsChanged(settings: Config.ConsoleSettings) =
-        trySendMessage(ConfigUpdateMessage.constructFromConfig(settings))
+    fun onConsoleSettingsChanged(settings: Config.ConsoleSettings) = trySendMessage(ConfigUpdateMessage.constructFromConfig(settings))
 
     private fun trySendMessage(message: H2CMessage) {
         if (connected) {

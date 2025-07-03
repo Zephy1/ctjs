@@ -31,8 +31,7 @@ class CTMixinPlugin : IMixinConfigPlugin {
 
     override fun shouldApplyMixin(targetClassName: String?, mixinClassName: String?): Boolean = true
 
-    override fun acceptTargets(myTargets: MutableSet<String>?, otherTargets: MutableSet<String>?) {
-    }
+    override fun acceptTargets(myTargets: MutableSet<String>?, otherTargets: MutableSet<String>?) { }
 
     override fun getMixins(): MutableList<String>? = null
 
@@ -40,17 +39,15 @@ class CTMixinPlugin : IMixinConfigPlugin {
         targetClassName: String?,
         targetClass: ClassNode?,
         mixinClassName: String?,
-        mixinInfo: IMixinInfo?
-    ) {
-    }
+        mixinInfo: IMixinInfo?,
+    ) { }
 
     override fun postApply(
         targetClassName: String?,
         targetClass: ClassNode?,
         mixinClassName: String?,
-        mixinInfo: IMixinInfo?
-    ) {
-    }
+        mixinInfo: IMixinInfo?,
+    ) { }
 
     private fun redirectIO() {
         // This mimics what net.minecraft.Bootstrap does with the output streams, but

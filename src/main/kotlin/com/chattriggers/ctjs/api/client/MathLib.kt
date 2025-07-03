@@ -5,15 +5,15 @@ object MathLib {
      * Maps a number from one range to another.
      *
      * @param number the number to map
-     * @param in_min the original range min
-     * @param in_max the original range max
-     * @param out_min the final range min
-     * @param out_max the final range max
+     * @param inMin the original range min
+     * @param inMax the original range max
+     * @param outMin the final range min
+     * @param outMax the final range max
      * @return the re-mapped number
      */
     @JvmStatic
-    fun map(number: Float, in_min: Float, in_max: Float, out_min: Float, out_max: Float): Float {
-        return (number - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    fun map(number: Float, inMin: Float, inMax: Float, outMin: Float, outMax: Float): Float {
+        return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
     }
 
     /**

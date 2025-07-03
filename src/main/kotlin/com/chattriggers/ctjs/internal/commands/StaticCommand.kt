@@ -30,10 +30,13 @@ internal class StaticCommand(
                         // nullable, but with it, it says it's unnecessary.
                         @Suppress("UNNECESSARY_NOT_NULL_ASSERTION")
                         dynamicSuggestions!!(args)
-                    } else staticSuggestions
+                    } else {
+                        staticSuggestions
+                    }
 
-                    for (suggestion in suggestions)
+                    for (suggestion in suggestions) {
                         builder.suggest(suggestion)
+                    }
 
                     builder.buildFuture()
                 }

@@ -10,7 +10,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ScoreboardObjective.class)
 public class ScoreboardObjectiveMixin {
-    @Inject(method = "setDisplayName", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "setDisplayName",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void chattriggers$keepCustomName(Text name, CallbackInfo ci) {
         if (Scoreboard.INSTANCE.getCustomTitle$ctjs()) {
             ci.cancel();

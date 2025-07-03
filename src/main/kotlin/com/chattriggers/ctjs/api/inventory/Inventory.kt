@@ -1,10 +1,10 @@
 package com.chattriggers.ctjs.api.inventory
 
+import com.chattriggers.ctjs.MCInventory
 import com.chattriggers.ctjs.api.inventory.action.ClickAction
 import com.chattriggers.ctjs.api.inventory.action.DragAction
 import com.chattriggers.ctjs.api.inventory.action.DropAction
 import com.chattriggers.ctjs.api.message.TextComponent
-import com.chattriggers.ctjs.MCInventory
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.util.Nameable
 
@@ -38,9 +38,7 @@ class Inventory {
      * @return the [Item] in that slot, or null if there is no item
      */
     fun getStackInSlot(slot: Int): Item? {
-        val stack = inventory?.getStack(slot)
-            ?: screen!!.screenHandler.getSlot(slot).stack
-
+        val stack = inventory?.getStack(slot) ?: screen!!.screenHandler.getSlot(slot).stack
         return stack?.let(Item::fromMC)
     }
 

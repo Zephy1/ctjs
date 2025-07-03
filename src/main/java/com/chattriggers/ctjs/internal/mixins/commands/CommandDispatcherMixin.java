@@ -31,7 +31,8 @@ public class CommandDispatcherMixin {
     ) {
         // TODO: If there is a redirect modifier, this fix will ignore it.
 
-        if (context.getCommand() == null && child.getRedirect() != null && child.getRedirect().getCommand() != null)
+        if (context.getCommand() == null && child.getRedirect() != null && child.getRedirect().getCommand() != null) {
             context.withCommand(child.getRedirect().getCommand());
+        }
     }
 }

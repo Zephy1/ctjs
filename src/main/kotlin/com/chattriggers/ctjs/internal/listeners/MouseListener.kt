@@ -18,18 +18,15 @@ internal object MouseListener : Initializer {
 
     override fun init() {
         CTEvents.RENDER_TICK.register {
-            if (!World.isLoaded())
-                return@register
+            if (!World.isLoaded()) return@register
 
             for (button in 0..4) {
-                if (button !in draggedState)
-                    continue
+                if (button !in draggedState) continue
 
                 val x = Client.getMouseX()
                 val y = Client.getMouseY()
 
-                if (x == draggedState[button]?.x && y == draggedState[button]?.y)
-                    continue
+                if (x == draggedState[button]?.x && y == draggedState[button]?.y) continue
 
                 CTEvents.MOUSE_DRAGGED.invoker().process(
                     x - (draggedState[button]?.x ?: 0.0),
@@ -74,8 +71,7 @@ internal object MouseListener : Initializer {
             return
         }
 
-        if (button == -1 || action == mouseState[button])
-            return
+        if (button == -1 || action == mouseState[button]) return
 
         val x = Client.getMouseX()
         val y = Client.getMouseY()

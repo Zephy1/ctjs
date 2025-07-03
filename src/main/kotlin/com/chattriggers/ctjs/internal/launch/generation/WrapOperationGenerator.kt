@@ -1,7 +1,11 @@
 package com.chattriggers.ctjs.internal.launch.generation
 
 import codes.som.koffee.MethodAssembly
-import codes.som.koffee.insns.jvm.*
+import codes.som.koffee.insns.jvm.aastore
+import codes.som.koffee.insns.jvm.anewarray
+import codes.som.koffee.insns.jvm.dup
+import codes.som.koffee.insns.jvm.invokeinterface
+import codes.som.koffee.insns.jvm.ldc
 import com.chattriggers.ctjs.api.Mappings
 import com.chattriggers.ctjs.internal.launch.At
 import com.chattriggers.ctjs.internal.launch.Descriptor
@@ -46,8 +50,9 @@ internal class WrapOperationGenerator(
                         ?: error("Unknown class ${descriptor.owner}")
                     val targetMethodIsStatic = Utils.findMethod(targetClass, descriptor).second.isStatic
 
-                    if (!targetMethodIsStatic)
+                    if (!targetMethodIsStatic) {
                         parameters.add(Parameter(descriptor.owner))
+                    }
 
                     descriptor.parameters!!.forEach {
                         parameters.add(Parameter(it))
@@ -61,17 +66,21 @@ internal class WrapOperationGenerator(
                     }
 
                     val descriptor = atTarget.descriptor
-                    if (!atTarget.isStatic)
+                    if (!atTarget.isStatic) {
                         parameters.add(Parameter(descriptor.owner!!))
+                    }
 
-                    if (!atTarget.isGet)
+                    if (!atTarget.isGet) {
                         parameters.add(Parameter(descriptor.type!!))
+                    }
 
                     parameters.add(Parameter(Operation::class.descriptor()))
 
                     returnType = if (atTarget.isGet) {
                         descriptor.type!!
-                    } else Descriptor.Primitive.VOID
+                    } else {
+                        Descriptor.Primitive.VOID
+                    }
                 }
                 is At.NewTarget -> {
                     atTarget.descriptor.parameters!!.forEach {
@@ -95,20 +104,27 @@ internal class WrapOperationGenerator(
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPWrapOperation::class.descriptorString(), true).apply {
             visit("method", signature.targetMethod.toFullDescriptor())
-            if (wrapOperation.at != null)
+            if (wrapOperation.at != null) {
                 visit("at", Utils.createAtAnnotation(wrapOperation.at))
-            if (wrapOperation.constant != null)
+            }
+            if (wrapOperation.constant != null) {
                 visit("constant", Utils.createConstantAnnotation(wrapOperation.constant))
-            if (wrapOperation.slice != null)
+            }
+            if (wrapOperation.slice != null) {
                 visit("slice", wrapOperation.slice.map(Utils::createSliceAnnotation))
-            if (wrapOperation.remap != null)
+            }
+            if (wrapOperation.remap != null) {
                 visit("remap", wrapOperation.remap)
-            if (wrapOperation.require != null)
+            }
+            if (wrapOperation.require != null) {
                 visit("require", wrapOperation.require)
-            if (wrapOperation.expect != null)
+            }
+            if (wrapOperation.expect != null) {
                 visit("expect", wrapOperation.expect)
-            if (wrapOperation.allow != null)
+            }
+            if (wrapOperation.allow != null) {
                 visit("allow", wrapOperation.allow)
+            }
             visitEnd()
         }
     }

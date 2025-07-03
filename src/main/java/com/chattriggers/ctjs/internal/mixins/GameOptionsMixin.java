@@ -15,7 +15,12 @@ public class GameOptionsMixin implements BoundKeyUpdater {
     @Unique
     private GameOptions.Visitor visitor;
 
-    @Inject(method = "accept", at = @At("HEAD"))
+    @Inject(
+        method = "accept",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void captureVisitor(GameOptions.Visitor visitor, CallbackInfo ci) {
         this.visitor = visitor;
     }

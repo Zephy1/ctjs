@@ -2,8 +2,6 @@ package com.chattriggers.ctjs.internal.launch.generation
 
 import codes.som.koffee.MethodAssembly
 import codes.som.koffee.insns.jvm.aconst_null
-import codes.som.koffee.insns.jvm.areturn
-import codes.som.koffee.insns.jvm.ldc
 import com.chattriggers.ctjs.internal.launch.Descriptor
 import com.chattriggers.ctjs.internal.launch.Inject
 import com.chattriggers.ctjs.internal.utils.descriptor
@@ -43,25 +41,34 @@ internal class InjectGenerator(
 
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPInject::class.java.descriptorString(), true).apply {
-            if (inject.id != null)
+            if (inject.id != null) {
                 visit("id", inject.id)
+            }
             visit("method", signature.targetMethod.toFullDescriptor())
-            if (inject.slice != null)
+            if (inject.slice != null) {
                 visit("slice", inject.slice.map(Utils::createSliceAnnotation))
-            if (inject.at != null)
+            }
+            if (inject.at != null) {
                 visit("at", inject.at.map(Utils::createAtAnnotation))
-            if (inject.cancellable != null)
+            }
+            if (inject.cancellable != null) {
                 visit("cancellable", inject.cancellable)
-            if (inject.remap != null)
+            }
+            if (inject.remap != null) {
                 visit("remap", inject.remap)
-            if (inject.require != null)
+            }
+            if (inject.require != null) {
                 visit("require", inject.require)
-            if (inject.expect != null)
+            }
+            if (inject.expect != null) {
                 visit("expect", inject.expect)
-            if (inject.allow != null)
+            }
+            if (inject.allow != null) {
                 visit("allow", inject.allow)
-            if (inject.constraints != null)
+            }
+            if (inject.constraints != null) {
                 visit("constraints", inject.constraints)
+            }
             visitEnd()
         }
     }

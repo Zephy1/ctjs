@@ -20,12 +20,12 @@ public abstract class PlayerScreenHandlerMixin {
     public abstract RecipeInputInventory getCraftingInput();
 
     @Inject(
-            method = "onClosed",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/inventory/CraftingResultInventory;clear()V",
-                    shift = At.Shift.AFTER
-            )
+        method = "onClosed",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/inventory/CraftingResultInventory;clear()V",
+            shift = At.Shift.AFTER
+        )
     )
     private void injectOnClosed(PlayerEntity player, CallbackInfo ci) {
         // dropping items for player's crafting slots. needs a whole injection point due to there

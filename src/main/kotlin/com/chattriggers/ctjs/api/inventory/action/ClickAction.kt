@@ -78,6 +78,8 @@ class ClickAction(slot: Int, windowId: Int) : Action(slot, windowId) {
     }
 
     enum class ClickType(val button: Int) {
-        LEFT(0), RIGHT(1), MIDDLE(2)
+        LEFT(0),
+        RIGHT(1),
+        MIDDLE(2),
     }
 }

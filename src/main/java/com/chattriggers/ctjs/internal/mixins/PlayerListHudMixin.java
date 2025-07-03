@@ -14,19 +14,37 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(PlayerListHud.class)
 public class PlayerListHudMixin {
-    @Inject(method = "render", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "render",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void injectRenderPlayerList(DrawContext context, int scaledWindowWidth, Scoreboard scoreboard, ScoreboardObjective objective, CallbackInfo ci) {
         TriggerType.RENDER_PLAYER_LIST.triggerAll(ci);
     }
 
-    @Inject(method = "setHeader", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "setHeader",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void ctjs$keepCustomHeader(Text header, CallbackInfo ci) {
         if (TabList.INSTANCE.getCustomHeader$ctjs()) {
             ci.cancel();
         }
     }
 
-    @Inject(method = "setFooter", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "setFooter",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void ctjs$keepCustomFooter(Text footer, CallbackInfo ci) {
         if (TabList.INSTANCE.getCustomFooter$ctjs()) {
             ci.cancel();

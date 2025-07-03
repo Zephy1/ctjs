@@ -20,7 +20,12 @@ public abstract class SystemDetailsMixin {
     @Shadow
     public abstract void addSection(String string, Supplier<String> supplier);
 
-    @Inject(method = "<init>", at = @At("RETURN"))
+    @Inject(
+        method = "<init>",
+        at = @At(
+            value = "RETURN"
+        )
+    )
     private void addModules(CallbackInfo ci) {
         addSection("ChatTriggers Modules", () -> {
             List<Module> modules = new ArrayList<>(ModuleManager.INSTANCE.getCachedModules());
@@ -37,7 +42,8 @@ public abstract class SystemDetailsMixin {
 
                 ModuleMetadata metadata = module.getMetadata();
                 if (metadata.getVersion() != null) {
-                        sb.append("v")
+                    sb
+                        .append("v")
                         .append(module.getMetadata().getVersion());
                 } else {
                     sb.append("No module version specified");

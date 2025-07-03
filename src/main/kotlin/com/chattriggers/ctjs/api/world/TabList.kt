@@ -21,7 +21,7 @@ import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.text.Text
 import net.minecraft.util.ApiServices
 import net.minecraft.world.GameMode
-import java.util.*
+import java.util.UUID
 
 object TabList {
     private var needsUpdate = true
@@ -263,20 +263,24 @@ object TabList {
     private fun updateNames() {
         tabListNames.clear()
 
-        if (!customHeader)
+        if (!customHeader) {
             tabListHeader = null
+        }
 
-        if (!customFooter)
+        if (!customFooter) {
             tabListFooter = null
+        }
 
         val hud = toMC()?.asMixin<PlayerListHudAccessor>() ?: return
         val player = Player.toMC() ?: return
 
-        if (!customHeader)
+        if (!customHeader) {
             tabListHeader = hud.header?.let { TextComponent(it) }
+        }
 
-        if (!customFooter)
+        if (!customFooter) {
             tabListFooter = hud.footer?.let { TextComponent(it) }
+        }
 
         tabListNames = playerComparator
             .sortedCopy(player.networkHandler.playerList)
@@ -362,7 +366,7 @@ object TabList {
                 MCTeam.decorateName(
                     getTeam()?.mcValue,
                     TextComponent(nameState.get() ?: name),
-                )
+                ),
             )
         }
 
@@ -403,7 +407,7 @@ object TabList {
                 .start()
                 .compareTrueFirst(
                     playerOne.gameMode != GameMode.SPECTATOR,
-                    playerTwo.gameMode != GameMode.SPECTATOR
+                    playerTwo.gameMode != GameMode.SPECTATOR,
                 )
                 .compare(teamOne?.name ?: "", teamTwo?.name ?: "")
                 .compare(playerOne.profile.name, playerTwo.profile.name)

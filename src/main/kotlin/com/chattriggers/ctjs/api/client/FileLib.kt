@@ -2,10 +2,14 @@ package com.chattriggers.ctjs.api.client
 
 import com.chattriggers.ctjs.CTJS
 import net.minecraft.util.Util
-import java.io.*
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.UnknownHostException
 import java.nio.charset.Charset
-import java.util.*
+import java.util.Base64
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
@@ -166,9 +170,11 @@ object FileLib {
     fun getUrlContent(theUrl: String, userAgent: String? = "Mozilla/5.0"): String {
         val conn = CTJS.makeWebRequest(theUrl, userAgent)
 
-        return conn.getInputStream().use {
-            it.readBytes()
-        }.toString(Charset.forName("UTF-8"))
+        return conn
+            .getInputStream()
+            .use {
+                it.readBytes()
+            }.toString(Charset.forName("UTF-8"))
     }
 
     /**

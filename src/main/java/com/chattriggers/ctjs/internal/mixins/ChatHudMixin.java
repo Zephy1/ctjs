@@ -21,7 +21,12 @@ public class ChatHudMixin {
     @Shadow
     private List<ChatHudLine> messages;
 
-    @Inject(method = "clear", at = @At("TAIL"))
+    @Inject(
+        method = "clear",
+        at = @At(
+            value = "TAIL"
+        )
+    )
     private void injectClear(boolean clearHistory, CallbackInfo ci) {
         ChatLib.INSTANCE.onChatHudClearChat$ctjs();
     }

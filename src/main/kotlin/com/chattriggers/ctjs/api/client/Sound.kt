@@ -1,20 +1,24 @@
 package com.chattriggers.ctjs.api.client
 
 import com.chattriggers.ctjs.CTJS
+import com.chattriggers.ctjs.MCAttenuationType
+import com.chattriggers.ctjs.MCSound
 import com.chattriggers.ctjs.api.CTWrapper
 import com.chattriggers.ctjs.api.world.World
 import com.chattriggers.ctjs.internal.mixins.AbstractSoundInstanceAccessor
 import com.chattriggers.ctjs.internal.mixins.sound.SoundAccessor
 import com.chattriggers.ctjs.internal.mixins.sound.SoundManagerAccessor
 import com.chattriggers.ctjs.internal.mixins.sound.SoundSystemAccessor
-import com.chattriggers.ctjs.MCAttenuationType
-import com.chattriggers.ctjs.MCSound
 import com.chattriggers.ctjs.internal.utils.asMixin
 import gg.essential.universal.UMinecraft
 import net.minecraft.client.sound.MovingSoundInstance
 import net.minecraft.client.sound.Sound.RegistrationType
 import net.minecraft.client.sound.WeightedSoundSet
-import net.minecraft.resource.*
+import net.minecraft.resource.InputSupplier
+import net.minecraft.resource.Resource
+import net.minecraft.resource.ResourcePack
+import net.minecraft.resource.ResourcePackInfo
+import net.minecraft.resource.ResourceType
 import net.minecraft.resource.metadata.ResourceMetadata
 import net.minecraft.resource.metadata.ResourceMetadataSerializer
 import net.minecraft.sound.SoundCategory
@@ -67,8 +71,7 @@ class Sound(private val config: NativeObject) {
     private var soundData: SoundData = InitialSoundData(config)
 
     private fun bootstrap() {
-        if (::sound.isInitialized)
-            return
+        if (::sound.isInitialized) return
 
         CTJS.sounds.add(this)
 
@@ -259,7 +262,7 @@ class Sound(private val config: NativeObject) {
     @JvmOverloads
     fun play(delay: Int = 0) {
         // TODO: Figure out how to work without a world
-        require (World.isLoaded()) { "Can not play a custom sound outside the world" }
+        require(World.isLoaded()) { "Can not play a custom sound outside the world" }
 
         bootstrap()
 
@@ -283,7 +286,7 @@ class Sound(private val config: NativeObject) {
      */
     fun pause() {
         // TODO: Figure out how to work without a world
-        require (World.isLoaded()) { "Can not pause a custom sound outside the world" }
+        require(World.isLoaded()) { "Can not pause a custom sound outside the world" }
 
         bootstrap()
 
@@ -300,7 +303,7 @@ class Sound(private val config: NativeObject) {
      */
     fun stop() {
         // TODO: Figure out how to work without a world
-        require (World.isLoaded()) { "Can not stop a custom sound outside the world" }
+        require(World.isLoaded()) { "Can not stop a custom sound outside the world" }
 
         bootstrap()
         soundSystem.stop(soundImpl)
@@ -315,12 +318,10 @@ class Sound(private val config: NativeObject) {
         play()
     }
 
-    private fun makeIdentifier(source: String): Identifier {
-        return Identifier.of(
-            CTJS.MOD_ID,
-            Path(source).nameWithoutExtension.lowercase().filter { it in validIdentChars } + "_${counter++}",
-        )
-    }
+    private fun makeIdentifier(source: String): Identifier = Identifier.of(
+        CTJS.MOD_ID,
+        Path(source).nameWithoutExtension.lowercase().filter { it in validIdentChars } + "_${counter++}",
+    )
 
     private interface SoundData {
         var loop: Boolean
@@ -425,8 +426,9 @@ class Sound(private val config: NativeObject) {
         }
 
         override fun tick() {
-            if (!World.isLoaded())
+            if (!World.isLoaded()) {
                 setDone()
+            }
         }
 
         override fun getCategory(): SoundCategory {
@@ -499,38 +501,26 @@ class Sound(private val config: NativeObject) {
     private object CTResourcePack : ResourcePack {
         override fun getId() = CTJS.MOD_ID
 
-        override fun close() {
-            throw UnsupportedOperationException()
-        }
+        override fun close(): Unit = throw UnsupportedOperationException()
 
-        override fun openRoot(vararg segments: String?): InputSupplier<InputStream>? {
-            throw UnsupportedOperationException()
-        }
+        override fun openRoot(vararg segments: String?): InputSupplier<InputStream>? = throw UnsupportedOperationException()
 
-        override fun open(type: ResourceType?, id: Identifier?): InputSupplier<InputStream>? {
-            throw UnsupportedOperationException()
-        }
+        override fun open(type: ResourceType?, id: Identifier?): InputSupplier<InputStream>? = throw UnsupportedOperationException()
 
         override fun findResources(
             type: ResourceType?,
             namespace: String?,
             prefix: String?,
-            consumer: ResourcePack.ResultConsumer?
+            consumer: ResourcePack.ResultConsumer?,
         ) {
             throw UnsupportedOperationException()
         }
 
-        override fun getNamespaces(type: ResourceType?): MutableSet<String> {
-            throw UnsupportedOperationException()
-        }
+        override fun getNamespaces(type: ResourceType?): MutableSet<String> = throw UnsupportedOperationException()
 
-        override fun <T : Any?> parseMetadata(metaReader: ResourceMetadataSerializer<T>?): T? {
-            throw UnsupportedOperationException()
-        }
+        override fun <T : Any?> parseMetadata(metaReader: ResourceMetadataSerializer<T>?): T? = throw UnsupportedOperationException()
 
-        override fun getInfo(): ResourcePackInfo {
-            throw NotImplementedError()
-        }
+        override fun getInfo(): ResourcePackInfo = throw NotImplementedError()
     }
 
     private companion object {
@@ -541,7 +531,10 @@ class Sound(private val config: NativeObject) {
         private val validIdentChars = setOf(
             *('a'..'z').toList().toTypedArray(),
             *('0'..'9').toList().toTypedArray(),
-            '_', '.', '-', '/',
+            '_',
+            '.',
+            '-',
+            '/',
         )
         private var counter = 0
     }

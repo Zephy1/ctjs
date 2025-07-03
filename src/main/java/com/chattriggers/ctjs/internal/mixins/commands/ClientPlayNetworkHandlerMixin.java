@@ -17,7 +17,12 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private CommandDispatcher<CommandSource> commandDispatcher;
 
-    @Inject(method = "onCommandTree", at = @At("TAIL"))
+    @Inject(
+        method = "onCommandTree",
+        at = @At(
+            value = "TAIL"
+        )
+    )
     private void injectOnCommandTree(CommandTreeS2CPacket packet, CallbackInfo ci) {
         //noinspection unchecked
         CTEvents.NETWORK_COMMAND_DISPATCHER_REGISTER.invoker().register(

@@ -11,7 +11,9 @@ import java.util.Set;
 @Mixin(KeyBinding.class)
 public interface KeyBindingAccessor {
     @Accessor("CATEGORY_ORDER_MAP")
-    static Map<String, Integer> getCategoryMap() { throw new IllegalStateException(); }
+    static Map<String, Integer> getCategoryMap() {
+        throw new IllegalStateException();
+    }
 
     @Accessor("KEY_CATEGORIES")
     static Set<String> getKeyCategories() {

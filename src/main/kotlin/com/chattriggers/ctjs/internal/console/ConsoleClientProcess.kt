@@ -1,9 +1,12 @@
 package com.chattriggers.ctjs.internal.console
 
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.awt.Color
-import java.io.*
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.Socket
 import java.util.concurrent.CompletableFuture
 
@@ -27,8 +30,9 @@ class ConsoleClientProcess(private val port: Int, private val hostPid: Long) {
 
             // Only stop trying to connect if the host process is no longer available.
             // Otherwise, attempt to reconnect
-            if (ProcessHandle.of(hostPid).isEmpty)
+            if (ProcessHandle.of(hostPid).isEmpty) {
                 break
+            }
         }
 
         debug("Closing console process...")
@@ -40,8 +44,9 @@ class ConsoleClientProcess(private val port: Int, private val hostPid: Long) {
         try {
             socket = Socket("127.0.0.1", port)
 
-            while (!socket.isConnected)
+            while (!socket.isConnected) {
                 Thread.sleep(200)
+            }
 
             if (!socket.isConnected) {
                 debug("Socket not able to reconnect, breaking from connect loop...")
@@ -85,7 +90,7 @@ class ConsoleClientProcess(private val port: Int, private val hostPid: Long) {
                                 },
                                 fontSizeListener = { delta ->
                                     socketOut.println(Json.encodeToString<C2HMessage>(FontSizeMessage(delta)))
-                                }
+                                },
                             )
                         }
                     }
@@ -137,8 +142,9 @@ class ConsoleClientProcess(private val port: Int, private val hostPid: Long) {
     // write it to a file. Use the port number in the name to ensure its unique.
     private val debugOutput = File("./console_output_$port.txt").also { it.writeText("") }
     private fun debug(message: String) {
-        if (ENABLE_DEBUG)
+        if (ENABLE_DEBUG) {
             debugOutput.appendText(message)
+        }
     }
 
     companion object {

@@ -24,5 +24,4 @@ interface Command {
 
 fun literal(name: String) = LiteralArgumentBuilder.literal<CommandSource>(name)
 
-fun <T> argument(name: String, argument: ArgumentType<T>) =
-    RequiredArgumentBuilder.argument<CommandSource, T>(name, argument)
+fun <T> argument(name: String, argument: ArgumentType<T>) = RequiredArgumentBuilder.argument<CommandSource, T>(name, argument)

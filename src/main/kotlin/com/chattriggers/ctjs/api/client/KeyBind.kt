@@ -162,13 +162,13 @@ class KeyBind {
      *
      * @param pressed True to press, False to release
      */
-    fun setState(pressed: Boolean) =
-        KeyBinding.setKeyPressed(keyBinding.asMixin<KeyBindingAccessor>().boundKey, pressed)
+    fun setState(pressed: Boolean) = KeyBinding.setKeyPressed(keyBinding.asMixin<KeyBindingAccessor>().boundKey, pressed)
 
-    override fun toString() = "KeyBind{" +
-        "description=${getDescription()}, " +
-        "keyCode=${getKeyCode()}, " +
-        "category=${getCategory()}" +
+    override fun toString() =
+        "KeyBind{" +
+            "description=${getDescription()}, " +
+            "keyCode=${getKeyCode()}, " +
+            "category=${getCategory()}" +
         "}"
 
     companion object : Initializer {
@@ -180,8 +180,7 @@ class KeyBind {
 
         override fun init() {
             ClientTickEvents.START_CLIENT_TICK.register {
-                if (!World.isLoaded())
-                    return@register
+                if (!World.isLoaded()) return@register
 
                 keyBinds.forEach {
                     // This used to cause crashes on legacy sometimes. If it starts crashing again,
@@ -201,8 +200,8 @@ class KeyBind {
             Client.getMinecraft().options.asMixin<GameOptionsAccessor>().setAllKeys(
                 ArrayUtils.removeElement(
                     Client.getMinecraft().options.allKeys,
-                    keyBinding
-                )
+                    keyBinding,
+                ),
             )
             val category = keyBinding.category
 
@@ -229,8 +228,8 @@ class KeyBind {
             Client.getMinecraft().options.asMixin<GameOptionsAccessor>().setAllKeys(
                 ArrayUtils.add(
                     Client.getMinecraft().options.allKeys,
-                    keyBinding
-                )
+                    keyBinding,
+                ),
             )
 
             val categoryMap = KeyBindingAccessor.getCategoryMap()

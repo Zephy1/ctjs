@@ -11,16 +11,23 @@ import com.chattriggers.ctjs.internal.utils.toIdentifier
 import com.mojang.serialization.Codec
 import com.mojang.serialization.MapCodec
 import com.mojang.serialization.codecs.RecordCodecBuilder
-import gg.essential.universal.UChat
 import net.minecraft.item.ItemStack
 import net.minecraft.network.packet.s2c.play.GameMessageS2CPacket
-import net.minecraft.text.*
+import net.minecraft.text.ClickEvent
+import net.minecraft.text.HoverEvent
+import net.minecraft.text.OrderedText
+import net.minecraft.text.StringVisitable
+import net.minecraft.text.Style
+import net.minecraft.text.Text
+import net.minecraft.text.TextColor
+import net.minecraft.text.TextContent
+import net.minecraft.text.TextVisitFactory
 import net.minecraft.util.Formatting
 import org.mozilla.javascript.Context
 import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.ScriptRuntime
 import java.net.URI
-import java.util.*
+import java.util.Optional
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.toList
 
@@ -136,14 +143,12 @@ class TextComponent private constructor(
      * @return a new [TextComponent] with the specified [value] inserted at [index].
      *         This accepts all types of objects that the vararg constructor does.
      */
-    fun withTextAt(index: Int, value: Any) =
-        copy(parts = (parts.take(index) + Part.of(value) + parts.drop(index)).toMutableList())
+    fun withTextAt(index: Int, value: Any) = copy(parts = (parts.take(index) + Part.of(value) + parts.drop(index)).toMutableList())
 
     /**
      * @return a new [TextComponent] without the part at [index]
      */
-    fun withoutTextAt(index: Int) =
-        copy(parts = (parts.take(index) + parts.drop(index + 1)).toMutableList())
+    fun withoutTextAt(index: Int) = copy(parts = (parts.take(index) + parts.drop(index + 1)).toMutableList())
 
     /**
      * Edits this text component, replacing it with the given [newText]. Note that
@@ -181,8 +186,7 @@ class TextComponent private constructor(
      * @see ChatLib.say
      */
     fun chat() = apply {
-        if (Player.toMC() == null)
-            return@apply
+        if (Player.toMC() == null) return@apply
 
         if (chatLineId != -1) {
             ChatLib.sendMessageWithId(this)
@@ -206,8 +210,7 @@ class TextComponent private constructor(
      * @see ChatLib.actionBar
      */
     fun actionBar() = apply {
-        if (Player.toMC() == null)
-            return@apply
+        if (Player.toMC() == null) return@apply
 
         if (isRecursive) {
             Client.scheduleTask {
@@ -228,7 +231,7 @@ class TextComponent private constructor(
     private fun copy(
         parts: MutableList<Part> = this.parts,
         chatLineId: Int = this.chatLineId,
-        isRecursive: Boolean = this.isRecursive
+        isRecursive: Boolean = this.isRecursive,
     ) = TextComponent(parts, chatLineId, isRecursive)
 
     //////////
@@ -277,18 +280,24 @@ class TextComponent private constructor(
             val cx = Context.getContext()
             cx.newObject(cx.topCallScope).also {
                 it.put("text", it, text)
-                if (style_.color != null)
+                if (style_.color != null) {
                     it.put("color", it, style_.color)
-                if (style_.isBold)
+                }
+                if (style_.isBold) {
                     it.put("bold", it, true)
-                if (style_.isItalic)
+                }
+                if (style_.isItalic) {
                     it.put("italic", it, true)
-                if (style_.isUnderlined)
+                }
+                if (style_.isUnderlined) {
                     it.put("underline", it, true)
-                if (style_.isStrikethrough)
+                }
+                if (style_.isStrikethrough) {
                     it.put("strikethrough", it, true)
-                if (style_.isObfuscated)
+                }
+                if (style_.isObfuscated) {
                     it.put("obfuscated", it, true)
+                }
                 style_.clickEvent?.let { event ->
                     if (event.action != null) {
                         val clickEvent = NativeObject()
@@ -307,10 +316,12 @@ class TextComponent private constructor(
                         it.put("hoverEvent", it, hoverEvent)
                     }
                 }
-                if (style_.insertion != null)
+                if (style_.insertion != null) {
                     it.put("insertion", it, style_.insertion)
-                if (style_.font != null && style_.font.toString() != "minecraft:default")
+                }
+                if (style_.font != null && style_.font.toString() != "minecraft:default") {
                     it.put("font", it, style_.font)
+                }
             }
         }
 
@@ -335,8 +346,7 @@ class TextComponent private constructor(
         companion object {
             fun of(obj: Any?): List<Part> = when (obj) {
                 is NativeObject -> {
-                    val text = obj["text"]
-                        ?: throw IllegalArgumentException("Expected TextComponent part to have a \"text\" key")
+                    val text = obj["text"] ?: throw IllegalArgumentException("Expected TextComponent part to have a \"text\" key")
                     require(text is CharSequence) { "TextComponent part's \"text\" key must be a string" }
                     listOf(Part(ChatLib.addColor(text.toString()), jsObjectToStyle(obj)))
                 }
@@ -367,8 +377,9 @@ class TextComponent private constructor(
                         true
                     }
 
-                    if (builder.isNotEmpty())
+                    if (builder.isNotEmpty()) {
                         parts.add(Part(builder.toString(), lastStyle))
+                    }
 
                     parts
                 }
@@ -393,7 +404,7 @@ class TextComponent private constructor(
             private val CODEC: MapCodec<PartContent> = RecordCodecBuilder.mapCodec { builder ->
                 builder.group(
                     Codec.STRING.fieldOf("text").forGetter(PartContent::text),
-                    net.minecraft.text.Style.Codecs.CODEC.fieldOf("style").forGetter(PartContent::style_),
+                    Style.Codecs.CODEC.fieldOf("style").forGetter(PartContent::style_),
                 ).apply(builder) { text, style -> PartContent(text, style) }
             }
         }
@@ -419,23 +430,23 @@ class TextComponent private constructor(
                 })
                 .withBold(
                     obj.getOrDefault("bold", false) as? Boolean
-                        ?: error("Expected \"bold\" key to be a boolean")
+                        ?: error("Expected \"bold\" key to be a boolean"),
                 )
                 .withItalic(
                     obj.getOrDefault("italic", false) as? Boolean
-                        ?: error("Expected \"italic\" key to be a boolean")
+                        ?: error("Expected \"italic\" key to be a boolean"),
                 )
                 .withUnderline(
                     obj.getOrDefault("underline", false) as? Boolean
-                        ?: error("Expected \"underline\" key to be a boolean")
+                        ?: error("Expected \"underline\" key to be a boolean"),
                 )
                 .withStrikethrough(
                     obj.getOrDefault("strikethrough", false) as? Boolean
-                        ?: error("Expected \"strikethrough\" key to be a boolean")
+                        ?: error("Expected \"strikethrough\" key to be a boolean"),
                 )
                 .withObfuscated(
                     obj.getOrDefault("obfuscated", false) as? Boolean
-                        ?: error("Expected \"obfuscated\" key to be a boolean")
+                        ?: error("Expected \"obfuscated\" key to be a boolean"),
                 )
                 .withClickEvent(makeClickEvent(obj["clickEvent"]))
                 .withHoverEvent(makeHoverEvent(obj["hoverEvent"]))
@@ -444,34 +455,31 @@ class TextComponent private constructor(
                         null -> null
                         is CharSequence -> insertion.toString()
                         else -> error("Expected \"insertion\" key to be a String")
-                    }
+                    },
                 )
                 .withFont(
                     when (val font = obj["font"]) {
                         null -> null
                         is CharSequence -> font.toString().toIdentifier()
                         else -> error("Expected \"font\" key to be a String")
-                    }
+                    },
                 )
         }
 
         private fun Style.formatCodes() = buildString {
             append("§r")
 
-            when {
-                isBold -> append("§l")
-                isItalic -> append("§o")
-                isUnderlined -> append("§n")
-                isStrikethrough -> append("§m")
-                isObfuscated -> append("§k")
-            }
-
             color?.let(colorToFormatChar::get)?.run(::append)
+
+            if (isBold) append("§l")
+            if (isItalic) append("§o")
+            if (isUnderlined) append("§n")
+            if (isStrikethrough) append("§m")
+            if (isObfuscated) append("§k")
         }
 
         private fun makeClickEvent(clickEvent: Any?): ClickEvent? {
-            if (clickEvent is ClickEvent?)
-                return clickEvent
+            if (clickEvent is ClickEvent?) return clickEvent
 
             require(clickEvent is NativeObject) { "Expected \"clickEvent\" key to be an object or ClickEvent" }
 
@@ -483,37 +491,39 @@ class TextComponent private constructor(
                 is CharSequence -> ClickEvent.Action.valueOf(action.toString().uppercase())
                 null -> if (value != null) {
                     error("Cannot set Style's click value without a click action")
-                } else return null
+                } else {
+                    return null
+                }
                 else -> error("Style.withClickAction() expects a String, ClickEvent.Action, or null, but got ${action::class.simpleName}")
             }
 
             val clickValue = when (value) {
                 null -> null
                 is CharSequence -> value.toString().let {
-                    if (clickAction == ClickEvent.Action.OPEN_URL) {
-                        if (!it.startsWith("http://") && !it.startsWith("https://")) {
-                            return@let "http://$it"
-                        }
+                    if (
+                        clickAction == ClickEvent.Action.OPEN_URL &&
+                        !it.startsWith("http://") &&
+                        !it.startsWith("https://")
+                    ) {
+                        return@let "http://$it"
                     }
                     it
                 }
                 else -> error("Expected \"value\" key to be a string")
             }.orEmpty()
 
-            return when (action) {
+            return when (clickAction) {
                 ClickEvent.Action.OPEN_URL -> ClickEvent.OpenUrl(URI(clickValue))
                 ClickEvent.Action.OPEN_FILE -> ClickEvent.OpenFile(clickValue)
                 ClickEvent.Action.RUN_COMMAND -> ClickEvent.RunCommand(clickValue)
                 ClickEvent.Action.SUGGEST_COMMAND -> ClickEvent.SuggestCommand(clickValue)
                 ClickEvent.Action.CHANGE_PAGE -> clickValue.toIntOrNull()?. let { ClickEvent.ChangePage(it) }
                 ClickEvent.Action.COPY_TO_CLIPBOARD -> ClickEvent.CopyToClipboard(clickValue)
-                else -> error("unreachable")
             }
         }
 
         private fun makeHoverEvent(hoverEvent: Any?): HoverEvent? {
-            if (hoverEvent is HoverEvent?)
-                return hoverEvent
+            if (hoverEvent is HoverEvent?) return hoverEvent
 
             require(hoverEvent is NativeObject) { "Expected \"hoverEvent\" key to be an object or HoverEvent" }
 
@@ -530,12 +540,13 @@ class TextComponent private constructor(
                 }
                 null -> if (value != null) {
                     error("Cannot set Style's hover value without a hover action")
-                } else return null
+                } else {
+                    return null
+                }
                 else -> error("Style.withHoverAction() expects a String, HoverEvent.Action, or null, but got ${action::class.simpleName}")
             }
 
-            if (value == null)
-                return null
+            if (value == null) return null
 
             return when (hoverAction) {
                 HoverEvent.Action.SHOW_TEXT -> HoverEvent.ShowText(TextComponent(value))
@@ -553,16 +564,14 @@ class TextComponent private constructor(
             }
         }
 
-        private fun getEventValue(event: ClickEvent): Any {
-            return when (event) {
-                is ClickEvent.OpenUrl -> event.uri
-                is ClickEvent.OpenFile -> event.file()
-                is ClickEvent.RunCommand -> event.command
-                is ClickEvent.SuggestCommand -> event.command
-                is ClickEvent.ChangePage -> event.page
-                is ClickEvent.CopyToClipboard -> event.value
-                else -> error("${event::class} is not of a supported type")
-            }
+        private fun getEventValue(event: ClickEvent): Any = when (event) {
+            is ClickEvent.OpenUrl -> event.uri
+            is ClickEvent.OpenFile -> event.file()
+            is ClickEvent.RunCommand -> event.command
+            is ClickEvent.SuggestCommand -> event.command
+            is ClickEvent.ChangePage -> event.page
+            is ClickEvent.CopyToClipboard -> event.value
+            else -> error("${event::class} is not of a supported type")
         }
 
         private fun parseItemContent(obj: Any): HoverEvent.ShowItem {

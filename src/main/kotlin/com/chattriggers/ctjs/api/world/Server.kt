@@ -33,9 +33,7 @@ object Server {
      */
     @JvmStatic
     fun getName(): String {
-        if (isSingleplayer())
-            return "SinglePlayer"
-
+        if (isSingleplayer()) return "SinglePlayer"
         return toMC()?.name ?: ""
     }
 
@@ -47,9 +45,7 @@ object Server {
      */
     @JvmStatic
     fun getMOTD(): String {
-        if (isSingleplayer())
-            return "SinglePlayer"
-
+        if (isSingleplayer()) return "SinglePlayer"
         return toMC()?.label?.let { TextComponent(it) }?.formattedText ?: ""
     }
 
@@ -67,8 +63,12 @@ object Server {
 
         val player = Player.toMC() ?: return -1L
 
-        return Client.getConnection()?.getPlayerListEntry(player.uuid)?.latency?.toLong()
-            ?: toMC()?.ping
-            ?: -1L
+        return Client
+            .getConnection()
+            ?.getPlayerListEntry(player.uuid)
+            ?.latency
+            ?.toLong()
+            ?: toMC()
+                ?.ping ?: -1L
     }
 }

@@ -46,8 +46,9 @@ abstract class CommandCollection : Initializer {
     }
 
     fun unregister(command: Command) {
-        for (dispatcher in listOfNotNull(clientDispatcher, networkDispatcher))
+        for (dispatcher in listOfNotNull(clientDispatcher, networkDispatcher)) {
             command.unregisterImpl(dispatcher)
+        }
     }
 
     fun unregisterAll() {

@@ -27,10 +27,13 @@ object JSErrorReporter : ErrorReporter {
             if (sourceName == null) {
                 "line $line: $inputMessage"
             } else "\"$sourceName\", line $line: $inputMessage"
-        } else inputMessage
+        } else {
+            inputMessage
+        }
 
-        if (isWarning)
+        if (isWarning) {
             message = "warning: $message"
+        }
 
         Console.println(MESSAGE_PREFIX + message)
         if (lineSource != null) {
@@ -49,8 +52,6 @@ object JSErrorReporter : ErrorReporter {
         sourceName: String?,
         line: Int,
         lineSource: String?,
-        lineOffset: Int
-    ): EvaluatorException {
-        return EvaluatorException(message, sourceName, line, lineSource, lineOffset)
-    }
+        lineOffset: Int,
+    ): EvaluatorException = EvaluatorException(message, sourceName, line, lineSource, lineOffset)
 }

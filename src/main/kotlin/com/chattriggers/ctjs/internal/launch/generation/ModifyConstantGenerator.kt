@@ -30,19 +30,25 @@ internal class ModifyConstantGenerator(
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPModifyConstant::class.descriptorString(), true).apply {
             visit("method", signature.targetMethod.toFullDescriptor())
-            if (modifyConstant.slice != null)
+            if (modifyConstant.slice != null) {
                 visit("slice", modifyConstant.slice.map(Utils::createSliceAnnotation))
+            }
             visit("constant", listOf(Utils.createConstantAnnotation(modifyConstant.constant)))
-            if (modifyConstant.remap != null)
+            if (modifyConstant.remap != null) {
                 visit("remap", modifyConstant.remap)
-            if (modifyConstant.require != null)
+            }
+            if (modifyConstant.require != null) {
                 visit("require", modifyConstant.require)
-            if (modifyConstant.expect != null)
+            }
+            if (modifyConstant.expect != null) {
                 visit("expect", modifyConstant.expect)
-            if (modifyConstant.allow != null)
+            }
+            if (modifyConstant.allow != null) {
                 visit("allow", modifyConstant.allow)
-            if (modifyConstant.constraints != null)
+            }
+            if (modifyConstant.constraints != null) {
                 visit("constraints", modifyConstant.constraints)
+            }
             visitEnd()
         }
     }

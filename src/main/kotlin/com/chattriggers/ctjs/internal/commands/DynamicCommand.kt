@@ -12,7 +12,6 @@ import com.mojang.brigadier.builder.ArgumentBuilder
 import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import com.mojang.brigadier.tree.CommandNode
 import com.mojang.brigadier.tree.LiteralCommandNode
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
 import net.minecraft.command.CommandSource
 import org.mozilla.javascript.Function
 import org.mozilla.javascript.NativeObject
@@ -81,10 +80,12 @@ object DynamicCommand {
                 builder!!.executes { ctx ->
                     val obj = NativeObject()
 
-                    for ((key, value) in ctx.source.asMixin<CTClientCommandSource>().contextValues)
+                    for ((key, value) in ctx.source.asMixin<CTClientCommandSource>().contextValues) {
                         ScriptableObject.putProperty(obj, key, value)
-                    for ((key, arg) in ctx.asMixin<CommandContextAccessor>().arguments)
+                    }
+                    for ((key, arg) in ctx.asMixin<CommandContextAccessor>().arguments) {
                         ScriptableObject.putProperty(obj, key, arg.result)
+                    }
 
                     ctx.source.asMixin<CTClientCommandSource>().contextValues.clear()
 
@@ -93,8 +94,9 @@ object DynamicCommand {
                 }
             }
 
-            for (child in children)
+            for (child in children) {
                 child.initialize(dispatcher)
+            }
 
             parent?.builder?.then(builder)
         }

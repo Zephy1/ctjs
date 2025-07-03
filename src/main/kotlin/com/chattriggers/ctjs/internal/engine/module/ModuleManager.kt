@@ -11,7 +11,7 @@ import org.apache.commons.io.FileUtils
 import org.mozilla.javascript.Context
 import java.io.File
 import java.net.URLClassLoader
-import java.util.*
+import java.util.LinkedList
 
 object ModuleManager {
     val cachedModules = mutableListOf<Module>()
@@ -111,8 +111,9 @@ object ModuleManager {
         loadAssetsAndJars(newModules)
 
         newModules.forEach {
-            if (it.metadata.mixinEntry != null)
+            if (it.metadata.mixinEntry != null) {
                 ChatLib.chat("&cModule ${it.name} has dynamic mixins which require a restart to take effect")
+            }
         }
 
         entryPass(newModules)
@@ -158,8 +159,8 @@ object ModuleManager {
 
     private fun reportOldVersion(module: Module) {
         ChatLib.chat(
-            "&cWarning: the module \"${module.name}\" was made for an older version of CT, " +
-                "so it may not work correctly."
+            "&cWarning: The module \"${module.name}\" was made for an older version of CT, " +
+                "so it may not work correctly.",
         )
     }
 
@@ -190,11 +191,11 @@ object ModuleManager {
         val unmarkedModules = cachedModules.toMutableSet()
 
         fun visit(module: Module) {
-            if (module in permanentMarks)
-                return
+            if (module in permanentMarks) return
 
-            if (module in temporaryMarks)
+            if (module in temporaryMarks) {
                 error("Detected a module dependency cycle: ${temporaryMarks.joinToString(" -> ") { it.name }}")
+            }
 
             temporaryMarks.add(module)
 

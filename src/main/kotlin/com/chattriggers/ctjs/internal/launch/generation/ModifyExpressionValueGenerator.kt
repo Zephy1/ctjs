@@ -46,16 +46,21 @@ internal class ModifyExpressionValueGenerator(
         node.visitAnnotation(SPModifyExpressionValue::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
             visit("at", Utils.createAtAnnotation(modifyExpressionValue.at))
-            if (modifyExpressionValue.slice != null)
+            if (modifyExpressionValue.slice != null) {
                 visit("slice", modifyExpressionValue.slice.map(Utils::createSliceAnnotation))
-            if (modifyExpressionValue.remap != null)
+            }
+            if (modifyExpressionValue.remap != null) {
                 visit("remap", modifyExpressionValue.remap)
-            if (modifyExpressionValue.require != null)
+            }
+            if (modifyExpressionValue.require != null) {
                 visit("require", modifyExpressionValue.require)
-            if (modifyExpressionValue.expect != null)
+            }
+            if (modifyExpressionValue.expect != null) {
                 visit("expect", modifyExpressionValue.expect)
-            if (modifyExpressionValue.allow != null)
+            }
+            if (modifyExpressionValue.allow != null) {
                 visit("allow", modifyExpressionValue.allow)
+            }
             visitEnd()
         }
     }

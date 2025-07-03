@@ -1,8 +1,30 @@
 package com.chattriggers.ctjs.typing
 
-import com.google.devtools.ksp.*
-import com.google.devtools.ksp.processing.*
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.KspExperimental
+import com.google.devtools.ksp.getDeclaredFunctions
+import com.google.devtools.ksp.getDeclaredProperties
+import com.google.devtools.ksp.isAnnotationPresent
+import com.google.devtools.ksp.isConstructor
+import com.google.devtools.ksp.isJavaPackagePrivate
+import com.google.devtools.ksp.isPrivate
+import com.google.devtools.ksp.isPublic
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
+import com.google.devtools.ksp.processing.SymbolProcessorProvider
+import com.google.devtools.ksp.symbol.ClassKind
+import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSDeclaration
+import com.google.devtools.ksp.symbol.KSFile
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import com.google.devtools.ksp.symbol.KSTypeAlias
+import com.google.devtools.ksp.symbol.KSTypeParameter
+import com.google.devtools.ksp.symbol.KSTypeReference
+import com.google.devtools.ksp.symbol.Modifier
+import com.google.devtools.ksp.symbol.Variance
 
 class Provider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment) = Processor(environment)
@@ -55,8 +77,7 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
     }
 
     private fun collectAllReachableClasses(decl: KSDeclaration, classes: MutableSet<KSClassDeclaration>, depth: Int) {
-        if (depth > MAX_DEPTH || decl in classes || decl is KSTypeParameter || !decl.isPublic())
-            return
+        if (depth > MAX_DEPTH || decl in classes || decl is KSTypeParameter || !decl.isPublic()) return
 
         if (decl is KSTypeAlias) {
             collectAllReachableClasses(decl.type.resolve().declaration, classes, depth)
@@ -75,18 +96,19 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         decl.declarations.forEach {
             when (it) {
                 is KSPropertyDeclaration -> {
-                    if (!it.isPrivate() && !it.isJavaPackagePrivate())
+                    if (!it.isPrivate() && !it.isJavaPackagePrivate()) {
                         collectAllReachableClasses(it.type.resolve().declaration, classes, depth + 1)
+                    }
                 }
                 is KSFunctionDeclaration -> {
-                    if (it.isPrivate() || it.isJavaPackagePrivate())
-                        return@forEach
+                    if (it.isPrivate() || it.isJavaPackagePrivate()) return@forEach
 
                     it.parameters.forEach { parameter ->
                         collectAllReachableClasses(parameter.type.resolve().declaration, classes, depth + 1)
                     }
-                    if (it.returnType != null)
+                    if (it.returnType != null) {
                         collectAllReachableClasses(it.returnType!!.resolve().declaration, classes, depth + 1)
+                    }
                 }
                 is KSClassDeclaration -> collectAllReachableClasses(it, classes, depth + 1)
                 else -> TODO("Handle declaration class ${decl::class.simpleName} in collectAllReachableClasses")
@@ -102,15 +124,13 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         // Skip packages (and all classes) with invalid package names
         fun getPackage(pkg: String): Package? {
             return pkg.split(".").fold(root) { p, name ->
-                if (name in typescriptReservedWords)
-                    return null
+                if (name in typescriptReservedWords) return null
                 p.getPackage(name)
             }
         }
 
         classes.forEach {
-            if (it.classKind == ClassKind.ENUM_ENTRY)
-                return@forEach
+            if (it.classKind == ClassKind.ENUM_ENTRY) return@forEach
 
             val pkg = getPackage(it.packageName.asString()) ?: return@forEach
             val name = it.name
@@ -216,8 +236,9 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
             val (superInterfaces, superClasses) = clazz.superTypes
                 .map {
                     var decl = it.resolve().declaration
-                    while (decl is KSTypeAlias)
+                    while (decl is KSTypeAlias) {
                         decl = decl.type.resolve().declaration
+                    }
                     it to decl as KSClassDeclaration
                 }
                 .filter { it.first.resolve() !== resolver.builtIns.anyType }
@@ -226,7 +247,9 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
             val superMembers = if (superClasses.isNotEmpty()) {
                 require(superClasses.size == 1)
                 listOf(superClasses.single()) + superInterfaces
-            } else superInterfaces
+            } else {
+                superInterfaces
+            }
 
             if (superMembers.isNotEmpty()) {
                 val clause = superMembers.map { (ref, _) ->
@@ -267,8 +290,9 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
     }
 
     private fun buildProperty(property: KSPropertyDeclaration, resolver: Resolver) {
-        if (property.docString != null)
+        if (property.docString != null) {
             append(formatDocString(property.docString!!))
+        }
 
         if (property.isAnnotationPresent(JvmField::class) || (property.getter == null && property.setter == null)) {
             appendLine(buildString {
@@ -317,19 +341,23 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
                     !parameter.hasDefault || index < defaultIndexToStopAt
                 }
             }
-        } else listOf(function.parameters)
+        } else {
+            listOf(function.parameters)
+        }
 
         val functionName = if (omitName) "" else function.simpleName.asString()
 
         for (parameters in parameterSets) {
-            if (function.docString != null)
+            if (function.docString != null) {
                 append(formatDocString(function.docString!!))
+            }
 
             appendLine(buildString {
                 append(if (functionName == "<init>") "new" else functionName)
 
-                if (function.typeParameters.isNotEmpty())
+                if (function.typeParameters.isNotEmpty()) {
                     append(function.typeParameters.joinToString(", ", "<", ">") { it.name.asString() })
+                }
 
                 append('(')
                 append(parameters.joinToString {
@@ -424,8 +452,9 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
                 }
             }
 
-            if (type.isMarkedNullable)
+            if (type.isMarkedNullable) {
                 append(" | null | undefined")
+            }
         }
     }
 
@@ -468,7 +497,9 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
             val parent = parentDeclaration
             if (parent is KSClassDeclaration) {
                 "${parent.name}$${simpleName.asString()}"
-            } else simpleName.asString()
+            } else {
+                simpleName.asString()
+            }
         }
 
     private val classPathCache = mutableMapOf<KSDeclaration, String>()
@@ -515,15 +546,54 @@ class Processor(environment: SymbolProcessorEnvironment) : SymbolProcessor {
         private const val ROOT_PACKAGE = "#root"
 
         private val excludedMethods = setOf(
-            "<clinit>", "equals", "hashCode", "toString", "finalize", "compareTo", "clone",
+            "<clinit>",
+            "equals",
+            "hashCode",
+            "toString",
+            "finalize",
+            "compareTo",
+            "clone",
         )
 
         // Typescript keywords
         private val typescriptReservedWords = setOf(
-            "break", "case", "catch", "class", "const", "constructor", "continue", "debugger", "default", "delete",
-            "do", "else", "enum", "export", "extends", "false", "finally", "for", "function", "if", "import", "in",
-            "instanceof", "new", "null", "return", "super", "switch", "this", "throw", "true", "try", "typeof", "var",
-            "void", "while", "with",
+            "break",
+            "case",
+            "catch",
+            "class",
+            "const",
+            "constructor",
+            "continue",
+            "debugger",
+            "default",
+            "delete",
+            "do",
+            "else",
+            "enum",
+            "export",
+            "extends",
+            "false",
+            "finally",
+            "for",
+            "function",
+            "if",
+            "import",
+            "in",
+            "instanceof",
+            "new",
+            "null",
+            "return",
+            "super",
+            "switch",
+            "this",
+            "throw",
+            "true",
+            "try",
+            "typeof",
+            "var",
+            "void",
+            "while",
+            "with",
         )
 
         private fun String.safeName() = this + if (this in typescriptReservedWords) "_" else ""

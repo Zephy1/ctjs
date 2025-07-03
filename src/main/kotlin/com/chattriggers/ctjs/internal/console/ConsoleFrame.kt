@@ -4,7 +4,12 @@ import com.chattriggers.ctjs.engine.LogType
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants
 import org.fife.ui.rsyntaxtextarea.Theme
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Color
+import java.awt.Component
+import java.awt.Font
+import java.awt.GraphicsEnvironment
+import java.awt.Insets
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 import java.awt.event.WindowEvent
@@ -30,9 +35,7 @@ class ConsoleFrame(
             .also(GraphicsEnvironment.getLocalGraphicsEnvironment()::registerFont)
     }
 
-    private val frame = JFrame(
-        "ChatTriggers ${init.modVersion} JS Console"
-    )
+    private val frame = JFrame("ChatTriggers ${init.modVersion} JS Console")
 
     private val textArea = JTextPane()
     private val inputField = RSyntaxTextArea(5, 1).apply {
@@ -61,9 +64,9 @@ class ConsoleFrame(
         caret.updatePolicy = DefaultCaret.ALWAYS_UPDATE
 
         inputField.addKeyListener(object : KeyListener {
-            override fun keyTyped(e: KeyEvent) {}
+            override fun keyTyped(e: KeyEvent) { }
 
-            override fun keyPressed(e: KeyEvent) {}
+            override fun keyPressed(e: KeyEvent) { }
 
             override fun keyReleased(e: KeyEvent) {
                 if (!e.isControlDown) return
@@ -87,7 +90,7 @@ class ConsoleFrame(
                                   Control +: Increase console font size
                                   Control -: Decreate console font size
                                 -------------------------------------------------------
-                            """.trimIndent()
+                                """.trimIndent(),
                             )
                         } else {
                             writer.println("eval> ${command.prependIndent("    > ").substring(6)}")
@@ -164,17 +167,22 @@ class ConsoleFrame(
                             it.className.substring(classNameIndex + 21),
                             it.methodName,
                             it.fileName.substring(fileNameIndex + 21),
-                            it.lineNumber
+                            it.lineNumber,
                         )
-                    } else it
+                    } else {
+                        it
+                    }
                 }
-            } else err.trace
+            } else {
+                err.trace
+            }
 
             appendLine(err.message)
             for (trace in trimmedTrace) {
                 append("\tat ${trace.className}.${trace.methodName} (${trace.fileName}")
-                if (trace.lineNumber != -1)
+                if (trace.lineNumber != -1) {
                     append(":${trace.lineNumber}")
+                }
                 appendLine(")")
             }
 
@@ -185,8 +193,9 @@ class ConsoleFrame(
         }
 
         invokeLater {
-            if (currentConfig.openConsoleOnError)
+            if (currentConfig.openConsoleOnError) {
                 showConsole()
+            }
 
             writer.println(buildString {
                 appendError(error)
@@ -230,7 +239,7 @@ class ConsoleFrame(
             Font(
                 "DejaVu Sans Mono",
                 Font.PLAIN,
-                15
+                15,
             )
         }.deriveFont(config.fontSize.toFloat())
 

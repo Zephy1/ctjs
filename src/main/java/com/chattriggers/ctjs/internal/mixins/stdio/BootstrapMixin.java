@@ -9,7 +9,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
-    @Inject(method = "setOutputStreams", at = @At("HEAD"))
+    @Inject(
+        method = "setOutputStreams",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private static void injectSetOutputStreams(CallbackInfo ci) {
         // MC will re-wrap the output streams, so we restore them to their original state
         // so they don't end up double-wrapped.

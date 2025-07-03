@@ -4,7 +4,16 @@ import com.chattriggers.ctjs.MCNbtBase
 import com.chattriggers.ctjs.MCNbtCompound
 import com.chattriggers.ctjs.MCNbtList
 import com.chattriggers.ctjs.internal.utils.getOption
-import net.minecraft.nbt.*
+import net.minecraft.nbt.NbtByte
+import net.minecraft.nbt.NbtByteArray
+import net.minecraft.nbt.NbtDouble
+import net.minecraft.nbt.NbtFloat
+import net.minecraft.nbt.NbtInt
+import net.minecraft.nbt.NbtIntArray
+import net.minecraft.nbt.NbtLong
+import net.minecraft.nbt.NbtLongArray
+import net.minecraft.nbt.NbtShort
+import net.minecraft.nbt.NbtString
 import org.mozilla.javascript.NativeArray
 import org.mozilla.javascript.NativeObject
 

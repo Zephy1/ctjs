@@ -1,12 +1,14 @@
 package com.chattriggers.ctjs.internal.launch.generation
 
 import com.chattriggers.ctjs.api.Mappings
-import com.chattriggers.ctjs.internal.launch.*
-import com.chattriggers.ctjs.internal.utils.descriptor
+import com.chattriggers.ctjs.internal.launch.At
+import com.chattriggers.ctjs.internal.launch.Constant
+import com.chattriggers.ctjs.internal.launch.Descriptor
+import com.chattriggers.ctjs.internal.launch.Local
+import com.chattriggers.ctjs.internal.launch.Slice
 import com.chattriggers.ctjs.internal.utils.descriptorString
 import net.fabricmc.loader.impl.FabricLoaderImpl
 import net.fabricmc.loader.impl.lib.accesswidener.AccessWidenerReader
-import org.objectweb.asm.Opcodes
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AnnotationNode
 import org.spongepowered.asm.mixin.transformer.ClassInfo
@@ -17,25 +19,34 @@ import org.spongepowered.asm.mixin.injection.Slice as SPSlice
 internal object Utils {
     fun createAtAnnotation(at: At): AnnotationNode {
         return AnnotationNode(SPAt::class.descriptorString()).apply {
-            if (at.id != null)
+            if (at.id != null) {
                 visit("id", at.id)
+            }
             visit("value", at.value)
-            if (at.slice != null)
+            if (at.slice != null) {
                 visit("slice", at.slice)
-            if (at.shift != null)
+            }
+            if (at.shift != null) {
                 visit("shift", arrayOf(SPAt.Shift::class.java.descriptorString(), at.shift.name))
-            if (at.by != null)
+            }
+            if (at.by != null) {
                 visit("by", at.by)
-            if (at.args != null)
+            }
+            if (at.args != null) {
                 visit("args", at.args)
-            if (at.target != null)
+            }
+            if (at.target != null) {
                 visit("target", at.atTarget.descriptor.mappedDescriptor())
-            if (at.ordinal != null)
+            }
+            if (at.ordinal != null) {
                 visit("ordinal", at.ordinal)
-            if (at.opcode != null)
+            }
+            if (at.opcode != null) {
                 visit("opcode", at.opcode)
-            if (at.remap != null)
+            }
+            if (at.remap != null) {
                 visit("remap", at.remap)
+            }
 
             visitEnd()
         }
@@ -43,49 +54,60 @@ internal object Utils {
 
     fun createSliceAnnotation(slice: Slice): AnnotationNode {
         return AnnotationNode(SPSlice::class.descriptorString()).apply {
-            if (slice.id != null)
+            if (slice.id != null) {
                 visit("id", slice.id)
-            if (slice.from != null)
+            }
+            if (slice.from != null) {
                 visit("from", createAtAnnotation(slice.from))
-            if (slice.to != null)
+            }
+            if (slice.to != null) {
                 visit("to", createAtAnnotation(slice.to))
+            }
             visitEnd()
         }
     }
 
     fun createConstantAnnotation(constant: Constant): AnnotationNode {
         return AnnotationNode(SPConstant::class.descriptorString()).apply {
-            if (constant.nullValue != null)
+            if (constant.nullValue != null) {
                 visit("nullValue", constant.nullValue)
-            if (constant.intValue != null)
+            }
+            if (constant.intValue != null) {
                 visit("intValue", constant.intValue)
-            if (constant.floatValue != null)
+            }
+            if (constant.floatValue != null) {
                 visit("floatValue", constant.floatValue)
-            if (constant.longValue != null)
+            }
+            if (constant.longValue != null) {
                 visit("longValue", constant.longValue)
-            if (constant.doubleValue != null)
+            }
+            if (constant.doubleValue != null) {
                 visit("doubleValue", constant.doubleValue)
-            if (constant.stringValue != null)
+            }
+            if (constant.stringValue != null) {
                 visit("stringValue", constant.stringValue)
+            }
             if (constant.classValue != null) {
-                val name = Mappings.getMappedClassName(constant.classValue)
-                    ?: error("Unknown class \"${constant.classValue}\"")
+                val name = Mappings.getMappedClassName(constant.classValue) ?: error("Unknown class \"${constant.classValue}\"")
                 visit("classValue", Type.getObjectType(name))
             }
-            if (constant.ordinal != null)
+            if (constant.ordinal != null) {
                 visit("ordinal", constant.ordinal)
-            if (constant.slice != null)
+            }
+            if (constant.slice != null) {
                 visit("slice", constant.slice)
-            if (constant.expandZeroConditions != null)
+            }
+            if (constant.expandZeroConditions != null) {
                 visit("expandZeroConditions", constant.expandZeroConditions)
-            if (constant.log != null)
+            }
+            if (constant.log != null) {
                 visit("log", constant.log)
+            }
         }
     }
 
     fun widenField(mappedClass: Mappings.MappedClass, fieldName: String, isMutable: Boolean) {
-        val field = mappedClass.fields[fieldName]
-            ?: error("Unable to find field $fieldName in class ${mappedClass.name.original}")
+        val field = mappedClass.fields[fieldName] ?: error("Unable to find field $fieldName in class ${mappedClass.name.original}")
 
         FabricLoaderImpl.INSTANCE.accessWidener.visitField(
             mappedClass.name.value,
@@ -147,11 +169,14 @@ internal object Utils {
 
         for (method in mappedMethods) {
             if (parameters != null) {
-                if (method.parameters.size != parameters.size)
-                    continue
+                if (method.parameters.size != parameters.size) continue
 
-                if (method.parameters.zip(parameters).any { it.first.type.original != it.second.originalDescriptor() })
+                if (method.parameters.zip(parameters).any {
+                        it.first.type.original != it.second.originalDescriptor()
+                    }
+                ) {
                     continue
+                }
             }
 
             val result = classInfo.findMethodInHierarchy(
@@ -161,17 +186,19 @@ internal object Utils {
                 ClassInfo.INCLUDE_ALL or ClassInfo.INCLUDE_INITIALISERS,
             ) ?: continue
 
-            if (value != null)
+            if (value != null) {
                 error(
-                    "Multiple methods match name ${descriptor.name} in class ${mappedClass.name.original}, please " +
-                        "provide a method descriptor"
+                    "Multiple methods match name ${descriptor.name} in class ${mappedClass.name.original}, " +
+                        "please provide a method descriptor",
                 )
+            }
 
             value = method to result
         }
 
-        if (value != null)
+        if (value != null) {
             return value
+        }
 
         error("Unable to match method $descriptor in class ${mappedClass.name.original}")
     }

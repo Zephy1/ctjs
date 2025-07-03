@@ -12,18 +12,21 @@ class EventTrigger(method: Any, triggerType: ITriggerType) : Trigger(method, tri
      * @param bool Boolean to set
      * @return the trigger object for method chaining
      */
-    fun triggerIfCanceled(bool: Boolean) = apply { triggerIfCanceled = bool }
+    fun triggerIfCanceled(bool: Boolean) = apply {
+        triggerIfCanceled = bool
+    }
 
     override fun trigger(args: Array<out Any?>) {
         val isCanceled = when (val event = args.lastOrNull()) {
             is CancellableEvent -> event.isCanceled()
             is CallbackInfo -> event.isCancelled
             else -> throw IllegalArgumentException(
-                "Expected last argument of ${type.name} trigger to be an Event, got ${event?.javaClass?.name ?: "null"}"
+                "Expected last argument of ${type.name} trigger to be an Event, got ${event?.javaClass?.name ?: "null"}",
             )
         }
 
-        if (triggerIfCanceled || !isCanceled)
+        if (triggerIfCanceled || !isCanceled) {
             callMethod(args)
+        }
     }
 }

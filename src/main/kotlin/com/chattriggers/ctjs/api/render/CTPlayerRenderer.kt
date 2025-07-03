@@ -1,13 +1,20 @@
 package com.chattriggers.ctjs.api.render
 
-import net.minecraft.client.network.AbstractClientPlayerEntity
 import net.minecraft.client.render.VertexConsumerProvider
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.render.entity.PlayerEntityRenderer
-import net.minecraft.client.render.entity.feature.*
+import net.minecraft.client.render.entity.feature.ArmorFeatureRenderer
+import net.minecraft.client.render.entity.feature.CapeFeatureRenderer
+import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer
+import net.minecraft.client.render.entity.feature.ElytraFeatureRenderer
+import net.minecraft.client.render.entity.feature.HeadFeatureRenderer
+import net.minecraft.client.render.entity.feature.PlayerHeldItemFeatureRenderer
+import net.minecraft.client.render.entity.feature.ShoulderParrotFeatureRenderer
+import net.minecraft.client.render.entity.feature.StuckArrowsFeatureRenderer
+import net.minecraft.client.render.entity.feature.StuckStingersFeatureRenderer
+import net.minecraft.client.render.entity.feature.TridentRiptideFeatureRenderer
 import net.minecraft.client.render.entity.model.ArmorEntityModel
 import net.minecraft.client.render.entity.model.EntityModelLayers
-import net.minecraft.client.render.entity.model.LoadedEntityModels
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.Text
@@ -79,16 +86,16 @@ internal class CTPlayerRenderer(
         reset()
     }
 
-
     override fun renderLabelIfPresent(
         playerEntityRenderState: PlayerEntityRenderState,
         text: Text,
         matrixStack: MatrixStack,
         vertexConsumerProvider: VertexConsumerProvider,
-        i: Int
+        i: Int,
     ) {
-        if (showNametag)
+        if (showNametag) {
             super.renderLabelIfPresent(playerEntityRenderState, text, matrixStack, vertexConsumerProvider, i)
+        }
     }
 
     private fun reset() {
@@ -102,25 +109,32 @@ internal class CTPlayerRenderer(
                     this,
                     ArmorEntityModel(ctx.getPart(if (slim) EntityModelLayers.PLAYER_SLIM_INNER_ARMOR else EntityModelLayers.PLAYER_INNER_ARMOR)),
                     ArmorEntityModel(ctx.getPart(if (slim) EntityModelLayers.PLAYER_SLIM_OUTER_ARMOR else EntityModelLayers.PLAYER_OUTER_ARMOR)),
-                    ctx.equipmentRenderer
-                )
+                    ctx.equipmentRenderer,
+                ),
             )
         }
-        if (showHeldItem)
+        if (showHeldItem) {
             addFeature(PlayerHeldItemFeatureRenderer(this))
-        if (showArrows)
+        }
+        if (showArrows) {
             addFeature(StuckArrowsFeatureRenderer(this, ctx))
+        }
         addFeature(Deadmau5FeatureRenderer(this, entityModels))
-        if (showCape)
+        if (showCape) {
             addFeature(CapeFeatureRenderer(this, entityModels, ctx.equipmentModelLoader))
-        if (showArmor)
+        }
+        if (showArmor) {
             addFeature(HeadFeatureRenderer(this, entityModels))
-        if (showElytra)
+        }
+        if (showElytra) {
             addFeature(ElytraFeatureRenderer(this, entityModels, ctx.equipmentRenderer))
-        if (showParrot)
+        }
+        if (showParrot) {
             addFeature(ShoulderParrotFeatureRenderer(this, entityModels))
+        }
         addFeature(TridentRiptideFeatureRenderer(this, entityModels))
-        if (showStingers)
+        if (showStingers) {
             addFeature(StuckStingersFeatureRenderer(this, ctx))
+        }
     }
 }

@@ -20,8 +20,9 @@ public class LoggerPrintStreamMixin {
         // going to a slf4j method, which will add the newline for us. So we strip
         // the last newline, if one exists.
         String formatted = format.formatted(args);
-        if (!formatted.isEmpty() && formatted.charAt(formatted.length() - 1) == '\n')
+        if (!formatted.isEmpty() && formatted.charAt(formatted.length() - 1) == '\n') {
             formatted = formatted.substring(0, formatted.length() - 1);
+        }
         log(formatted);
         return (LoggerPrintStream) (Object) this;
     }

@@ -5,7 +5,6 @@ import com.chattriggers.ctjs.internal.launch.Descriptor
 import com.chattriggers.ctjs.internal.launch.ModifyReturnValue
 import com.chattriggers.ctjs.internal.utils.descriptorString
 import org.objectweb.asm.tree.MethodNode
-import org.spongepowered.asm.mixin.injection.Desc
 import com.llamalad7.mixinextras.injector.ModifyReturnValue as SPModifyReturnValue
 
 internal class ModifyReturnValueInjector(
@@ -38,16 +37,21 @@ internal class ModifyReturnValueInjector(
         node.visitAnnotation(SPModifyReturnValue::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
             visit("at", Utils.createAtAnnotation(modifyReturnValue.at))
-            if (modifyReturnValue.slice != null)
+            if (modifyReturnValue.slice != null) {
                 visit("slice", listOf(modifyReturnValue.slice.map(Utils::createSliceAnnotation)))
-            if (modifyReturnValue.remap != null)
+            }
+            if (modifyReturnValue.remap != null) {
                 visit("remap", modifyReturnValue.remap)
-            if (modifyReturnValue.require != null)
+            }
+            if (modifyReturnValue.require != null) {
                 visit("require", modifyReturnValue.require)
-            if (modifyReturnValue.expect != null)
+            }
+            if (modifyReturnValue.expect != null) {
                 visit("expect", modifyReturnValue.expect)
-            if (modifyReturnValue.allow != null)
+            }
+            if (modifyReturnValue.allow != null) {
                 visit("allow", modifyReturnValue.allow)
+            }
             visitEnd()
         }
     }

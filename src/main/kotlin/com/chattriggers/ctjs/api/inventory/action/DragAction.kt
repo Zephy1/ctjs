@@ -65,10 +65,14 @@ class DragAction(slot: Int, windowId: Int) : Action(slot, windowId) {
     }
 
     enum class ClickType(val button: Int) {
-        LEFT(0), RIGHT(1), MIDDLE(2)
+        LEFT(0),
+        RIGHT(1),
+        MIDDLE(2),
     }
 
     enum class Stage(val stage: Int) {
-        BEGIN(0), SLOT(1), END(2)
+        BEGIN(0),
+        SLOT(1),
+        END(2),
     }
 }

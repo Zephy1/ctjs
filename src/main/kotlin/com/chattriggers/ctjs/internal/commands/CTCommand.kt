@@ -50,22 +50,23 @@ internal object CTCommand : Initializer {
     fun register(dispatcher: CommandDispatcher<FabricClientCommandSource>) {
         val command = literal("ct")
             .then(literal("load").onExecute { CTJS.load(asCommand = true) })
+            .then(literal("reload").onExecute { CTJS.load(asCommand = true) }) // I like reload alias
             .then(literal("unload").onExecute { CTJS.unload(asCommand = true) })
             .then(literal("files").onExecute { openFileLocation() })
             .then(
                 literal("import")
                     .then(argument("module", StringArgumentType.string())
-                        .onExecute { import(StringArgumentType.getString(it, "module")) })
+                        .onExecute { import(StringArgumentType.getString(it, "module")) }),
             )
             .then(
-                literal("delete")
-                    .then(argument("module", ModuleArgumentType)
-                        .onExecute {
-                            val module = ModuleArgumentType.getModule(it, "module")
-                            if (ModuleManager.deleteModule(module)) {
-                                ChatLib.chat("&aDeleted $module")
-                            } else ChatLib.chat("&cFailed to delete $module")
-                        })
+                literal("delete").then(argument("module", ModuleArgumentType).onExecute {
+                    val module = ModuleArgumentType.getModule(it, "module")
+                    if (ModuleManager.deleteModule(module)) {
+                        ChatLib.chat("&aDeleted $module")
+                    } else {
+                        ChatLib.chat("&cFailed to delete $module")
+                    }
+                }),
             )
             .then(literal("modules").onExecute { Client.currentGui.set(ModulesGui) })
             .then(literal("console").onExecute { Console.show() })
@@ -74,8 +75,8 @@ internal object CTCommand : Initializer {
                 literal("simulate")
                     .then(
                         argument("message", StringArgumentType.greedyString())
-                            .onExecute { ChatLib.simulateChat(StringArgumentType.getString(it, "message")) }
-                    )
+                            .onExecute { ChatLib.simulateChat(StringArgumentType.getString(it, "message")) },
+                    ),
             )
             .then(
                 literal("dump")
@@ -86,14 +87,14 @@ internal object CTCommand : Initializer {
                                     .onExecute {
                                         dump(
                                             DumpType.fromString(StringArgumentType.getString(it, "type")),
-                                            IntegerArgumentType.getInteger(it, "amount")
+                                            IntegerArgumentType.getInteger(it, "amount"),
                                         )
-                                    }
+                                    },
                             ).onExecute {
                                 dump(DumpType.fromString(StringArgumentType.getString(it, "type")))
-                            }
+                            },
                     )
-                    .onExecute { dump(DumpType.CHAT) }
+                    .onExecute { dump(DumpType.CHAT) },
             )
             .then(
                 literal("migrate")
@@ -105,13 +106,13 @@ internal object CTCommand : Initializer {
                                         val input = FileArgumentType.getFile(it, "input")
                                         val output = FileArgumentType.getFile(it, "output")
                                         Migration.migrate(input, output)
-                                    }
+                                    },
                             )
                             .onExecute {
                                 val input = FileArgumentType.getFile(it, "input")
                                 Migration.migrate(input, input)
-                            }
-                    )
+                            },
+                    ),
             )
             .onExecute { ChatLib.chat(getUsage()) }
 
@@ -134,8 +135,9 @@ internal object CTCommand : Initializer {
                 val modVersion = CTJS.MOD_VERSION.toVersion()
                 allModules.forEach {
                     val version = it.targetModVersion ?: return@forEach
-                    if (version.majorVersion < modVersion.majorVersion)
+                    if (version.majorVersion < modVersion.majorVersion) {
                         ModuleManager.tryReportOldVersion(it)
+                    }
                 }
 
                 ChatLib.chat("&aSuccessfully imported ${module.metadata.name ?: module.name}")
@@ -146,7 +148,8 @@ internal object CTCommand : Initializer {
         }
     }
 
-    private fun getUsage() = """
+    private fun getUsage() =
+        """
         &b&m${ChatLib.getChatBreak()}
         &c/ct load &7- &oReloads all of the ChatTriggers modules.
         &c/ct import <module> &7- &oImports a module.
@@ -160,7 +163,7 @@ internal object CTCommand : Initializer {
         &c/ct migrate <input> [output]&7 - &oMigrate a module from version 2.X to 3.X 
         &c/ct &7- &oDisplays this help dialog.
         &b&m${ChatLib.getChatBreak()}
-    """.trimIndent()
+        """.trimIndent()
 
     private fun openFileLocation() {
         try {
@@ -183,7 +186,7 @@ internal object CTCommand : Initializer {
             TextComponent(Text.literal(msg).styled {
                 it.withClickEvent(ClickEvent.CopyToClipboard(msg))
                     .withHoverEvent(
-                        HoverEvent.ShowText(TextComponent("&eClick here to copy this message."))
+                        HoverEvent.ShowText(TextComponent("&eClick here to copy this message.")),
                     )
             })
                 .withChatLineId(idFixed + i + 1)
@@ -197,8 +200,9 @@ internal object CTCommand : Initializer {
 
     private fun clearOldDump() {
         if (idFixedOffset == -1) return
-        while (idFixedOffset >= idFixed)
+        while (idFixedOffset >= idFixed) {
             ChatLib.deleteChat(idFixedOffset--)
+        }
         idFixedOffset = -1
     }
 
@@ -216,7 +220,9 @@ internal object CTCommand : Initializer {
             val isquoted = StringReader.isQuotedStringStart(reader.peek())
             val path = if (isquoted) {
                 reader.readQuotedString()
-            } else reader.readStringUntilOrEof(' ')
+            } else {
+                reader.readStringUntilOrEof(' ')
+            }
             return File(relativeTo, path)
         }
 
@@ -275,13 +281,9 @@ internal object CTCommand : Initializer {
 
         override fun <S : Any?> listSuggestions(
             context: CommandContext<S>?,
-            builder: SuggestionsBuilder?
-        ): CompletableFuture<Suggestions> {
-            return CommandSource.suggestMatching(ModuleManager.cachedModules.map { it.name }, builder)
-        }
+            builder: SuggestionsBuilder?,
+        ): CompletableFuture<Suggestions> = CommandSource.suggestMatching(ModuleManager.cachedModules.map { it.name }, builder)
 
-        fun getModule(ctx: CommandContext<FabricClientCommandSource>, module: String): String {
-            return ctx.getArgument(module, String::class.java)
-        }
+        fun getModule(ctx: CommandContext<FabricClientCommandSource>, module: String): String = ctx.getArgument(module, String::class.java)
     }
 }

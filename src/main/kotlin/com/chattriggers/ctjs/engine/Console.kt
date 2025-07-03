@@ -10,17 +10,22 @@ import java.awt.Color
 // internal package
 object Console {
     fun clear() = ConsoleHostProcess.clear()
-    fun println(obj: Any, logType: LogType, end: String, customColor: Color?) =
-        ConsoleHostProcess.println(obj, logType, end, customColor)
+
+    fun println(obj: Any, logType: LogType, end: String, customColor: Color?) = ConsoleHostProcess.println(obj, logType, end, customColor)
+
     fun println(obj: Any, logType: LogType, end: String) = ConsoleHostProcess.println(obj, logType, end, null)
+
     fun println(obj: Any, logType: LogType) = println(obj, logType, "\n")
+
     fun println(obj: Any) = println(obj, LogType.INFO)
 
     fun printStackTrace(error: Throwable) = ConsoleHostProcess.printStackTrace(error)
+
     fun show() = ConsoleHostProcess.show()
+
     fun close() = ConsoleHostProcess.close()
-    fun onConsoleSettingsChanged(settings: Config.ConsoleSettings) =
-        ConsoleHostProcess.onConsoleSettingsChanged(settings)
+
+    fun onConsoleSettingsChanged(settings: Config.ConsoleSettings) = ConsoleHostProcess.onConsoleSettingsChanged(settings)
 }
 
 @Serializable

@@ -1,11 +1,10 @@
 package com.chattriggers.ctjs.api.inventory.nbt
 
-import com.chattriggers.ctjs.internal.mixins.NbtCompoundAccessor
 import com.chattriggers.ctjs.MCNbtBase
 import com.chattriggers.ctjs.MCNbtCompound
+import com.chattriggers.ctjs.internal.mixins.NbtCompoundAccessor
 import com.chattriggers.ctjs.internal.utils.asMixin
 import net.minecraft.nbt.NbtByteArray
-import net.minecraft.nbt.NbtElement
 import net.minecraft.nbt.NbtIntArray
 import net.minecraft.nbt.NbtLongArray
 import org.mozilla.javascript.NativeObject
@@ -70,24 +69,32 @@ class NBTTagCompound(override val mcValue: MCNbtCompound) : NBTBase(mcValue) {
             NBTDataType.FLOAT -> getFloat(key)
             NBTDataType.DOUBLE -> getDouble(key)
             NBTDataType.STRING -> {
-                if (mcValue.contains(key))
+                if (mcValue.contains(key)) {
                     tagMap[key]?.let { NBTBase(it).toString() }
-                else null
+                } else {
+                    null
+                }
             }
             NBTDataType.BYTE_ARRAY -> {
-                if (mcValue.contains(key))
+                if (mcValue.contains(key)) {
                     (tagMap[key] as NbtByteArray).byteArray
-                else null
+                } else {
+                    null
+                }
             }
             NBTDataType.INT_ARRAY -> {
-                if (mcValue.contains(key))
+                if (mcValue.contains(key)) {
                     (tagMap[key] as NbtIntArray).intArray
-                else null
+                } else {
+                    null
+                }
             }
             NBTDataType.LONG_ARRAY -> {
-                if (mcValue.contains(key))
+                if (mcValue.contains(key)) {
                     (tagMap[key] as NbtLongArray).longArray
-                else null
+                } else {
+                    null
+                }
             }
             NBTDataType.BOOLEAN -> getBoolean(key)
             NBTDataType.COMPOUND_TAG -> getCompoundTag(key)

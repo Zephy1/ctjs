@@ -13,7 +13,7 @@ object CTJavaObjectMappingProvider : JavaObjectMappingProvider {
         clazz: Class<*>,
         map: MutableMap<JavaObjectMappingProvider.MethodSignature, JavaObjectMappingProvider.RenameableMethod>,
         includeProtected: Boolean,
-        includePrivate: Boolean
+        includePrivate: Boolean,
     ) {
         val queue = ArrayDeque<Class<*>>()
         var current: Class<*>? = clazz
@@ -23,15 +23,17 @@ object CTJavaObjectMappingProvider : JavaObjectMappingProvider {
                 current,
                 map,
                 includeProtected,
-                includePrivate
+                includePrivate,
             )
 
             val superClass = current.superclass
-            if (superClass != null)
+            if (superClass != null) {
                 queue.add(superClass)
+            }
 
-            for (itf in current.interfaces)
+            for (itf in current.interfaces) {
                 queue.add(itf)
+            }
 
             current = queue.removeFirstOrNull()
         }
@@ -41,7 +43,7 @@ object CTJavaObjectMappingProvider : JavaObjectMappingProvider {
         clazz: Class<*>,
         list: MutableList<JavaObjectMappingProvider.RenameableField>,
         includeProtected: Boolean,
-        includePrivate: Boolean
+        includePrivate: Boolean,
     ) {
         var current: Class<*>? = clazz
         while (current != null) {
@@ -49,7 +51,7 @@ object CTJavaObjectMappingProvider : JavaObjectMappingProvider {
                 current,
                 list,
                 includeProtected,
-                includePrivate
+                includePrivate,
             )
             current = current.superclass
         }
@@ -84,7 +86,7 @@ object CTJavaObjectMappingProvider : JavaObjectMappingProvider {
         clazz: Class<*>,
         list: MutableList<JavaObjectMappingProvider.RenameableField>,
         includeProtected: Boolean,
-        includePrivate: Boolean
+        includePrivate: Boolean,
     ) {
         val mappedClass = Mappings.getMappedClass(clazz.name) ?: return
 

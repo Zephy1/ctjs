@@ -12,7 +12,7 @@ class Display() {
     private var order = Order.NORMAL
 
     private var backgroundColor: Long = 0x50000000
-    private var textColor: Long = 0xffffffff
+    private var textColor: Long = 0xFFFFFFFF
     private var background = Background.NONE
     private var align = Text.Align.LEFT
 
@@ -22,7 +22,7 @@ class Display() {
 
     constructor(config: NativeObject?) : this() {
         setBackgroundColor(config.getOption("backgroundColor", 0x50000000).toLong())
-        setTextColor(config.getOption("textColor", 0xffffffff).toLong())
+        setTextColor(config.getOption("textColor", 0xFFFFFFFF).toLong())
         setBackground(config.getOption("background", Background.NONE))
         setAlign(config.getOption("align", Text.Align.LEFT))
         setOrder(config.getOption("order", Order.NORMAL))
@@ -84,8 +84,9 @@ class Display() {
     }
 
     fun setLine(index: Int, line: Any) = apply {
-        while (lines.size - 1 < index)
+        while (lines.size - 1 < index) {
             lines.add(Text(""))
+        }
 
         when (line) {
             is CharSequence -> lines[index].setString(line.toString())
@@ -120,11 +121,15 @@ class Display() {
 
     fun getX(): Float = x
 
-    fun setX(x: Float) = apply { this.x = x }
+    fun setX(x: Float) = apply {
+        this.x = x
+    }
 
     fun getY(): Float = y
 
-    fun setY(y: Float) = apply { this.y = y }
+    fun setY(y: Float) = apply {
+        this.y = y
+    }
 
     fun getWidth(): Float = width
 
@@ -159,10 +164,11 @@ class Display() {
         }
 
         linesToDraw.forEach {
-            if (background === Background.FULL)
+            if (background === Background.FULL) {
                 it
                     .setBackground(true)
                     .setBackgroundColor(backgroundColor)
+            }
 
             it
                 .setColor(textColor)
@@ -182,13 +188,16 @@ class Display() {
             "textColor=$textColor, align=$align, order=$order, " +
             "minWidth=$minWidth, width=$width, height=$height, " +
             "lines=$lines" +
-            "}"
+        "}"
 
     enum class Background {
-        NONE, FULL, PER_LINE
+        NONE,
+        FULL,
+        PER_LINE,
     }
 
     enum class Order {
-        REVERSED, NORMAL
+        REVERSED,
+        NORMAL,
     }
 }

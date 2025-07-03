@@ -8,9 +8,11 @@ sealed interface Descriptor {
     val isType get() = true
 
     fun originalDescriptor(): String
+
     fun mappedDescriptor(): String
 
     fun toType(): Type
+
     fun toMappedType(): Type
 
     enum class Primitive(private val type: Type) : Descriptor {
@@ -25,8 +27,11 @@ sealed interface Descriptor {
         DOUBLE(Type.DOUBLE_TYPE);
 
         override fun originalDescriptor(): String = type.descriptor
+
         override fun mappedDescriptor() = originalDescriptor()
+
         override fun toType() = type
+
         override fun toMappedType() = type
 
         override fun toString() = originalDescriptor()
@@ -109,12 +114,14 @@ sealed interface Descriptor {
         }
 
         override fun originalDescriptor() = buildString {
-            if (owner != null)
+            if (owner != null) {
                 append(owner.originalDescriptor())
+            }
             append(name)
             append(':')
-            if (type != null)
+            if (type != null) {
                 append(type.originalDescriptor())
+            }
         }
 
         override fun mappedDescriptor() = buildString {
@@ -124,8 +131,9 @@ sealed interface Descriptor {
             append(owner.mappedDescriptor())
             append(mappedName)
             append(':')
-            if (type != null)
+            if (type != null) {
                 append(type.mappedDescriptor())
+            }
         }
 
         override fun toType() = error("Cannot convert Field descriptor to Type")
@@ -165,8 +173,9 @@ sealed interface Descriptor {
         }
 
         override fun originalDescriptor() = buildString {
-            if (owner != null)
+            if (owner != null) {
                 append(owner.originalDescriptor())
+            }
             append(name)
             if (parameters != null) {
                 append('(')
@@ -247,8 +256,7 @@ sealed interface Descriptor {
         }
 
         private fun parseJavaIdentifier(): String? {
-            if (done)
-                return null
+            if (done) return null
 
             listOf("<init>", "<clinit>").forEach {
                 if (text.substring(cursor).startsWith(it)) {
@@ -257,43 +265,51 @@ sealed interface Descriptor {
                 }
             }
 
-            if (!ch.isJavaIdentifierStart())
-                return null
+            if (!ch.isJavaIdentifierStart()) return null
 
             val start = cursor
             cursor++
-            while (!done && ch.isJavaIdentifierPart())
+            while (!done && ch.isJavaIdentifierPart()) {
                 cursor++
+            }
             return text.substring(start, cursor)
         }
 
         fun parseType(full: Boolean = false): Descriptor {
-            if (full)
+            if (full) {
                 check(cursor == 0)
-
-            val descriptor = if (ch == 'L') {
-                val semicolonIndex = text.indexOf(';', cursor)
-                if (semicolonIndex == -1)
-                    error("Invalid descriptor \"$text\": expected ';' after position $cursor")
-                val objectType = text.substring(cursor, semicolonIndex + 1)
-                cursor += objectType.length
-                Object(objectType)
-            } else if (ch in "VZCBSIFJD") {
-                val primitive = Primitive.entries.first { it.toString() == ch.toString() }
-                cursor++
-                primitive
-            } else if (ch == '[') {
-                cursor++
-                val base = parseType()
-                if (base is Array) {
-                    Array(base.base, base.dimensions + 1)
-                } else Array(base, 1)
-            } else {
-                throw IllegalArgumentException("Invalid descriptor \"$text\": unexpected character at position $cursor")
             }
 
-            if (full)
+            val descriptor = when (ch) {
+                'L' -> {
+                    val semicolonIndex = text.indexOf(';', cursor)
+                    if (semicolonIndex == -1) {
+                        error("Invalid descriptor \"$text\": expected ';' after position $cursor")
+                    }
+                    val objectType = text.substring(cursor, semicolonIndex + 1)
+                    cursor += objectType.length
+                    Object(objectType)
+                }
+                'V', 'Z', 'C', 'B', 'S', 'I', 'F', 'D', 'J' -> {
+                    val primitive = Primitive.entries.first { it.toString() == ch.toString() }
+                    cursor++
+                    primitive
+                }
+                '[' -> {
+                    cursor++
+                    val base = parseType()
+                    if (base is Array) {
+                        Array(base.base, base.dimensions + 1)
+                    } else {
+                        Array(base, 1)
+                    }
+                }
+                else -> throw IllegalArgumentException("Invalid descriptor \"$text\": unexpected character at position $cursor")
+            }
+
+            if (full) {
                 require(done) { "Invalid descriptor: \"$text\"" }
+            }
 
             return descriptor
         }
@@ -308,8 +324,9 @@ sealed interface Descriptor {
                 }
                 type
             } catch (e: IllegalArgumentException) {
-                if (full)
+                if (full) {
                     throw e
+                }
                 null
             }
 
@@ -319,10 +336,13 @@ sealed interface Descriptor {
             val type = if (!done && ch == ':') {
                 cursor++
                 parseType()
-            } else null
+            } else {
+                null
+            }
 
-            if (full)
+            if (full) {
                 requireNotNull(type) { "Invalid field descriptor: \"$text\"" }
+            }
 
             require(done) { "Invalid field descriptor: \"$text\"" }
             return Field(owner, name, type)
@@ -338,8 +358,9 @@ sealed interface Descriptor {
                 }
                 type
             } catch (e: IllegalArgumentException) {
-                if (full)
+                if (full) {
                     throw e
+                }
                 null
             }
 
@@ -347,12 +368,15 @@ sealed interface Descriptor {
             requireNotNull(name) { "Invalid method descriptor: \"$text\"" }
 
             val parameters = parseParameters()
-            if (parameters == null && full)
+            if (parameters == null && full) {
                 throw IllegalArgumentException("Expected full method descriptor, found \"$text\"")
+            }
 
             val returnType = if (parameters != null) {
                 parseType()
-            } else null
+            } else {
+                null
+            }
 
             require(done) { "Invalid method descriptor: \"$text\"" }
 
@@ -363,8 +387,9 @@ sealed interface Descriptor {
             check(cursor == 0)
 
             val parameters = parseParameters()
-            if (parameters == null && full)
+            if (parameters == null && full) {
                 throw IllegalArgumentException("Expected full new descriptor, found \"$text\"")
+            }
 
             val type = parseType()
 
@@ -376,12 +401,15 @@ sealed interface Descriptor {
             return if (!done && ch == '(') {
                 cursor++
                 val parameters = mutableListOf<Descriptor>()
-                while (!done && ch != ')')
+                while (!done && ch != ')') {
                     parameters.add(parseType())
+                }
                 require(!done && ch == ')') { "Invalid method descriptor: \"$text\"" }
                 cursor++
                 parameters
-            } else null
+            } else {
+                null
+            }
         }
     }
 }

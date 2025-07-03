@@ -11,7 +11,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
-    @Inject(method = "dropSelectedItem", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "dropSelectedItem",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void injectDropSelectedItem(boolean entireStack, CallbackInfoReturnable<Boolean> cir) {
         // dropping item while not in gui
         Item stack = Player.getHeldItem();

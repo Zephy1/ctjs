@@ -200,14 +200,16 @@ object Scoreboard {
     private fun updateNames() {
         scoreboardNames.clear()
 
-        if (!customTitle)
+        if (!customTitle) {
             scoreboardTitle = TextComponent("")
+        }
 
         val scoreboard = toMC() ?: return
         val objective = getSidebar() ?: return
 
-        if (!customTitle)
+        if (!customTitle) {
             scoreboardTitle = TextComponent(objective.displayName)
+        }
 
         val newScores = scoreboard.knownScoreHolders.asSequence().filter {
             objective in scoreboard.getScoreHolderObjectives(it)
@@ -300,7 +302,7 @@ object Scoreboard {
                 MCTeam.decorateName(
                     getTeam()?.mcValue,
                     TextComponent(nameState.get() ?: name),
-                )
+                ),
             )
         }
 

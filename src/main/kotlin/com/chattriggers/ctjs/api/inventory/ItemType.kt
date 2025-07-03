@@ -1,9 +1,9 @@
 package com.chattriggers.ctjs.api.inventory
 
+import com.chattriggers.ctjs.MCItem
 import com.chattriggers.ctjs.api.CTWrapper
 import com.chattriggers.ctjs.api.message.TextComponent
 import com.chattriggers.ctjs.api.world.block.BlockType
-import com.chattriggers.ctjs.MCItem
 import com.chattriggers.ctjs.internal.utils.toIdentifier
 import net.minecraft.item.Items
 import net.minecraft.registry.Registries

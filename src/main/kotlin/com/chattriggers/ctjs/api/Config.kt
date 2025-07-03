@@ -16,7 +16,7 @@ object Config : Vigilant(File(CTJS.configLocation, "ChatTriggers.toml"), sorting
         PropertyType.SWITCH,
         name = "Show module help on import",
         category = "General",
-        description = "If a module is imported and it has a help message, display it in chat"
+        description = "If a module is imported and it has a help message, display it in chat",
     )
     var moduleImportHelp = true
 
@@ -25,7 +25,7 @@ object Config : Vigilant(File(CTJS.configLocation, "ChatTriggers.toml"), sorting
         PropertyType.SWITCH,
         name = "Show module changelog on update",
         category = "General",
-        description = "If a module is updated and it has a changelog, display it in chat"
+        description = "If a module is updated and it has a changelog, display it in chat",
     )
     var moduleChangelog = true
 
@@ -109,8 +109,8 @@ object Config : Vigilant(File(CTJS.configLocation, "ChatTriggers.toml"), sorting
             "Slate",
             "Red",
             "Green",
-            "Aids"
-        ]
+            "Aids",
+        ],
     )
     var consoleTheme = 0
 

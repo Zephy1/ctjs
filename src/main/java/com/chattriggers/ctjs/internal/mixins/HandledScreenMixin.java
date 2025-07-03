@@ -53,11 +53,17 @@ public class HandledScreenMixin extends Screen {
         );
     }
 
-    @Inject(method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V", at = @At("HEAD"), cancellable = true)
+    @Inject(
+        method = "onMouseClick(Lnet/minecraft/screen/slot/Slot;IILnet/minecraft/screen/slot/SlotActionType;)V",
+        at = @At(
+            value = "HEAD"
+        ),
+        cancellable = true
+    )
     private void injectOnMouseClick(Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
         if (
             (slotId != -999 && actionType == SlotActionType.THROW) || // dropping item from slot
-                (slotId == -999 && actionType == SlotActionType.PICKUP) // dropping by clicking outside inventory
+            (slotId == -999 && actionType == SlotActionType.PICKUP) // dropping by clicking outside inventory
         ) {
             TriggerType.DROP_ITEM.triggerAll(Item.fromMC(handler.getCursorStack()), button == 0, ci);
         }

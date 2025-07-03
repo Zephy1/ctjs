@@ -1,9 +1,9 @@
 package com.chattriggers.ctjs.api.triggers
 
-import com.chattriggers.ctjs.api.entity.BlockEntity
-import com.chattriggers.ctjs.api.entity.Entity
 import com.chattriggers.ctjs.MCBlockEntity
 import com.chattriggers.ctjs.MCEntity
+import com.chattriggers.ctjs.api.entity.BlockEntity
+import com.chattriggers.ctjs.api.entity.Entity
 import net.minecraft.network.packet.Packet
 
 sealed class ClassFilterTrigger<Wrapped, Unwrapped>(
@@ -27,12 +27,15 @@ sealed class ClassFilterTrigger<Wrapped, Unwrapped>(
      * @param classes The classes for which this trigger should run for
      * @return This trigger object for chaining
      */
-    fun setFilteredClasses(classes: List<Class<Unwrapped>>) = apply { triggerClasses = classes }
+    fun setFilteredClasses(classes: List<Class<Unwrapped>>) = apply {
+        triggerClasses = classes
+    }
 
     override fun trigger(args: Array<out Any?>) {
         val placeholder = evalTriggerType(args)
-        if (triggerClasses.isEmpty() || triggerClasses.any { it.isInstance(placeholder) })
+        if (triggerClasses.isEmpty() || triggerClasses.any { it.isInstance(placeholder) }) {
             callMethod(args)
+        }
     }
 
     private fun evalTriggerType(args: Array<out Any?>): Unwrapped {

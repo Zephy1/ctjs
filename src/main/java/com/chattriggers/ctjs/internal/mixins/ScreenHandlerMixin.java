@@ -14,7 +14,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ScreenHandler.class)
 public class ScreenHandlerMixin {
-    @Inject(method = "dropInventory", at = @At("HEAD"))
+    @Inject(
+        method = "dropInventory",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectDropInventory(PlayerEntity player, Inventory inventory, CallbackInfo ci) {
         // dropping items for guis that don't keep items in them while the gui is closed
         if (inventory != player.playerScreenHandler.getCraftingInput()) {

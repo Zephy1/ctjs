@@ -26,10 +26,15 @@ public abstract class PlayerEntityMixin extends LivingEntity implements NameTagO
         super(entityType, world);
     }
 
-    @ModifyVariable(method = "getDisplayName", at = @At(value = "STORE", ordinal = 0))
+    @ModifyVariable(
+        method = "getDisplayName",
+        at = @At(
+            value = "STORE",
+            ordinal = 0
+        )
+    )
     private MutableText injectGetName(MutableText original) {
-        if (overriddenNametagName != null)
-            return overriddenNametagName.toMutableText$ctjs();
+        if (overriddenNametagName != null) return overriddenNametagName.toMutableText$ctjs();
         return original;
     }
 

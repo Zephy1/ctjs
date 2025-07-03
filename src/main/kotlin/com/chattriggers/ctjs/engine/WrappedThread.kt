@@ -1,8 +1,6 @@
 package com.chattriggers.ctjs.engine
 
-import com.chattriggers.ctjs.engine.printTraceToConsole
 import com.chattriggers.ctjs.internal.engine.JSContextFactory
-import com.chattriggers.ctjs.internal.engine.JSLoader
 import org.mozilla.javascript.Context
 import java.util.concurrent.ForkJoinPool
 
@@ -22,14 +20,22 @@ class WrappedThread(private val task: Runnable) {
 
     // Provide the following methods as no-ops to avoid breaking
     // changes, as this class use to extend Thread
-    fun run() {}
-    fun stop() {}
-    fun interrupt() {}
+    fun run() { }
+
+    fun stop() { }
+
+    fun interrupt() { }
+
     fun isInterrupted() = false
-    fun destroy() {}
+
+    fun destroy() { }
+
     fun isAlive() = true
-    fun suspend() {}
-    fun resume() {}
+
+    fun suspend() { }
+
+    fun resume() { }
+
     fun getId() = 0L
 
     companion object {

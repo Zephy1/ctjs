@@ -1,7 +1,13 @@
 package com.chattriggers.ctjs.internal.launch.generation
 
 import codes.som.koffee.MethodAssembly
-import codes.som.koffee.insns.jvm.*
+import codes.som.koffee.insns.jvm.aconst_null
+import codes.som.koffee.insns.jvm.getfield
+import codes.som.koffee.insns.jvm.getstatic
+import codes.som.koffee.insns.jvm.invokestatic
+import codes.som.koffee.insns.jvm.invokevirtual
+import codes.som.koffee.insns.jvm.putfield
+import codes.som.koffee.insns.jvm.putstatic
 import codes.som.koffee.insns.sugar.construct
 import com.chattriggers.ctjs.api.Mappings
 import com.chattriggers.ctjs.internal.launch.At
@@ -31,8 +37,9 @@ internal class RedirectGenerator(
                 val targetClass = Mappings.getMappedClass(descriptor.owner!!.originalDescriptor())
                     ?: error("Unknown class ${descriptor.owner}")
                 val targetMethod = Utils.findMethod(targetClass, descriptor).second
-                if (!targetMethod.isStatic)
+                if (!targetMethod.isStatic) {
                     parameters.add(Parameter(descriptor.owner))
+                }
                 descriptor.parameters!!.forEach { parameters.add(Parameter(it)) }
                 returnType = descriptor.returnType!!
             }
@@ -42,13 +49,17 @@ internal class RedirectGenerator(
                 }
                 returnType = if (atTarget.isGet) {
                     atTarget.descriptor.type!!
-                } else Descriptor.Primitive.VOID
+                } else {
+                    Descriptor.Primitive.VOID
+                }
 
-                if (!atTarget.isStatic)
+                if (!atTarget.isStatic) {
                     parameters.add(Parameter(atTarget.descriptor.owner!!))
+                }
 
-                if (!atTarget.isGet)
+                if (!atTarget.isGet) {
                     parameters.add(Parameter(atTarget.descriptor.type!!))
+                }
             }
             is At.NewTarget -> {
                 atTarget.descriptor.parameters?.forEach {
@@ -74,19 +85,25 @@ internal class RedirectGenerator(
     override fun attachAnnotation(node: MethodNode, signature: InjectionSignature) {
         node.visitAnnotation(SPRedirect::class.descriptorString(), true).apply {
             visit("method", signature.targetMethod.toFullDescriptor())
-            if (redirect.slice != null)
+            if (redirect.slice != null) {
                 visit("slice", Utils.createSliceAnnotation(redirect.slice))
+            }
             visit("at", Utils.createAtAnnotation(redirect.at))
-            if (redirect.remap != null)
+            if (redirect.remap != null) {
                 visit("remap", redirect.remap)
-            if (redirect.require != null)
+            }
+            if (redirect.require != null) {
                 visit("require", redirect.require)
-            if (redirect.expect != null)
+            }
+            if (redirect.expect != null) {
                 visit("expect", redirect.expect)
-            if (redirect.allow != null)
+            }
+            if (redirect.allow != null) {
                 visit("allow", redirect.allow)
-            if (redirect.constraints != null)
+            }
+            if (redirect.constraints != null) {
                 visit("constraints", redirect.constraints)
+            }
             visitEnd()
         }
     }

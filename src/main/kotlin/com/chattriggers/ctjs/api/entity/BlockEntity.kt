@@ -8,7 +8,6 @@ import com.chattriggers.ctjs.MCBlockEntity
 import net.minecraft.block.entity.BlockEntityType
 
 class BlockEntity(override val mcValue: MCBlockEntity) : CTWrapper<MCBlockEntity> {
-
     fun getX(): Int = getBlockPos().x
 
     fun getY(): Int = getBlockPos().y
@@ -21,7 +20,5 @@ class BlockEntity(override val mcValue: MCBlockEntity) : CTWrapper<MCBlockEntity
 
     fun getBlock(): Block = Block(getBlockType(), getBlockPos())
 
-    override fun toString(): String {
-        return "BlockEntity(type=${getBlockType()}, pos=[${getX()}, ${getY()}, ${getZ()}])"
-    }
+    override fun toString(): String = "BlockEntity(type=${getBlockType()}, pos=[${getX()}, ${getY()}, ${getZ()}])"
 }

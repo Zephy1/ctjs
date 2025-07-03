@@ -24,7 +24,12 @@ public abstract class MinecraftClientMixin {
     @Shadow public abstract ServerInfo getCurrentServerEntry();
     @Shadow public abstract boolean isIntegratedServerRunning();
 
-    @Inject(method = "joinWorld", at = @At("HEAD"))
+    @Inject(
+        method = "joinWorld",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectWorldUnload(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
         if (this.world == null && world != null) {
             TriggerType.SERVER_CONNECT.triggerAll();
@@ -39,13 +44,24 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "joinWorld", at = @At("TAIL"))
+    @Inject(
+        method = "joinWorld",
+        at = @At(
+            value = "TAIL"
+        )
+    )
     private void injectWorldLoad(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
-        if (world != null)
+        if (world != null) {
             TriggerType.WORLD_LOAD.triggerAll();
+        }
     }
 
-    @Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V", at = @At("HEAD"))
+    @Inject(
+        method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
         // disconnect() is also called when connecting, so we check that there is
         // an existing server
@@ -57,13 +73,24 @@ public abstract class MinecraftClientMixin {
         }
     }
 
-    @Inject(method = "setScreen", at = @At("HEAD"))
+    @Inject(
+        method = "setScreen",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectScreenOpened(Screen screen, CallbackInfo ci) {
-        if (screen != null)
+        if (screen != null) {
             TriggerType.GUI_OPENED.triggerAll(screen, ci);
+        }
     }
 
-    @Inject(method = "run", at = @At("HEAD"))
+    @Inject(
+        method = "run",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectRun(CallbackInfo ci) {
         new Thread(() -> {
             ModuleManager.INSTANCE.entryPass();
@@ -71,7 +98,12 @@ public abstract class MinecraftClientMixin {
         }).start();
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
+    @Inject(
+        method = "render",
+        at = @At(
+            value = "HEAD"
+        )
+    )
     private void injectRender(boolean tick, CallbackInfo ci) {
         CTEvents.RENDER_GAME.invoker().run();
     }

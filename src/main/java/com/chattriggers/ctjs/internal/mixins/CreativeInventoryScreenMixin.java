@@ -26,7 +26,10 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
 
     @ModifyExpressionValue(
         method = "onMouseClick",
-        at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;lastClickOutsideBounds:Z")
+        at = @At(
+            value = "FIELD",
+            target = "Lnet/minecraft/client/gui/screen/ingame/CreativeInventoryScreen;lastClickOutsideBounds:Z"
+        )
     )
     private boolean injectOnMouseClick(boolean original, @Local(ordinal = 1) int button) {
         // dropping by clicking outside creative tab
@@ -47,7 +50,11 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
                 ordinal = 0
             )
         ),
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 0)
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/item/ItemStack;isEmpty()Z",
+            ordinal = 0
+        )
     )
     private boolean injectOnMouseClick1(boolean original, @Local(ordinal = 1) int button) {
         // dropping by clicking outside creative inventory
@@ -60,7 +67,14 @@ public abstract class CreativeInventoryScreenMixin extends HandledScreen<Creativ
         return original || event.isCanceled();
     }
 
-    @Inject(method = "onMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/slot/Slot;takeStack(I)Lnet/minecraft/item/ItemStack;"), cancellable = true)
+    @Inject(
+        method = "onMouseClick",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/screen/slot/Slot;takeStack(I)Lnet/minecraft/item/ItemStack;"
+        ),
+        cancellable = true
+    )
     private void injectOnMouseClick2(@NotNull Slot slot, int slotId, int button, SlotActionType actionType, CallbackInfo ci) {
         // dropping item from slot in creative inventory
         TriggerType.DROP_ITEM.triggerAll(Item.fromMC(slot.getStack()), button == 0, ci);

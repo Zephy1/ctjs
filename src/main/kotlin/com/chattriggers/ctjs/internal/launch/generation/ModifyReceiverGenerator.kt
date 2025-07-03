@@ -1,9 +1,6 @@
 package com.chattriggers.ctjs.internal.launch.generation
 
 import codes.som.koffee.MethodAssembly
-import codes.som.koffee.insns.jvm.getfield
-import codes.som.koffee.insns.jvm.invokevirtual
-import codes.som.koffee.insns.jvm.putfield
 import com.chattriggers.ctjs.internal.launch.At
 import com.chattriggers.ctjs.internal.launch.ModifyReceiver
 import com.chattriggers.ctjs.internal.utils.descriptorString
@@ -50,16 +47,21 @@ internal class ModifyReceiverGenerator(
         node.visitAnnotation(SPModifyReceiver::class.descriptorString(), true).apply {
             visit("method", listOf(signature.targetMethod.toFullDescriptor()))
             visit("at", Utils.createAtAnnotation(modifyReceiver.at))
-            if (modifyReceiver.slice != null)
+            if (modifyReceiver.slice != null) {
                 visit("slice", listOf(modifyReceiver.slice.map(Utils::createSliceAnnotation)))
-            if (modifyReceiver.remap != null)
+            }
+            if (modifyReceiver.remap != null) {
                 visit("remap", modifyReceiver.remap)
-            if (modifyReceiver.require != null)
+            }
+            if (modifyReceiver.require != null) {
                 visit("require", modifyReceiver.require)
-            if (modifyReceiver.expect != null)
+            }
+            if (modifyReceiver.expect != null) {
                 visit("expect", modifyReceiver.expect)
-            if (modifyReceiver.allow != null)
+            }
+            if (modifyReceiver.allow != null) {
                 visit("allow", modifyReceiver.allow)
+            }
             visitEnd()
         }
     }

@@ -15,15 +15,20 @@ import java.util.Objects;
 @Mixin(BlockEntityRenderDispatcher.class)
 public class BlockEntityRenderDispatcherMixin {
     @Inject(
-            method = "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/block/entity/BlockEntityRenderDispatcher;render(Lnet/minecraft/client/render/block/entity/BlockEntityRenderer;Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/util/math/Vec3d;)V"
-            ),
-            cancellable = true
+        method = "render(Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/render/block/entity/BlockEntityRenderDispatcher;render(Lnet/minecraft/client/render/block/entity/BlockEntityRenderer;Lnet/minecraft/block/entity/BlockEntity;FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/util/math/Vec3d;)V"
+        ),
+        cancellable = true
     )
-    private void injectRender(BlockEntity blockEntity, float tickDelta, MatrixStack matrices,
-                              VertexConsumerProvider vertexConsumers, CallbackInfo ci) {
+    private void injectRender(
+        BlockEntity blockEntity,
+        float tickDelta,
+        MatrixStack matrices,
+        VertexConsumerProvider vertexConsumers,
+        CallbackInfo ci
+    ) {
         if (blockEntity.hasWorld() && Objects.requireNonNull(blockEntity.getWorld()).isClient) {
             CTEvents.RENDER_BLOCK_ENTITY.invoker().render(matrices, blockEntity, tickDelta, ci);
         }

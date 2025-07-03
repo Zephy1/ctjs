@@ -59,25 +59,28 @@ abstract class Trigger protected constructor(
     }
 
     protected fun callMethod(args: Array<out Any?>) {
-        if (CTJS.isLoaded)
+        if (CTJS.isLoaded) {
             JSLoader.trigger(this, method, args)
+        }
     }
 
     internal abstract fun trigger(args: Array<out Any?>)
 
     override fun compareTo(other: Trigger): Int {
         val ordCmp = priority.ordinal - other.priority.ordinal
-        return if (ordCmp == 0)
+        return if (ordCmp == 0) {
             hashCode() - other.hashCode()
-        else ordCmp
+        } else {
+            ordCmp
+        }
     }
 
     enum class Priority {
-        //LOWEST IS RAN LAST
+        // LOWEST IS RAN LAST
         HIGHEST,
         HIGH,
         NORMAL,
         LOW,
-        LOWEST
+        LOWEST,
     }
 }

@@ -18,7 +18,13 @@ public abstract class LivingEntityMixin extends Entity {
         super(type, world);
     }
 
-    @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"))
+    @Inject(
+        method = "onDeath",
+        at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/entity/LivingEntity;setPose(Lnet/minecraft/entity/EntityPose;)V"
+        )
+    )
     private void chattriggers$entityDeath(DamageSource damageSource, CallbackInfo ci) {
         if (getWorld().isClient) {
             TriggerType.ENTITY_DEATH.triggerAll(this);

@@ -1,17 +1,17 @@
 package com.chattriggers.ctjs.api.world
 
+import com.chattriggers.ctjs.MCBossBarColor
+import com.chattriggers.ctjs.MCBossBarStyle
 import com.chattriggers.ctjs.api.CTWrapper
 import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.api.message.ChatLib
 import com.chattriggers.ctjs.api.message.TextComponent
 import com.chattriggers.ctjs.internal.mixins.BossBarHudAccessor
-import com.chattriggers.ctjs.MCBossBarColor
-import com.chattriggers.ctjs.MCBossBarStyle
 import com.chattriggers.ctjs.internal.utils.asMixin
 import com.chattriggers.ctjs.internal.utils.getOption
 import net.minecraft.client.gui.hud.ClientBossBar
 import org.mozilla.javascript.NativeObject
-import java.util.*
+import java.util.UUID
 
 object BossBars {
     @JvmStatic
@@ -23,9 +23,7 @@ object BossBars {
      * @return the currently displayed [BossBar]s
      */
     @JvmStatic
-    fun getBossBars(): List<BossBar> {
-        return toMC().asMixin<BossBarHudAccessor>().bossBars.values.map(::BossBar)
-    }
+    fun getBossBars(): List<BossBar> = toMC().asMixin<BossBarHudAccessor>().bossBars.values.map(::BossBar)
 
     /**
      * Gets all [BossBar]s with a given name
@@ -34,9 +32,7 @@ object BossBars {
      * @return the [BossBar]s
      */
     @JvmStatic
-    fun getBossBarsByName(name: String): List<BossBar> {
-        return getBossBars().filter { it.getName() == name }
-    }
+    fun getBossBarsByName(name: String): List<BossBar> = getBossBars().filter { it.getName() == name }
 
     /**
      * Adds a new [BossBar] to be displayed
@@ -75,7 +71,7 @@ object BossBars {
             style.toMC(),
             shouldDarkenSky,
             dragonMusic,
-            shouldThickenFog
+            shouldThickenFog,
         )
 
         toMC().asMixin<BossBarHudAccessor>().bossBars[uuid] = bossBar
@@ -119,18 +115,14 @@ object BossBars {
          *
          * @return the uuid
          */
-        fun getUUID(): UUID {
-            return mcValue.uuid
-        }
+        fun getUUID(): UUID = mcValue.uuid
 
         /**
          * Gets the name of this BossBar
          *
          * @return the name
          */
-        fun getName(): String {
-            return TextComponent(mcValue.name).formattedText
-        }
+        fun getName(): String = TextComponent(mcValue.name).formattedText
 
         /**
          * Sets the name of this BossBar
@@ -229,11 +221,9 @@ object BossBars {
             mcValue.setThickenFog(fog)
         }
 
-        override fun toString(): String {
-            return "BossBar{name=${getName()}, percent=${getPercent()}, color=${getColor()}, " +
-                "style=${getStyle()}, shouldDarkenSky=${shouldDarkenSky()}, " +
-                "hasDragonMusic=${hasDragonMusic()}, shouldThickenFog=${shouldThickenFog()}}"
-        }
+        override fun toString(): String = "BossBar{name=${getName()}, percent=${getPercent()}, color=${getColor()}, " +
+            "style=${getStyle()}, shouldDarkenSky=${shouldDarkenSky()}, " +
+            "hasDragonMusic=${hasDragonMusic()}, shouldThickenFog=${shouldThickenFog()}}"
     }
 
     enum class Color(override val mcValue: MCBossBarColor) : CTWrapper<MCBossBarColor> {

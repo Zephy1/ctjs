@@ -4,7 +4,7 @@ import com.chattriggers.ctjs.api.world.World
 import com.chattriggers.ctjs.internal.engine.CTEvents
 import com.chattriggers.ctjs.internal.utils.Initializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import java.util.*
+import java.util.LinkedList
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -69,14 +69,16 @@ object CPS : Initializer {
 
         fun tick() {
             // Decrease all existing click values
-            for (i in clicks.indices)
+            for (i in clicks.indices) {
                 clicks[i]--
+            }
             clicks.removeIf { it <= 0 }
 
             // Save the current CPS
             runningAverages.add(clicks.size)
-            if (runningAverages.size > 100)
+            if (runningAverages.size > 100) {
                 runningAverages.removeAt(0)
+            }
 
             maxClicks = if (runningAverages.lastOrNull() == 0) {
                 runningAverages.clear()
@@ -88,6 +90,8 @@ object CPS : Initializer {
 
         fun average() = if (runningAverages.isNotEmpty()) {
             runningAverages.average().roundToInt()
-        } else 0
+        } else {
+            0
+        }
     }
 }
