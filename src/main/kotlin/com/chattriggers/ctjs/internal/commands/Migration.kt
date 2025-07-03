@@ -6,7 +6,7 @@ import java.nio.file.Files
 
 internal object Migration {
     private val migrationPatterns = listOf(
-        """Renderer\.color\(""".toRegex() to "Renderer.getColor(",
+        """Renderer\.color\(""".toRegex() to "RenderUtils.getColor(",
         """register\((['"`])renderTileEntity['"`]""".toRegex(RegexOption.IGNORE_CASE) to "register($1renderBlockEntity$1",
         """\.setPacketClass\(""".toRegex() to ".setFilteredClass(",
         """\.setPacketClasses\(""".toRegex() to ".setFilteredClasses(",
@@ -72,11 +72,11 @@ internal object Migration {
             "attackEntity",
             "hitBlock",
             "blockBreak",
-            "guiMouseRelease"
+            "guiMouseRelease",
         )
 
         """
-            register\(['"`](${triggers.joinToString("|")})['"`]
+        register\(['"`](${triggers.joinToString("|")})['"`]
         """.trimIndent().toRegex(RegexOption.IGNORE_CASE)
     }
 
@@ -84,8 +84,7 @@ internal object Migration {
     private val guiMouseDragRegex = """register\(['"`]guiMouseDrag['"`]""".toRegex(RegexOption.IGNORE_CASE)
     private val guiOpenedRegex = """register\(['"`]guiOpened['"`]""".toRegex(RegexOption.IGNORE_CASE)
     private val renderBlockEntityRegex = """register\(['"`]renderBlockEntity['"`]""".toRegex(RegexOption.IGNORE_CASE)
-    private val serverConnectRegex =
-        """register\(['"`](serverConnect|serverDisconnect)['"`]""".toRegex(RegexOption.IGNORE_CASE)
+    private val serverConnectRegex = """register\(['"`](serverConnect|serverDisconnect)['"`]""".toRegex(RegexOption.IGNORE_CASE)
     private val scrolledRegex = """register\(['"`]scrolled['"`]""".toRegex(RegexOption.IGNORE_CASE)
     private val dropItemRegex = """register\(['"`]dropItem['"`]""".toRegex(RegexOption.IGNORE_CASE)
     private val renderEntityRegex = """register\(['"`]renderEntity['"`]""".toRegex(RegexOption.IGNORE_CASE)
@@ -120,8 +119,9 @@ internal object Migration {
 
     private fun migrateFile(input: File, output: File) {
         var text = input.readText()
-        for ((regex, replacement) in migrationPatterns)
+        for ((regex, replacement) in migrationPatterns) {
             text = text.replace(regex, replacement)
+        }
         checkForErrors(output, text)
         output.writeText(text)
     }
@@ -168,43 +168,45 @@ internal object Migration {
             "trigger \"guiMouseClick\" activates for both click and release now, and takes an additional boolean " +
                 "parameter to distinguish the two"
         }
-
-        guiMouseDragRegex.warn { "trigger \"guiMouseDrag\" now takes two extra parameters at the start: dx and dy" }
-
-        guiOpenedRegex.warn { "trigger \"guiOpened\" now takes a Screen as its first argument" }
-
+        guiMouseDragRegex.warn {
+            "trigger \"guiMouseDrag\" now takes two extra parameters at the start: dx and dy"
+        }
+        guiOpenedRegex.warn {
+            "trigger \"guiOpened\" now takes a Screen as its first argument"
+        }
         renderBlockEntityRegex.warn {
             "trigger \"renderBlockEntity\" no longer passes in the entity's position as an argument. Access it by " +
                 "calling `<entity>.getBlockPos()`"
         }
-
         serverConnectRegex.warn {
             "trigger \"${it.groups[1]!!.value}\" no longer passes an event as the third parameter"
         }
-
-        scrolledRegex.warn { "trigger \"scrolled\" now passes in the total delta, not just 1 or -1" }
-
+        scrolledRegex.warn {
+            "trigger \"scrolled\" now passes in the total delta, not just 1 or -1"
+        }
         dropItemRegex.warn {
             "trigger \"dropItem\" now takes different parameters. Check the migration docs for more info"
         }
-
         renderEntityRegex.warn {
-            "trigger \"renderEntity\" no longer takes the entity's position as an argument. Use `<entity>.getPos()` " +
+            "trigger \"renderEntity\" no longer takes the entity's position as an argument. Use `<entity>.getBlockPos()` " +
                 "instead"
         }
-
         spawnParticleRegex.warn {
             "trigger \"spawnParticle\" no longer passes in the particle type. Instead, compare the particle's " +
                 "Minecraft class (i.e. `<particle>.toMC() instanceof ...`)"
         }
-
-        ctCopyRegex.error { "`/ct copy` no longer exists. Use Client.copy() instead" }
-
-        getRiderRegex.error { "`Entity.getRider()` no longer exists. Replace with `Entity.getRiders()`" }
-
-        isAirborneRegex.error { "`Entity.isAirborne()` no longer exists" }
-
-        getDimensionRegex.warn { "`Entity.getDimension()` now returns `Entity.DimensionType` instead of a number" }
+        ctCopyRegex.error {
+            "`/ct copy` no longer exists. Use Client.copy() instead"
+        }
+        getRiderRegex.error {
+            "`Entity.getRider()` no longer exists. Replace with `Entity.getRiders()`"
+        }
+        isAirborneRegex.error {
+            "`Entity.isAirborne()` no longer exists"
+        }
+        getDimensionRegex.warn {
+            "`Entity.getDimension()` now returns `Entity.DimensionType` instead of a number"
+        }
 
         return errors
     }

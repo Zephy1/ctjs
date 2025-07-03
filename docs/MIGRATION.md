@@ -10,7 +10,7 @@ The most exciting new feature is Mixins! Module authors now have the ability to 
 
 ### Automatic Remapping
 
-For all code, both normal module code and Mixin code, Rhino (the JavaScript engine CT uses) will now automatically remap all MC names (fields, methods, and classes)! This means you no longer have to use obfuscated name _at all_ when writing modules. This is a huge ergonomic win which will greatly increase readability for code which goes outside the built-in API that CT provides. 
+For all code, both normal module code and Mixin code, Rhino (the JavaScript engine CT uses) will now automatically remap all MC names (fields, methods, and classes)! This means you no longer have to use obfuscated name _at all_ when writing modules. This is a huge ergonomic win which will greatly increase readability for code which goes outside the built-in API that CT provides.
 
 ### Custom Triggers
 
@@ -31,7 +31,7 @@ register('mylib:seconds', second => {
 });
 ```
 
-`MyModule` of course needs to depend on `MyLib` so it runs first and registers its trigger. Custom trigger names must be unique, so it is a good idea to prefix them with a unique identifier (in the example, this is `mylib:`). They are also case-insensitive like builtin triggers. 
+`MyModule` of course needs to depend on `MyLib` so it runs first and registers its trigger. Custom trigger names must be unique, so it is a good idea to prefix them with a unique identifier (in the example, this is `mylib:`). They are also case-insensitive like builtin triggers.
 
 If you need to allow users to use `cancel`, you should create a `CancellableEvent` and pass it in as the last parameter. After calling `trigger`, you can check `event.isCancelled()`
 
@@ -49,7 +49,7 @@ TODO: Add more things here?
 
 ## Breaking Changes
 
-This update includes _many_ API changes that will break a wide range of modules. Some of this is due to the fact that the mod has been updated from 1.8.9, released in 2015, to 1.19, released in 2022. That's a 7-year jump and Minecraft changed a lot during that time, changing many APIs and concepts in their codebase. However, we are also taking this opportunity to update many of our APIs to be a bit more polished. Both of these result in quite the list of breaking changes
+This update includes _many_ API changes that will break a wide range of modules. Some of this is due to the fact that the mod has been updated from 1.8.9, released in 2015, to 1.21.5, released in 2022. That's a 7-year jump and Minecraft changed a lot during that time, changing many APIs and concepts in their codebase. However, we are also taking this opportunity to update many of our APIs to be a bit more polished. Both of these result in quite the list of breaking changes
 
 ### Large API Changes
 
@@ -76,7 +76,11 @@ Here is a list of targeted changes for various different APIs:
   - `guiMouseClick` now takes a boolean after the mouse button which indicates if the mouse button was pressed (`true`) or released (`false`)
   - `guiMouseDrag` now takes two mouse deltas as its first two arguments. The rest of the arguments are unchanged.
   - `guiOpened` now takes the opened `Screen` as its first argument.
+  - `preRenderGui` now takes the `DrawContext` as its last argument, this is only called when a screen is open (Use `renderScreenOverlay` for it to be always called).
+  - `postRenderGui` now takes the `DrawContext` as its last argument, this is only called when a screen is open (Use `renderScreenOverlay` for it to be always called).
   - `renderTileEntity` has been renamed to `renderBlockEntity`, and no longer passes in the position as an argument (access it by calling `BlockEntity.getBlockPos()`)
+  - `renderGui` has been renamed to `preRenderGui`.
+  - `blockHightlight` has been renamed to `renderBlockHightlight`.
   - `ClassFilterTrigger`: Removed `setPacketClass` and `setPacketClasses`. Use `setFilteredClass` and `setFilteredClasses` instead
   - The full message for `chat` triggers is no longer accessed with `EventLib` (which no longer exists). Instead, use `event.message`, which will return a `TextComponent`. This has the `getFormattedText()` and `getUnformattedText()` methods, which replace the second parameter of the old `EventLib` method
   - `serverConnect` and `serverDisconnect` no longer pass an event as the third parameter
@@ -96,8 +100,7 @@ Here is a list of targeted changes for various different APIs:
   - `TextComponent` is now immutable. Methods such as `withText()` can be used to return a modified `TextComponent` based on the original
 - The `/ct` command
   - Removed `/ct copy`. Replace this with `Client.copy(text: String)`
-  - Removed the following aliases: 
-    - `reload` (an alias of `load`)
+  - Removed the following aliases:
     - `file` (an alias of `files`)
     - `settings` and `setting` (an alias of `config`)
     - `sim` (an alias of `simulate`)
@@ -107,6 +110,8 @@ Here is a list of targeted changes for various different APIs:
   - Removed `getRider()`. Entities can have multiple riders, so this method doesn't make sense. Replace all usages with the `getRiders()` method
   - Removed `isAirborne()`, which no longer exists in the MC API
   - `getDimension()` now returns an `Entity.DimensionType` enum value instead of an int
+  - Renamed `getPos()` to `getBlockPos()` and added a normal `getPos()` function to get the raw entity position.
+  - Added `getLastPos()`, `getRenderPos()`, and `getMotion()` to return the vectors for the respective items to avoid calling the functions for X, Y, and Z seperately.
 - `LivingEntity`
   - Name changed from `EntityLivingBase`
   - Renamed `getItemInSlot()` to `getStackInSlot()`, which matches the method of the same name in `Inventory`
@@ -156,8 +161,10 @@ Here is a list of targeted changes for various different APIs:
   - Removed `getRawYaw()` as it provided no extra value
   - `getUUID()` now returns the `UUID` object instead of a `string`
   - `lookingAt()` now returns `null` when looking at nothing instead of a `BlockType`
-  - `draw()` now takes an object to align with `Renderer.drawPlayer()`
-- `PlayerMP.draw()` now takes an object to align with `Renderer.drawPlayer()`
+  - `draw()` now takes an object to align with `GUIRenderer.drawPlayer()`
+  - Renamed `getPos()` to `getBlockPos()` and added a normal `getPos()` function to get the raw entity position.
+  - Added `getLastPos()`, `getRenderPos()`, and `getMotion()` to return the vectors for the respective items to avoid calling the functions for X, Y, and Z seperately.
+- `PlayerMP.draw()` now takes an object to align with `GUIRenderer.drawPlayer()`
 - `World`
   - Removed all `Sound`-related methods. Instead, use the `Sound` class
   - `getDifficulty()` now returns `Settings.Difficulty?`
@@ -176,19 +183,33 @@ Here is a list of targeted changes for various different APIs:
 - `Image`
   - Remove deprecated constructors. Instead, use the static helper methods: `Image.fromFile(File)`, `Image.fromFile(string)`, `Image.fromAsset(string)`, and `Image.fromUrl(String[, String])`
 - `Renderer`/`Tessellator`
-  - `Tessellator` has been renamed to `Renderer3d`. Some of its methods may have changed and/or moved to `Renderer`
-  - `Renderer.color()` has been replaced with `Renderer.getColor()`. The new `color()` method is used to color the vertices instead
+  - `Tessellator` has been renamed to `WorldRenderer`.
+  - `Renderer` has been renamed to `GUIRenderer`.
+  - Many methods used between WorldRenderer and GUIRenderer has been moved to `RenderUtils`.
+  - `Renderer.color()` has been replaced with `GUIRenderer.getColor()`. The new `color()` method is used to color the vertices instead
   - Removed `drawShape`. Instead, create a `Shape` and invoke its `draw()` method
-  - `begin()` now no longer translates to the player's camera position. Instead, use `Renderer.translateToPlayer()`
-  - `begin()` now takes a `Renderer.VertexFormat` as an optional second argument
+  - `begin()` now no longer translates to the player's camera position. Instead, use `GUIRenderer.translateToPlayer()`
+  - `begin()` now takes a `VertexFormat` as an optional second argument
   - `drawString` now takes an optional `color` parameter as its 4th argument
   - `drawPlayer` now takes an object, as even more parameters were added. Check the javadocs for a full description of the parameters
   - Removed `drawLine()`'s `drawMode` argument
   - Removed `drawCircle()`'s `drawMode` argument
   - Removed `getDrawMode()` and `setDrawMode()`. Pass the drawMode to `begin`
   - Removed `retainTransforms()`
-  - Most of `Renderer3d`'s rendering should be in `postRenderWorld`
+  - Most of `WorldRenderer`'s rendering should be in `postRenderWorld`
   - Removed `enableAlpha()` and `disableAlpha()` as they do nothing on modern versions
+  - Added new primative render types.
+    - `WorldRenderer`:
+      - `drawBox()/drawCube()`
+      - `drawSphere()`
+      - `drawCone()`
+      - `drawPyramid()`
+      - `drawCylinder()`
+    - `GUIRenderer`:
+      - `drawSquare()`
+      - `drawLine()`
+  - `WorldRenderer.drawCircle()` can now take a rotation parameter.
+  - All render methods take the color parameter as the first non optional parameter for consistency.
 - `Gui`/`GuiHandler`
   - `GuiHandler` has been removed. It only had one relevant method (`openGui()`), which can be replaced by `Client.currentGui.set()`
   - Removed `isControlDown()`, `isAltDown()`, and `isShiftDown()`. Instead, use the method that already exist on `Screen`: `hasControlDown()`, `hasAltDown()`, and `hasShiftDown()`
@@ -212,7 +233,7 @@ Here is a list of targeted changes for various different APIs:
 - `Server.getPing()` now returns -1 if not in a world
 - Removed `Config.modulesFolder`. Use `ChatTriggers.MODULES_FOLDER` or the string `"./config/ChatTriggers/modules"`
 - Renamed `ChatTriggers.loadCT()` and `ChatTriggers.unloadCT()` to `load()` and `unload()`
-- Provided JS API: 
+- Provided JS API:
   - Split `print` into `print` and `println`. `print` will no longer emit a trailing newline
 
 ### Misc Changes
