@@ -1,6 +1,18 @@
 package com.chattriggers.ctjs.engine
 
-import com.chattriggers.ctjs.api.triggers.*
+import com.chattriggers.ctjs.api.triggers.ChatTrigger
+import com.chattriggers.ctjs.api.triggers.ClassFilterTrigger
+import com.chattriggers.ctjs.api.triggers.CommandTrigger
+import com.chattriggers.ctjs.api.triggers.CustomTriggerType
+import com.chattriggers.ctjs.api.triggers.EventTrigger
+import com.chattriggers.ctjs.api.triggers.PacketTrigger
+import com.chattriggers.ctjs.api.triggers.RegularTrigger
+import com.chattriggers.ctjs.api.triggers.RenderBlockEntityTrigger
+import com.chattriggers.ctjs.api.triggers.RenderEntityTrigger
+import com.chattriggers.ctjs.api.triggers.SoundPlayTrigger
+import com.chattriggers.ctjs.api.triggers.StepTrigger
+import com.chattriggers.ctjs.api.triggers.Trigger
+import com.chattriggers.ctjs.api.triggers.TriggerType
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 object Register {
@@ -31,8 +43,7 @@ object Register {
         methodMap[type]?.let { return it.invoke(this, method) as Trigger }
 
         val customType = CustomTriggerType(type)
-        if (customType in customTriggers)
-            return RegularTrigger(method, customType)
+        if (customType in customTriggers) return RegularTrigger(method, customType)
 
         throw NoSuchMethodException("No trigger type named '$triggerType'")
     }
@@ -65,9 +76,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerChat(method: Any): Trigger {
-        return ChatTrigger(method, TriggerType.CHAT)
-    }
+    fun registerChat(method: Any): Trigger = ChatTrigger(method, TriggerType.CHAT)
 
     /**
      * Registers a new trigger that runs before an action bar message is received.
@@ -86,120 +95,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerActionBar(method: Any): Trigger {
-        return ChatTrigger(method, TriggerType.ACTION_BAR)
-    }
-
-    /**
-     * Registers a trigger that runs before the world loads.
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerWorldLoad(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.WORLD_LOAD)
-    }
-
-    /**
-     * Registers a new trigger that runs before the world unloads.
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerWorldUnload(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.WORLD_UNLOAD)
-    }
-
-    /**
-     * Registers a new trigger that runs before a mouse button is being pressed or released.
-     *
-     * Passes through four arguments:
-     * - The mouse x position
-     * - The mouse y position
-     * - The mouse button
-     * - The mouse button state (true if button is pressed, false otherwise)
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerClicked(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.CLICKED)
-    }
-
-    /**
-     * Registers a new trigger that runs before the mouse is scrolled.
-     *
-     * Passes through three arguments:
-     * - The mouse x position
-     * - The mouse y position
-     * - The scroll amount
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerScrolled(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.SCROLLED)
-    }
-
-    /**
-     * Registers a new trigger that runs while a mouse button is being held down.
-     *
-     * Passes through five arguments:
-     * - The mouse delta x position (relative to last frame)
-     * - The mouse delta y position (relative to last frame)
-     * - The mouse x position
-     * - The mouse y position
-     * - The mouse button
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerDragged(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.DRAGGED)
-    }
-
-    /**
-     * Registers a new trigger that runs before a sound is played.
-     *
-     * Passes through six arguments:
-     * - The sound event's position
-     * - The sound event's name
-     * - The sound event's volume
-     * - The sound event's pitch
-     * - The sound event's category's name
-     * - The sound event, which can be cancelled
-     *
-     * Available modifications:
-     * - [SoundPlayTrigger.setCriteria] Sets the sound name criteria
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerSoundPlay(method: Any): Trigger {
-        return SoundPlayTrigger(method)
-    }
+    fun registerActionBar(method: Any): Trigger = ChatTrigger(method, TriggerType.ACTION_BAR)
 
     /**
      * Registers a new trigger that runs before every game tick.
@@ -214,9 +110,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerTick(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.TICK)
-    }
+    fun registerTick(method: Any): Trigger = RegularTrigger(method, TriggerType.TICK)
 
     /**
      * Registers a new trigger that runs in predictable intervals. (60 per second by default)
@@ -235,97 +129,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerStep(method: Any): Trigger {
-        return StepTrigger(method)
-    }
-
-    @Deprecated("Use renderPreWorld", ReplaceWith("registerPreRenderWorld"))
-    @JvmStatic
-    fun registerRenderWorld(method: Any) = registerPreRenderWorld(method)
-
-    /**
-     * Registers a new trigger that runs before the world is drawn.
-     *
-     * Passes through one argument:
-     * - Partial ticks elapsed
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerPreRenderWorld(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.PRE_RENDER_WORLD)
-    }
-
-    /**
-     * Registers a new trigger that runs after the world is drawn.
-     *
-     * Passes through one argument:
-     * - Partial ticks elapsed
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerPostRenderWorld(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.POST_RENDER_WORLD)
-    }
-
-    /**
-     * Registers a new trigger that runs before the overlay is drawn.
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerRenderOverlay(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.RENDER_OVERLAY)
-    }
-
-    /**
-     * Registers a new trigger that runs before the player list is being drawn.
-     *
-     * Passes through one argument:
-     * - The render event, which can be cancelled
-     *
-     * Available modifications:
-     * - [EventTrigger.triggerIfCanceled] Sets if triggered if event is already cancelled
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerRenderPlayerList(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.RENDER_PLAYER_LIST)
-    }
-
-    /**
-     * Registers a new trigger that runs before the block highlight box is drawn.
-     *
-     * Passes through two arguments:
-     * - The draw block highlight event's position
-     * - The draw block highlight event, which can be cancelled
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerDrawBlockHighlight(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.BLOCK_HIGHLIGHT)
-    }
+    fun registerStep(method: Any): Trigger = StepTrigger(method)
 
     /**
      * Registers a new trigger that runs after the game loads.
@@ -340,9 +144,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGameLoad(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.GAME_LOAD)
-    }
+    fun registerGameLoad(method: Any): Trigger = RegularTrigger(method, TriggerType.GAME_LOAD)
 
     /**
      * Registers a new trigger that runs before the game unloads.
@@ -356,81 +158,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGameUnload(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.GAME_UNLOAD)
-    }
-
-    /**
-     * Registers a new command that will run the method provided.
-     *
-     * Passes through multiple arguments:
-     * - The arguments supplied to the command by the user
-     *
-     * Available modifications:
-     * - [CommandTrigger.setCommandName] Sets the command name
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerCommand(method: Any): Trigger {
-        return CommandTrigger(method)
-    }
-
-    /**
-     * Registers a new trigger that runs when a new gui is first opened.
-     *
-     * Passes through one argument:
-     * - The [net.minecraft.client.gui.screen.Screen] that was opened
-     * - The gui opened event, which can be cancelled
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerGuiOpened(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.GUI_OPENED)
-    }
-
-    /**
-     * Registers a new trigger that runs when a gui is closed.
-     *
-     * Passes through one argument:
-     * - The gui that was closed
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerGuiClosed(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.GUI_CLOSED)
-    }
-
-    /**
-     * Registers a new trigger that runs before an item is dropped.
-     *
-     * Passes through two arguments:
-     * - The [com.chattriggers.ctjs.api.inventory.Item] that was dropped
-     * - Whether the entire stack (true), or just 1 item (false) will be dropped
-     * - The event, which can be cancelled
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerDropItem(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.DROP_ITEM)
-    }
+    fun registerGameUnload(method: Any): Trigger = RegularTrigger(method, TriggerType.GAME_UNLOAD)
 
     /**
      * Registers a new trigger that runs before a message is sent in chat.
@@ -446,9 +174,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerMessageSent(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.MESSAGE_SENT)
-    }
+    fun registerMessageSent(method: Any): Trigger = EventTrigger(method, TriggerType.MESSAGE_SENT)
 
     /**
      * Registers a new trigger that runs when a tooltip is being rendered.
@@ -469,9 +195,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerItemTooltip(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.ITEM_TOOLTIP)
-    }
+    fun registerItemTooltip(method: Any): Trigger = EventTrigger(method, TriggerType.ITEM_TOOLTIP)
 
     /**
      * Registers a new trigger that runs before the player interacts.
@@ -491,45 +215,46 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerPlayerInteract(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.PLAYER_INTERACT)
-    }
+    fun registerPlayerInteract(method: Any): Trigger = EventTrigger(method, TriggerType.PLAYER_INTERACT)
 
     /**
-     * Registers a new trigger that runs when an entity is damaged by the player
+     * Registers a new trigger that runs whenever a packet is sent from the client to the server
      *
-     * Passes through one argument:
-     * - The target Entity that is damaged
+     * Passes through two arguments:
+     * - The packet
+     * - The event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     * - [ClassFilterTrigger.setFilteredClasses] Sets the packet classes which this trigger
+     *   gets fired for
      *
      * @param method The method to call when the event is fired
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerEntityDamage(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.ENTITY_DAMAGE)
-    }
+    fun registerPacketSent(method: Any): Trigger = PacketTrigger(method, TriggerType.PACKET_SENT)
 
     /**
-     * Registers a new trigger that runs when an entity dies
+     * Registers a new trigger that runs whenever a packet is sent to the client from the server
      *
-     * Passes through one argument:
-     * - The Entity that died
+     * Passes through two arguments:
+     * - The packet
+     * - The event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     * - [ClassFilterTrigger.setFilteredClasses] Sets the packet classes which this trigger
+     *   gets fired for
      *
      * @param method The method to call when the event is fired
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerEntityDeath(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.ENTITY_DEATH)
-    }
+    fun registerPacketReceived(method: Any): Trigger = PacketTrigger(method, TriggerType.PACKET_RECEIVED)
 
     /**
-     * Registers a new trigger that runs as a gui is rendered
-     *
-     * Passes through three arguments:
-     * - The mouse x position
-     * - The mouse y position
-     * - The gui
+     * Registers a new trigger that runs whenever the player connects to a server
      *
      * Available modifications:
      * - [Trigger.setPriority] Sets the priority
@@ -538,9 +263,121 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGuiRender(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.GUI_RENDER)
-    }
+    fun registerServerConnect(method: Any): Trigger = RegularTrigger(method, TriggerType.SERVER_CONNECT)
+
+    /**
+     * Registers a new trigger that runs whenever the player disconnects from a server
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerServerDisconnect(method: Any): Trigger = RegularTrigger(method, TriggerType.SERVER_DISCONNECT)
+
+    /**
+     * Registers a new trigger that runs before an item is dropped.
+     *
+     * Passes through two arguments:
+     * - The [com.chattriggers.ctjs.api.inventory.Item] that was dropped
+     * - Whether the entire stack (true), or just 1 item (false) will be dropped
+     * - The event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerDropItem(method: Any): Trigger = EventTrigger(method, TriggerType.DROP_ITEM)
+
+    /**
+     * Registers a new trigger that runs when a new gui is first opened.
+     *
+     * Passes through one argument:
+     * - The [net.minecraft.client.gui.screen.Screen] that was opened
+     * - The gui opened event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerGuiOpened(method: Any): Trigger = EventTrigger(method, TriggerType.GUI_OPENED)
+
+    /**
+     * Registers a new trigger that runs when a gui is closed.
+     *
+     * Passes through one argument:
+     * - The gui that was closed
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerGuiClosed(method: Any): Trigger = RegularTrigger(method, TriggerType.GUI_CLOSED)
+
+    /**
+     * Registers a new trigger that runs before a mouse button is being pressed or released.
+     *
+     * Passes through four arguments:
+     * - The mouse x position
+     * - The mouse y position
+     * - The mouse button
+     * - The mouse button state (true if button is pressed, false otherwise)
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerClicked(method: Any): Trigger = RegularTrigger(method, TriggerType.CLICKED)
+
+    /**
+     * Registers a new trigger that runs before the mouse is scrolled.
+     *
+     * Passes through three arguments:
+     * - The mouse x position
+     * - The mouse y position
+     * - The scroll amount
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerScrolled(method: Any): Trigger = RegularTrigger(method, TriggerType.SCROLLED)
+
+    /**
+     * Registers a new trigger that runs while a mouse button is being held down.
+     *
+     * Passes through five arguments:
+     * - The mouse delta x position (relative to last frame)
+     * - The mouse delta y position (relative to last frame)
+     * - The mouse x position
+     * - The mouse y position
+     * - The mouse button
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerDragged(method: Any): Trigger = RegularTrigger(method, TriggerType.DRAGGED)
 
     /**
      * Registers a new trigger that runs whenever a key is typed with a gui open
@@ -558,9 +395,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGuiKey(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.GUI_KEY)
-    }
+    fun registerGuiKey(method: Any): Trigger = EventTrigger(method, TriggerType.GUI_KEY)
 
     /**
      * Registers a new trigger that runs whenever the mouse is clicked with a
@@ -581,9 +416,7 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGuiMouseClick(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.GUI_MOUSE_CLICK)
-    }
+    fun registerGuiMouseClick(method: Any): Trigger = EventTrigger(method, TriggerType.GUI_MOUSE_CLICK)
 
     /**
      * Registers a new trigger that runs whenever a mouse button held and dragged
@@ -605,52 +438,18 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerGuiMouseDrag(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.GUI_MOUSE_DRAG)
-    }
+    fun registerGuiMouseDrag(method: Any): Trigger = EventTrigger(method, TriggerType.GUI_MOUSE_DRAG)
 
-    /**
-     * Registers a new trigger that runs whenever a packet is sent from the client to the server
-     *
-     * Passes through two arguments:
-     * - The packet
-     * - The event, which can be cancelled
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     * - [ClassFilterTrigger.setFilteredClasses] Sets the packet classes which this trigger
-     *   gets fired for
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
+    @Deprecated("Use postRenderWorld", ReplaceWith("registerPostRenderWorld"))
     @JvmStatic
-    fun registerPacketSent(method: Any): Trigger {
-        return PacketTrigger(method, TriggerType.PACKET_SENT)
-    }
+    fun registerRenderWorld(method: Any) = registerPostRenderWorld(method)
 
+    // I'm not sure if this works anymore, maybe replace with postRender?
     /**
-     * Registers a new trigger that runs whenever a packet is sent to the client from the server
+     * Registers a new trigger that runs before the world is drawn.
      *
-     * Passes through two arguments:
-     * - The packet
-     * - The event, which can be cancelled
-     *
-     * Available modifications:
-     * - [Trigger.setPriority] Sets the priority
-     * - [ClassFilterTrigger.setFilteredClasses] Sets the packet classes which this trigger
-     *   gets fired for
-     *
-     * @param method The method to call when the event is fired
-     * @return The trigger for additional modification
-     */
-    @JvmStatic
-    fun registerPacketReceived(method: Any): Trigger {
-        return PacketTrigger(method, TriggerType.PACKET_RECEIVED)
-    }
-
-    /**
-     * Registers a new trigger that runs whenever the player connects to a server
+     * Passes through one argument:
+     * - Partial ticks elapsed
      *
      * Available modifications:
      * - [Trigger.setPriority] Sets the priority
@@ -659,12 +458,13 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerServerConnect(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.SERVER_CONNECT)
-    }
+    fun registerPreRenderWorld(method: Any): Trigger = RegularTrigger(method, TriggerType.PRE_RENDER_WORLD)
 
     /**
-     * Registers a new trigger that runs whenever the player disconnects from a server
+     * Registers a new trigger that runs after the world is drawn.
+     *
+     * Passes through one argument:
+     * - Partial ticks elapsed
      *
      * Available modifications:
      * - [Trigger.setPriority] Sets the priority
@@ -673,30 +473,61 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerServerDisconnect(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.SERVER_DISCONNECT)
-    }
+    fun registerPostRenderWorld(method: Any): Trigger = RegularTrigger(method, TriggerType.POST_RENDER_WORLD)
 
     /**
-     * Registers a new trigger that runs whenever an entity is rendered
+     * Registers a new trigger that runs as a gui is rendered
      *
-     * Passes through three arguments:
-     * - The [com.chattriggers.ctjs.api.entity.Entity]
+     * Passes through five arguments:
+     * - The mouseX
+     * - The mouseY
+     * - The GuiScreen
      * - The partial ticks
-     * - The event, which can be cancelled
+     * - The [net.minecraft.client.gui.DrawContext]
      *
      * Available modifications:
      * - [Trigger.setPriority] Sets the priority
-     * - [ClassFilterTrigger.setFilteredClasses] Sets the entity classes which this trigger
-     *   gets fired for
      *
      * @param method The method to call when the event is fired
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerRenderEntity(method: Any): Trigger {
-        return RenderEntityTrigger(method)
-    }
+    fun registerPreRenderGui(method: Any): Trigger = RegularTrigger(method, TriggerType.PRE_RENDER_GUI)
+
+    /**
+     * Registers a new trigger that runs after the current screen is rendered
+     *
+     * Passes through five arguments:
+     * - The mouseX
+     * - The mouseY
+     * - The GuiScreen
+     * - The partial ticks
+     * - The [net.minecraft.client.gui.DrawContext]
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerPostRenderGui(method: Any): Trigger = RegularTrigger(method, TriggerType.POST_RENDER_GUI)
+
+    /**
+     * Registers a new trigger that runs before the block highlight box is drawn.
+     *
+     * Passes through two arguments:
+     * - The draw block highlight event's position
+     * - The draw block highlight event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerDrawBlockHighlight(method: Any): Trigger = EventTrigger(method, TriggerType.RENDER_BLOCK_HIGHLIGHT)
 
     /**
      * Registers a new trigger that runs whenever a block entity is rendered
@@ -715,17 +546,45 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerRenderBlockEntity(method: Any): Trigger {
-        return RenderBlockEntityTrigger(method)
-    }
+    fun registerRenderBlockEntity(method: Any): Trigger = RenderBlockEntityTrigger(method)
 
     /**
-     * Registers a new trigger that runs after the current screen is rendered
+     * Registers a new trigger that runs whenever an entity is rendered
      *
      * Passes through three arguments:
-     * - The mouseX
-     * - The mouseY
-     * - The GuiScreen
+     * - The [com.chattriggers.ctjs.api.entity.Entity]
+     * - The partial ticks
+     * - The event, which can be cancelled
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     * - [ClassFilterTrigger.setFilteredClasses] Sets the entity classes which this trigger
+     *   gets fired for
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerRenderEntity(method: Any): Trigger = RenderEntityTrigger(method)
+
+    /**
+     * Registers a new trigger that runs before the player list is being drawn.
+     *
+     * Passes through one argument:
+     * - The render event, which can be cancelled
+     *
+     * Available modifications:
+     * - [EventTrigger.triggerIfCanceled] Sets if triggered if event is already cancelled
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerRenderPlayerList(method: Any): Trigger = EventTrigger(method, TriggerType.RENDER_PLAYER_LIST)
+
+    /**
+     * Registers a new trigger that runs before the hud overlay is drawn.
      *
      * Available modifications:
      * - [Trigger.setPriority] Sets the priority
@@ -734,9 +593,86 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerPostGuiRender(method: Any): Trigger {
-        return RegularTrigger(method, TriggerType.POST_GUI_RENDER)
-    }
+    fun registerRenderHudOverlay(method: Any): Trigger = RegularTrigger(method, TriggerType.RENDER_HUD_OVERLAY)
+
+    /**
+     * Registers a new trigger that runs after the screen is drawn.
+     * Not hidden when pressing F1
+     *
+     * Passes through one argument:
+     * - The [net.minecraft.client.gui.DrawContext]
+     * - Partial ticks elapsed
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerRenderScreenOverlay(method: Any): Trigger = RegularTrigger(method, TriggerType.RENDER_SCREEN_OVERLAY)
+
+    /**
+     * Registers a new trigger that runs after the screen is drawn.
+     * This gets hidden when pressing F1
+     *
+     * Passes through one argument:
+     * - The [net.minecraft.client.gui.DrawContext]
+     * - Partial ticks elapsed
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerRenderHideableScreenOverlay(method: Any): Trigger = RegularTrigger(method, TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY)
+
+    /**
+     * Registers a trigger that runs before the world loads.
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerWorldLoad(method: Any): Trigger = RegularTrigger(method, TriggerType.WORLD_LOAD)
+
+    /**
+     * Registers a new trigger that runs before the world unloads.
+     *
+     * Available modifications:
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerWorldUnload(method: Any): Trigger = RegularTrigger(method, TriggerType.WORLD_UNLOAD)
+
+    /**
+     * Registers a new trigger that runs before a sound is played.
+     *
+     * Passes through six arguments:
+     * - The sound event's position
+     * - The sound event's name
+     * - The sound event's volume
+     * - The sound event's pitch
+     * - The sound event's category's name
+     * - The sound event, which can be cancelled
+     *
+     * Available modifications:
+     * - [SoundPlayTrigger.setCriteria] Sets the sound name criteria
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerSoundPlay(method: Any): Trigger = SoundPlayTrigger(method)
 
     /**
      * Registers a new trigger that runs whenever a particle is spawned
@@ -752,7 +688,45 @@ object Register {
      * @return The trigger for additional modification
      */
     @JvmStatic
-    fun registerSpawnParticle(method: Any): Trigger {
-        return EventTrigger(method, TriggerType.SPAWN_PARTICLE)
-    }
+    fun registerSpawnParticle(method: Any): Trigger = EventTrigger(method, TriggerType.SPAWN_PARTICLE)
+
+    /**
+     * Registers a new trigger that runs when an entity is damaged by the player
+     *
+     * Passes through one argument:
+     * - The target Entity that is damaged
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerEntityDamage(method: Any): Trigger = RegularTrigger(method, TriggerType.ENTITY_DAMAGE)
+
+    /**
+     * Registers a new trigger that runs when an entity dies
+     *
+     * Passes through one argument:
+     * - The Entity that died
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerEntityDeath(method: Any): Trigger = RegularTrigger(method, TriggerType.ENTITY_DEATH)
+
+    /**
+     * Registers a new command that will run the method provided.
+     *
+     * Passes through multiple arguments:
+     * - The arguments supplied to the command by the user
+     *
+     * Available modifications:
+     * - [CommandTrigger.setCommandName] Sets the command name
+     * - [Trigger.setPriority] Sets the priority
+     *
+     * @param method The method to call when the event is fired
+     * @return The trigger for additional modification
+     */
+    @JvmStatic
+    fun registerCommand(method: Any): Trigger = CommandTrigger(method)
 }
