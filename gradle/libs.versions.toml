@@ -3,30 +3,31 @@
 minecraft = "1.21.5"
 yarn = "1.21.5+build.1"
 
-loader = "0.16.12"
-fabric-api = "0.119.6+1.21.5"
-fabric-kotlin = "1.13.2+kotlin.2.1.20"
+loader = "0.16.14"
+fabric-api = "0.128.0+1.21.5"
+fabric-kotlin = "1.13.4+kotlin.2.2.0"
 
-mapping-io = "0.6.1"
+mapping-io = "0.7.1"
 rhino = "7c7c509668"
-jackson-core = "2.13.2"
-textarea = "3.2.0"
-serialization = "1.5.1"
+jackson-core = "2.19.1"
+textarea = "3.6.0"
+serialization = "1.8.1"
 koffee = "315bc11234"
 
-universalcraft = "398"
-elementa = "657"
-vigilance = "299"
+universalcraft = "419"
+elementa = "710"
+vigilance = "306"
 
 modmenu = "14.0.0-rc.2"
 devauth = "1.2.1"
 dokka = "1.9.20"
 
 # Plugin Versions
-kotlin = "2.1.20"
-loom = "1.10.1"
+kotlin = "2.2.0"
+#loom = "1.11.0-alpha.31"
+loom = "1.10-SNAPSHOT"
 validator = "0.17.0"
-ksp = "2.1.20-1.0.32"
+ksp = "2.2.0-2.0.2"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -44,8 +45,8 @@ serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", v
 koffee = { module = "com.github.ChatTriggers:koffee", version.ref = "koffee" }
 
 universalcraft = { module = "gg.essential:universalcraft-1.21.5-fabric", version.ref = "universalcraft" }
-elementa = { module = "gg.essential:elementa-1.18.1-fabric", version.ref = "elementa" }
-vigilance = { module = "gg.essential:vigilance-1.18.1-fabric", version.ref = "vigilance" }
+elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
+vigilance = { module = "gg.essential:vigilance", version.ref = "vigilance" }
 
 modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }

@@ -2,9 +2,9 @@ import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.dokka.versioning.VersioningConfiguration
 import org.jetbrains.dokka.versioning.VersioningPlugin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import java.io.ByteArrayOutputStream
 
 buildscript {
     dependencies {
@@ -42,7 +42,7 @@ dependencies {
 
     modImplementation(libs.bundles.included) { include(this) }
     modImplementation(libs.bundles.essential) {
-        exclude("gg.essential", "universalcraft-1.18.1-fabric")
+        exclude("gg.essential", "universalcraft")
         include(this)
     }
 
@@ -94,7 +94,7 @@ tasks {
                 "yarn_mappings" to yarnVersion,
                 "fabric_kotlin_version" to flkVersion,
                 "fabric_api_version" to fapiVersion,
-                "loader_version" to loaderVersion
+                "loader_version" to loaderVersion,
             )
         }
     }
@@ -117,8 +117,7 @@ tasks {
     }
 
     dokkaHtml {
-        // Just use the module name here since the MC version doesn't affect CT's API
-        // across the same mod version
+        // Just use the module name here since the MC version doesn't affect CT's API across the same mod version
         moduleVersion.set(project.version.toString())
         moduleName.set("ctjs")
 
@@ -190,8 +189,9 @@ tasks {
             // doesn't need to figure out the correct version name
 
             docVersionsDir.listFiles()?.forEach {
-                if (it.name != version)
+                if (it.name != version) {
                     it.deleteRecursively()
+                }
             }
 
             val latestVersionDir = docVersionsDir.listFiles()!!.single()
