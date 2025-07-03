@@ -5,7 +5,8 @@ import com.chattriggers.ctjs.api.entity.Entity
 import com.chattriggers.ctjs.api.entity.PlayerInteraction
 import com.chattriggers.ctjs.api.inventory.Item
 import com.chattriggers.ctjs.api.message.TextComponent
-import com.chattriggers.ctjs.api.render.Renderer
+import com.chattriggers.ctjs.api.render.GUIRenderer
+import com.chattriggers.ctjs.api.render.HudRenderLayer
 import com.chattriggers.ctjs.api.triggers.CancellableEvent
 import com.chattriggers.ctjs.api.triggers.ChatTrigger
 import com.chattriggers.ctjs.api.triggers.TriggerType
@@ -22,11 +23,19 @@ import gg.essential.universal.UMinecraft
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents
-import net.fabricmc.fabric.api.event.player.*
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback
+import net.fabricmc.fabric.api.event.player.UseBlockCallback
+import net.fabricmc.fabric.api.event.player.UseEntityCallback
+import net.fabricmc.fabric.api.event.player.UseItemCallback
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.RenderTickCounter
 import net.minecraft.text.Text
 import net.minecraft.util.ActionResult
+import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
 import org.mozilla.javascript.Context
 
@@ -57,7 +66,9 @@ object ClientListener : Initializer {
                     if (it.delay-- <= 0) {
                         UMinecraft.getMinecraft().submit(it.callback)
                         true
-                    } else false
+                    } else {
+                        false
+                    }
                 }
             }
 
@@ -84,25 +95,52 @@ object ClientListener : Initializer {
             !event.isCancelled()
         }
 
+        // Sleep layer isn't affected by screen hiding (F1)
+        HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
+            layeredDrawer.attachLayerAfter(
+                HudRenderLayer.SLEEP.toMC(),
+                Identifier.of("ctjs", "screen_overlay"),
+            ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
+                // Don't render if a screen is open, calls trigger twice otherwise
+                if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+                TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, tickCounter.dynamicDeltaTicks)
+            }
+        }
+
+        // Subtitles is last HUD layer to render
+        HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
+            layeredDrawer.attachLayerAfter(
+                HudRenderLayer.SUBTITLES.toMC(),
+                Identifier.of("ctjs", "hideable_screen_overlay"),
+            ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
+                // Don't render if a screen is open, calls trigger twice otherwise
+                if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+                TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, tickCounter.dynamicDeltaTicks)
+            }
+        }
+
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
-            // TODO: Why does Renderer.drawString not work in here?
-            ScreenEvents.beforeRender(screen).register { _, stack, mouseX, mouseY, partialTicks ->
-                Renderer.withMatrix(stack.matrices, partialTicks) {
-                    TriggerType.GUI_RENDER.triggerAll(mouseX, mouseY, screen)
-                }
-            }
-
-            // TODO: Why does Renderer.drawString not work in here?
-            ScreenEvents.afterRender(screen).register { _, stack, mouseX, mouseY, partialTicks ->
-                Renderer.withMatrix(stack.matrices, partialTicks) {
-                    TriggerType.POST_GUI_RENDER.triggerAll(mouseX, mouseY, screen, partialTicks)
-                }
-            }
-
             ScreenKeyboardEvents.allowKeyPress(screen).register { _, key, scancode, _ ->
                 val event = CancellableEvent()
                 TriggerType.GUI_KEY.triggerAll(GLFW.glfwGetKeyName(key, scancode), key, screen, event)
                 !event.isCancelled()
+            }
+
+            // Only ran while a screen is open (e.g. inventory, chat, etc.)
+            ScreenEvents.beforeRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
+                GUIRenderer.withMatrix(drawContext.matrices, partialTicks) {
+                    TriggerType.PRE_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
+                }
+            }
+
+            // Only ran while a screen is open (e.g. inventory, chat, etc.)
+            ScreenEvents.afterRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
+                GUIRenderer.withMatrix(drawContext.matrices, partialTicks) {
+                    TriggerType.POST_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
+
+                    TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+                    TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+                }
             }
         }
 
@@ -122,20 +160,20 @@ object ClientListener : Initializer {
             TriggerType.STEP.triggerAll()
         }
 
-        CTEvents.RENDER_OVERLAY.register { stack, partialTicks ->
-            Renderer.withMatrix(stack, partialTicks) {
-                TriggerType.RENDER_OVERLAY.triggerAll()
+        CTEvents.RENDER_HUD_OVERLAY.register { stack, partialTicks ->
+            GUIRenderer.withMatrix(stack, partialTicks) {
+                TriggerType.RENDER_HUD_OVERLAY.triggerAll()
             }
         }
 
         CTEvents.RENDER_ENTITY.register { stack, entity, partialTicks, ci ->
-            Renderer.withMatrix(stack, partialTicks) {
+            GUIRenderer.withMatrix(stack, partialTicks) {
                 TriggerType.RENDER_ENTITY.triggerAll(Entity.fromMC(entity), partialTicks, ci)
             }
         }
 
         CTEvents.RENDER_BLOCK_ENTITY.register { stack, blockEntity, partialTicks, ci ->
-            Renderer.withMatrix(stack, partialTicks) {
+            GUIRenderer.withMatrix(stack, partialTicks) {
                 TriggerType.RENDER_BLOCK_ENTITY.triggerAll(BlockEntity(blockEntity), partialTicks, ci)
             }
         }
@@ -229,15 +267,17 @@ object ClientListener : Initializer {
 
         return if (actionBar) {
             actionBarHistory += textComponent
-            if (actionBarHistory.size > 1000)
+            if (actionBarHistory.size > 1000) {
                 actionBarHistory.removeAt(0)
+            }
 
             TriggerType.ACTION_BAR.triggerAll(event)
             !event.isCancelled()
         } else {
             chatHistory += textComponent
-            if (chatHistory.size > 1000)
+            if (chatHistory.size > 1000) {
                 chatHistory.removeAt(0)
+            }
 
             TriggerType.CHAT.triggerAll(event)
 

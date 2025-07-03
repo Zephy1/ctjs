@@ -1,17 +1,5 @@
 package com.chattriggers.ctjs.internal.engine
 
-import com.chattriggers.ctjs.internal.engine.CTEvents.BreakBlockCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.GuiMouseDragCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.MouseButtonCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.MouseDraggedCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.MouseScrollCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.NetworkCommandDispatcherRegisterCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.PacketReceivedCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.RenderBlockEntityCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.RenderEntityCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.RenderOverlayCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.RenderWorldCallback
-import com.chattriggers.ctjs.internal.engine.CTEvents.VoidCallback
 import com.chattriggers.ctjs.MCBlockEntity
 import com.chattriggers.ctjs.MCBlockPos
 import com.chattriggers.ctjs.MCEntity
@@ -46,7 +34,7 @@ internal object CTEvents {
         fun render(matrixStack: MatrixStack, entity: MCBlockEntity, partialTicks: Float, ci: CallbackInfo)
     }
 
-    fun interface RenderOverlayCallback {
+    fun interface RenderHudOverlayCallback {
         fun render(matrixStack: MatrixStack, partialTicks: Float)
     }
 
@@ -84,8 +72,8 @@ internal object CTEvents {
     }
 
     @JvmField
-    val RENDER_OVERLAY = make<RenderOverlayCallback> { listeners ->
-        RenderOverlayCallback { stack, partialTicks ->
+    val RENDER_HUD_OVERLAY = make<RenderHudOverlayCallback> { listeners ->
+        RenderHudOverlayCallback { stack, partialTicks ->
             listeners.forEach { it.render(stack, partialTicks) }
         }
     }
