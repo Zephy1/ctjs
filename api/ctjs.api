@@ -24,7 +24,7 @@ public final class com/chattriggers/ctjs/CTJS$Companion {
 
 public abstract interface class com/chattriggers/ctjs/api/CTWrapper {
 	public abstract fun getMcValue ()Ljava/lang/Object;
-	public abstract fun toMC ()Ljava/lang/Object;
+	public fun toMC ()Ljava/lang/Object;
 }
 
 public final class com/chattriggers/ctjs/api/CTWrapper$DefaultImpls {
@@ -264,6 +264,7 @@ public final class com/chattriggers/ctjs/api/client/Player {
 	public static final fun getAirLevel ()I
 	public static final fun getArmorPoints ()I
 	public static final fun getBiome ()Ljava/lang/String;
+	public static final fun getBlockPos ()Lcom/chattriggers/ctjs/api/world/block/BlockPos;
 	public static final fun getContainer ()Lcom/chattriggers/ctjs/api/inventory/Inventory;
 	public static final fun getDisplayName ()Lcom/chattriggers/ctjs/api/message/TextComponent;
 	public static final fun getHP ()F
@@ -273,17 +274,20 @@ public final class com/chattriggers/ctjs/api/client/Player {
 	public static final fun getHeldItemIndex ()I
 	public static final fun getHunger ()I
 	public static final fun getInventory ()Lcom/chattriggers/ctjs/api/inventory/Inventory;
+	public static final fun getLastPos ()Lnet/minecraft/util/math/Vec3d;
 	public static final fun getLastX ()D
 	public static final fun getLastY ()D
 	public static final fun getLastZ ()D
 	public static final fun getLightLevel ()I
+	public static final fun getMotion ()Lnet/minecraft/util/math/Vec3d;
 	public static final fun getMotionX ()D
 	public static final fun getMotionY ()D
 	public static final fun getMotionZ ()D
 	public static final fun getName ()Ljava/lang/String;
 	public static final fun getPitch ()D
 	public static final fun getPlayer ()Lnet/minecraft/client/network/ClientPlayerEntity;
-	public static final fun getPos ()Lcom/chattriggers/ctjs/api/world/block/BlockPos;
+	public static final fun getPos ()Lnet/minecraft/util/math/Vec3d;
+	public static final fun getRenderPos ()Lnet/minecraft/util/math/Vec3d;
 	public static final fun getRenderX ()D
 	public static final fun getRenderY ()D
 	public static final fun getRenderZ ()D
@@ -816,6 +820,7 @@ public class com/chattriggers/ctjs/api/entity/Entity : com/chattriggers/ctjs/api
 	public final fun distanceTo (Lnet/minecraft/entity/Entity;)F
 	public static final fun fromMC (Lnet/minecraft/entity/Entity;)Lcom/chattriggers/ctjs/api/entity/Entity;
 	public final fun getAir ()I
+	public final fun getBlockPos ()Lcom/chattriggers/ctjs/api/world/block/BlockPos;
 	public final fun getChunk ()Lcom/chattriggers/ctjs/api/world/Chunk;
 	public final fun getClassName ()Ljava/lang/String;
 	public final fun getDimension ()Lcom/chattriggers/ctjs/api/entity/Entity$DimensionType;
@@ -826,6 +831,7 @@ public class com/chattriggers/ctjs/api/entity/Entity : com/chattriggers/ctjs/api
 	public static synthetic fun getEyePosition$default (Lcom/chattriggers/ctjs/api/entity/Entity;FILjava/lang/Object;)Lnet/minecraft/util/math/Vec3d;
 	public final fun getFireResistance ()I
 	public final fun getHeight ()F
+	public final fun getLastPos ()Lnet/minecraft/util/math/Vec3d;
 	public final fun getLastX ()D
 	public final fun getLastY ()D
 	public final fun getLastZ ()D
@@ -835,13 +841,15 @@ public class com/chattriggers/ctjs/api/entity/Entity : com/chattriggers/ctjs/api
 	public final fun getMaxInPortalTime ()I
 	public synthetic fun getMcValue ()Ljava/lang/Object;
 	public fun getMcValue ()Lnet/minecraft/entity/Entity;
+	public final fun getMotion ()Lnet/minecraft/util/math/Vec3d;
 	public final fun getMotionX ()D
 	public final fun getMotionY ()D
 	public final fun getMotionZ ()D
 	public final fun getName ()Ljava/lang/String;
 	public final fun getNameComponent ()Lcom/chattriggers/ctjs/api/message/TextComponent;
 	public final fun getPitch ()F
-	public final fun getPos ()Lcom/chattriggers/ctjs/api/world/block/BlockPos;
+	public final fun getPos ()Lnet/minecraft/util/math/Vec3d;
+	public final fun getRenderPos ()Lnet/minecraft/util/math/Vec3d;
 	public final fun getRenderX ()D
 	public final fun getRenderY ()D
 	public final fun getRenderZ ()D
@@ -1463,6 +1471,64 @@ public final class com/chattriggers/ctjs/api/render/Book {
 	public final fun setPage (ILjava/lang/String;)Lcom/chattriggers/ctjs/api/render/Book;
 }
 
+public final class com/chattriggers/ctjs/api/render/CTRenderLayers {
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/CTRenderLayers;
+	public static final fun CT_LINES (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;F)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_LINES$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;FILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_LINES_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;F)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_LINES_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;FILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_LINE_STRIP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;F)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_LINE_STRIP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;FILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_LINE_STRIP_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;F)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_LINE_STRIP_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;FILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_QUADS (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_QUADS$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_QUADS_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_QUADS_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public final fun CT_TEXTURED_QUADS (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TEXTURED_QUADS$default (Lcom/chattriggers/ctjs/api/render/CTRenderLayers;Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;Lnet/minecraft/util/Identifier;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public final fun CT_TEXTURED_QUADS_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TEXTURED_QUADS_ESP$default (Lcom/chattriggers/ctjs/api/render/CTRenderLayers;Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;Lnet/minecraft/util/Identifier;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_TRIANGLES (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TRIANGLES$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_TRIANGLES_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TRIANGLES_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_TRIANGLE_STRIP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TRIANGLE_STRIP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun CT_TRIANGLE_STRIP_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun CT_TRIANGLE_STRIP_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+	public static final fun getRenderLayer (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;)Lnet/minecraft/client/render/RenderLayer;
+	public static synthetic fun getRenderLayer$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;ILjava/lang/Object;)Lnet/minecraft/client/render/RenderLayer;
+}
+
+public final class com/chattriggers/ctjs/api/render/CTRenderPipelines {
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/CTRenderPipelines;
+	public static final fun CT_LINES (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_LINES$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_LINES_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_LINES_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_LINE_STRIP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_LINE_STRIP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_LINE_STRIP_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_LINE_STRIP_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_QUADS (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_QUADS$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_QUADS_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_QUADS_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TEXTURED_QUADS (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TEXTURED_QUADS$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TEXTURED_QUADS_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TEXTURED_QUADS_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TRIANGLES (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TRIANGLES$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TRIANGLES_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TRIANGLES_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TRIANGLE_STRIP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TRIANGLE_STRIP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun CT_TRIANGLE_STRIP_ESP (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun CT_TRIANGLE_STRIP_ESP$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+}
+
 public final class com/chattriggers/ctjs/api/render/Display {
 	public fun <init> ()V
 	public fun <init> (Lorg/mozilla/javascript/NativeObject;)V
@@ -1511,6 +1577,146 @@ public final class com/chattriggers/ctjs/api/render/Display$Order : java/lang/En
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Display$Order;
 	public static fun values ()[Lcom/chattriggers/ctjs/api/render/Display$Order;
+}
+
+public final class com/chattriggers/ctjs/api/render/DrawMode : java/lang/Enum {
+	public static final field Companion Lcom/chattriggers/ctjs/api/render/DrawMode$Companion;
+	public static final field LINES Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final field LINE_STRIP Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final field QUADS Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final field TRIANGLES Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final field TRIANGLE_FAN Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final field TRIANGLE_STRIP Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static final fun fromUC (Lgg/essential/universal/UGraphics$DrawMode;)Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun toUC ()Lgg/essential/universal/UGraphics$DrawMode;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public static fun values ()[Lcom/chattriggers/ctjs/api/render/DrawMode;
+}
+
+public final class com/chattriggers/ctjs/api/render/DrawMode$Companion {
+	public final fun fromUC (Lgg/essential/universal/UGraphics$DrawMode;)Lcom/chattriggers/ctjs/api/render/DrawMode;
+}
+
+public final class com/chattriggers/ctjs/api/render/GUIRenderer {
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/GUIRenderer;
+	public static final field screen Lcom/chattriggers/ctjs/api/render/GUIRenderer$ScreenWrapper;
+	public static final fun drawCircle (FF)V
+	public static final fun drawCircle (FFF)V
+	public static final fun drawCircle (FFFF)V
+	public static final fun drawCircle (FFFFJ)V
+	public static final fun drawCircle (FFFFJI)V
+	public static final fun drawCircle (FFFFJIF)V
+	public static final fun drawCircle (FFFFJIFF)V
+	public static final fun drawCircle (FFFFJIFFF)V
+	public static synthetic fun drawCircle$default (FFFFJIFFFILjava/lang/Object;)V
+	public static final fun drawCircleRGBA (FF)V
+	public static final fun drawCircleRGBA (FFF)V
+	public static final fun drawCircleRGBA (FFFF)V
+	public static final fun drawCircleRGBA (FFFFI)V
+	public static final fun drawCircleRGBA (FFFFII)V
+	public static final fun drawCircleRGBA (FFFFIII)V
+	public static final fun drawCircleRGBA (FFFFIIII)V
+	public static final fun drawCircleRGBA (FFFFIIIII)V
+	public static final fun drawCircleRGBA (FFFFIIIIIF)V
+	public static final fun drawCircleRGBA (FFFFIIIIIFF)V
+	public static final fun drawCircleRGBA (FFFFIIIIIFFF)V
+	public static synthetic fun drawCircleRGBA$default (FFFFIIIIIFFFILjava/lang/Object;)V
+	public static final fun drawImage (Lcom/chattriggers/ctjs/api/render/Image;FF)V
+	public static final fun drawImage (Lcom/chattriggers/ctjs/api/render/Image;FFLjava/lang/Float;)V
+	public static final fun drawImage (Lcom/chattriggers/ctjs/api/render/Image;FFLjava/lang/Float;Ljava/lang/Float;)V
+	public static synthetic fun drawImage$default (Lcom/chattriggers/ctjs/api/render/Image;FFLjava/lang/Float;Ljava/lang/Float;ILjava/lang/Object;)V
+	public static final fun drawLine (FFFF)V
+	public static final fun drawLine (FFFFJ)V
+	public static final fun drawLine (FFFFJF)V
+	public static synthetic fun drawLine$default (FFFFJFILjava/lang/Object;)V
+	public static final fun drawLineRGBA (FFFF)V
+	public static final fun drawLineRGBA (FFFFI)V
+	public static final fun drawLineRGBA (FFFFII)V
+	public static final fun drawLineRGBA (FFFFIII)V
+	public static final fun drawLineRGBA (FFFFIIII)V
+	public static final fun drawLineRGBA (FFFFIIIIF)V
+	public static synthetic fun drawLineRGBA$default (FFFFIIIIFILjava/lang/Object;)V
+	public static final fun drawPlayer (Lorg/mozilla/javascript/NativeObject;)V
+	public static final fun drawRect (FF)V
+	public static final fun drawRect (FFF)V
+	public static final fun drawRect (FFFF)V
+	public static final fun drawRect (FFFFJ)V
+	public static synthetic fun drawRect$default (FFFFJILjava/lang/Object;)V
+	public static final fun drawRectRGBA (FF)V
+	public static final fun drawRectRGBA (FFF)V
+	public static final fun drawRectRGBA (FFFF)V
+	public static final fun drawRectRGBA (FFFFI)V
+	public static final fun drawRectRGBA (FFFFII)V
+	public static final fun drawRectRGBA (FFFFIII)V
+	public static final fun drawRectRGBA (FFFFIIII)V
+	public static synthetic fun drawRectRGBA$default (FFFFIIIIILjava/lang/Object;)V
+	public static final fun drawSimpleCircle (FF)V
+	public static final fun drawSimpleCircle (FFF)V
+	public static final fun drawSimpleCircle (FFFJ)V
+	public static final fun drawSimpleCircle (FFFJI)V
+	public static final fun drawSimpleCircle (FFFJIF)V
+	public static final fun drawSimpleCircle (FFFJIFF)V
+	public static final fun drawSimpleCircle (FFFJIFFF)V
+	public static synthetic fun drawSimpleCircle$default (FFFJIFFFILjava/lang/Object;)V
+	public static final fun drawSimpleCircleRGBA (FF)V
+	public static final fun drawSimpleCircleRGBA (FFF)V
+	public static final fun drawSimpleCircleRGBA (FFFI)V
+	public static final fun drawSimpleCircleRGBA (FFFII)V
+	public static final fun drawSimpleCircleRGBA (FFFIII)V
+	public static final fun drawSimpleCircleRGBA (FFFIIII)V
+	public static final fun drawSimpleCircleRGBA (FFFIIIII)V
+	public static final fun drawSimpleCircleRGBA (FFFIIIIIF)V
+	public static final fun drawSimpleCircleRGBA (FFFIIIIIFF)V
+	public static final fun drawSimpleCircleRGBA (FFFIIIIIFFF)V
+	public static synthetic fun drawSimpleCircleRGBA$default (FFFIIIIIFFFILjava/lang/Object;)V
+	public static final fun drawSquare (FF)V
+	public static final fun drawSquare (FFF)V
+	public static final fun drawSquare (FFFJ)V
+	public static synthetic fun drawSquare$default (FFFJILjava/lang/Object;)V
+	public static final fun drawSquareRGBA (FF)V
+	public static final fun drawSquareRGBA (FFF)V
+	public static final fun drawSquareRGBA (FFFI)V
+	public static final fun drawSquareRGBA (FFFII)V
+	public static final fun drawSquareRGBA (FFFIII)V
+	public static final fun drawSquareRGBA (FFFIIII)V
+	public static synthetic fun drawSquareRGBA$default (FFFIIIIILjava/lang/Object;)V
+	public static final fun drawString (Ljava/lang/String;FF)V
+	public static final fun drawString (Ljava/lang/String;FFJ)V
+	public static final fun drawString (Ljava/lang/String;FFJF)V
+	public static final fun drawString (Ljava/lang/String;FFJFZ)V
+	public static final fun drawString (Ljava/lang/String;FFJFZZ)V
+	public static synthetic fun drawString$default (Ljava/lang/String;FFJFZZILjava/lang/Object;)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FF)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFI)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFIII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFIIII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFIIIIF)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFIIIIFZ)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFIIIIFZZ)V
+	public static synthetic fun drawStringRGBA$default (Ljava/lang/String;FFIIIIFZZILjava/lang/Object;)V
+	public static final fun drawStringWithShadow (Ljava/lang/String;FF)V
+	public static final fun drawStringWithShadow (Ljava/lang/String;FFJ)V
+	public static final fun drawStringWithShadow (Ljava/lang/String;FFJF)V
+	public static final fun drawStringWithShadow (Ljava/lang/String;FFJFZ)V
+	public static synthetic fun drawStringWithShadow$default (Ljava/lang/String;FFJFZILjava/lang/Object;)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FF)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFI)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFII)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFIII)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFIIII)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFIIIIF)V
+	public static final fun drawStringWithShadowRGBA (Ljava/lang/String;FFIIIIFZ)V
+	public static synthetic fun drawStringWithShadowRGBA$default (Ljava/lang/String;FFIIIIFZILjava/lang/Object;)V
+	public static final fun getPartialTicks ()F
+}
+
+public final class com/chattriggers/ctjs/api/render/GUIRenderer$ScreenWrapper {
+	public fun <init> ()V
+	public final fun getHeight ()I
+	public final fun getScale ()D
+	public final fun getWidth ()I
 }
 
 public final class com/chattriggers/ctjs/api/render/Gui : gg/essential/universal/UScreen {
@@ -1575,6 +1781,29 @@ public final class com/chattriggers/ctjs/api/render/Gui : gg/essential/universal
 	public final fun unregisterScrolled ()Lcom/chattriggers/ctjs/api/render/Gui;
 }
 
+public final class com/chattriggers/ctjs/api/render/HudRenderLayer : java/lang/Enum {
+	public static final field BOSS_BAR Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field CHAT Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field CROSSHAIR Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field DEBUG Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field DEMO_TIMER Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field EXPERIENCE_LEVEL Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field HOTBAR_AND_BARS Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field MISC_OVERLAYS Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field OVERLAY_MESSAGE Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field PLAYER_LIST Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field SCOREBOARD Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field SLEEP Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field STATUS_EFFECTS Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field SUBTITLES Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static final field TITLE_AND_SUBTITLE Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getMcValue ()Lnet/minecraft/util/Identifier;
+	public final fun toMC ()Lnet/minecraft/util/Identifier;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+	public static fun values ()[Lcom/chattriggers/ctjs/api/render/HudRenderLayer;
+}
+
 public final class com/chattriggers/ctjs/api/render/Image {
 	public static final field Companion Lcom/chattriggers/ctjs/api/render/Image$Companion;
 	public fun <init> (Ljava/awt/image/BufferedImage;)V
@@ -1589,6 +1818,8 @@ public final class com/chattriggers/ctjs/api/render/Image {
 	public static final fun fromUrl (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Image;
 	public static final fun fromUrl (Ljava/lang/String;Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Image;
 	public final fun getImage ()Ljava/awt/image/BufferedImage;
+	public final fun getImageSize (Ljava/lang/Float;Ljava/lang/Float;)Lkotlin/Pair;
+	public static synthetic fun getImageSize$default (Lcom/chattriggers/ctjs/api/render/Image;Ljava/lang/Float;Ljava/lang/Float;ILjava/lang/Object;)Lkotlin/Pair;
 	public final fun getTexture ()Lnet/minecraft/client/texture/NativeImageBackedTexture;
 	public final fun getTextureHeight ()I
 	public final fun getTextureWidth ()I
@@ -1602,6 +1833,30 @@ public final class com/chattriggers/ctjs/api/render/Image$Companion {
 	public final fun fromUrl (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Image;
 	public final fun fromUrl (Ljava/lang/String;Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Image;
 	public static synthetic fun fromUrl$default (Lcom/chattriggers/ctjs/api/render/Image$Companion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Image;
+}
+
+public final class com/chattriggers/ctjs/api/render/PipelineBuilder {
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun begin ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun begin (Lcom/chattriggers/ctjs/api/render/DrawMode;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun begin (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun begin (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static synthetic fun begin$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun build ()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+	public static final fun disableBlend ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun disableCull ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun disableDepth ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun enableBlend ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun enableCull ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun enableDepth ()Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun layer ()Lnet/minecraft/client/render/RenderLayer;
+	public static final fun setBlendFunction (Lcom/mojang/blaze3d/pipeline/BlendFunction;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun setDepthTestFunction (Lcom/mojang/blaze3d/platform/DepthTestFunction;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun setLayering (Lnet/minecraft/client/render/RenderPhase$Layering;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun setLineWidth (Ljava/lang/Float;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun setLocation (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun setTexture (Lnet/minecraft/util/Identifier;)Lcom/chattriggers/ctjs/api/render/PipelineBuilder;
+	public static final fun state ()Ljava/lang/String;
 }
 
 public final class com/chattriggers/ctjs/api/render/Rectangle {
@@ -1637,7 +1892,35 @@ public final class com/chattriggers/ctjs/api/render/Rectangle {
 	public final fun setY (F)Lcom/chattriggers/ctjs/api/render/Rectangle;
 }
 
-public final class com/chattriggers/ctjs/api/render/Renderer {
+public final class com/chattriggers/ctjs/api/render/RenderSnippet : java/lang/Enum {
+	public static final field ENTITY_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field FOG_NO_COLOR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field FOG_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field GUI_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field MATRICES_COLOR_FOG_OFFSET_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field MATRICES_COLOR_FOG_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field MATRICES_COLOR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field MATRICES_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field PARTICLE_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field POSITION_COLOR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field POSITION_TEX_COLOR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field POST_EFFECT_PROCESSOR_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field RENDERTYPE_BEACON_BEAM_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field RENDERTYPE_CLOUDS_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field RENDERTYPE_END_PORTAL_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field RENDERTYPE_LINES_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field RENDERTYPE_OUTLINE_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field TERRAIN_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field TEXT_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static final field WEATHER_SNIPPET Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getMcSnippet ()Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+	public static fun values ()[Lcom/chattriggers/ctjs/api/render/RenderSnippet;
+}
+
+public final class com/chattriggers/ctjs/api/render/RenderUtils {
 	public static final field AQUA J
 	public static final field BLACK J
 	public static final field BLUE J
@@ -1650,65 +1933,68 @@ public final class com/chattriggers/ctjs/api/render/Renderer {
 	public static final field GOLD J
 	public static final field GRAY J
 	public static final field GREEN J
-	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/Renderer;
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final field LIGHT_PURPLE J
 	public static final field RED J
 	public static final field WHITE J
 	public static final field YELLOW J
 	public static field colorized Ljava/lang/Long;
-	public static final field screen Lcom/chattriggers/ctjs/api/render/Renderer$ScreenWrapper;
-	public static final fun begin ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun begin (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun begin (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun begin$default (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;I)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun bindTexture$default (Lcom/chattriggers/ctjs/api/render/Image;IILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun blendFunc (I)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun color (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun color (FFFF)Lcom/chattriggers/ctjs/api/render/Renderer;
+	public static field vertexColor Ljava/awt/Color;
+	public static final fun begin (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun begin (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun begin (Lnet/minecraft/client/render/RenderLayer;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun begin$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun begin$default (Lcom/chattriggers/ctjs/api/render/DrawMode;Lcom/chattriggers/ctjs/api/render/VertexFormat;Lcom/chattriggers/ctjs/api/render/RenderSnippet;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun begin$default (Lnet/minecraft/client/render/RenderLayer;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;I)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun bindTexture$default (Lcom/chattriggers/ctjs/api/render/Image;IILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun blendFunction (Lcom/mojang/blaze3d/pipeline/BlendFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun cameraPos (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun cameraPos (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun cameraPos$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun color (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun color (FFFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun color (I)J
-	public static final fun color (III)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun color (IIII)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun color (J)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun color$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun color$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun colorize (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun colorize (FFFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun colorize (III)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun colorize (IIII)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun colorize$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun colorize$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun deleteTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun depthFunc (I)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun depthMask (Z)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun disableBlend ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun disableCull ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun disableDepth ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun disableLighting ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun draw ()V
-	public static final fun drawCircle (JFFFI)V
-	public static final fun drawImage (Lcom/chattriggers/ctjs/api/render/Image;FFFF)V
-	public static final fun drawLine (JFFFFF)V
-	public static final fun drawPlayer (Lorg/mozilla/javascript/NativeObject;)V
-	public static final fun drawRect (JFFFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun drawString (Ljava/lang/String;FF)V
-	public static final fun drawString (Ljava/lang/String;FFJ)V
-	public static final fun drawString (Ljava/lang/String;FFJZ)V
-	public static synthetic fun drawString$default (Ljava/lang/String;FFJZILjava/lang/Object;)V
-	public static final fun drawStringWithShadow (Ljava/lang/String;FF)V
-	public static final fun drawStringWithShadow (Ljava/lang/String;FFJ)V
-	public static synthetic fun drawStringWithShadow$default (Ljava/lang/String;FFJILjava/lang/Object;)V
-	public static final fun enableBlend ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun enableCull ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun enableDepth ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun enableLighting ()Lcom/chattriggers/ctjs/api/render/Renderer;
+	public static final fun color (III)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun color (IIII)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun color (J)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun color (Ljava/awt/Color;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun color$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun color$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun colorInt (J)I
+	public static final fun colorize (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun colorize (FFFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun colorize (III)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun colorize (IIII)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun colorize (J)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun colorize$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun colorize$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun deleteTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun depthTestFunction (Lcom/mojang/blaze3d/platform/DepthTestFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun disableBlend ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun disableCull ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun disableDepth ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun disableLighting ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun draw ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun enableBlend ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun enableCull ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun enableDepth ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun enableLighting ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun fixAlpha (J)J
+	public static final fun getARGBColorFromRGBAColor (J)J
+	public static final fun getColor (FFF)J
+	public static final fun getColor (FFFF)J
 	public static final fun getColor (III)J
 	public static final fun getColor (IIII)J
+	public static synthetic fun getColor$default (FFFFILjava/lang/Object;)J
 	public static synthetic fun getColor$default (IIIIILjava/lang/Object;)J
+	public static final fun getColor0_1 (FFF)J
+	public static final fun getColor0_1 (FFFF)J
+	public static synthetic fun getColor0_1$default (FFFFILjava/lang/Object;)J
+	public static final fun getColorRGBA (J)[F
+	public static final fun getDestFactorFromInt (I)Lcom/mojang/blaze3d/platform/DestFactor;
 	public static final fun getFontRenderer ()Lnet/minecraft/client/font/TextRenderer;
-	public static final fun getPartialTicks ()F
 	public static final fun getRainbow (F)J
 	public static final fun getRainbow (FF)J
 	public static synthetic fun getRainbow$default (FFILjava/lang/Object;)J
@@ -1717,113 +2003,37 @@ public final class com/chattriggers/ctjs/api/render/Renderer {
 	public static synthetic fun getRainbowColors$default (FFILjava/lang/Object;)[I
 	public static final fun getRenderManager ()Lnet/minecraft/client/render/WorldRenderer;
 	public static final fun getRenderPos (FFF)Lcom/chattriggers/ctjs/api/vec/Vec3f;
+	public static final fun getSourceFactorFromInt (I)Lcom/mojang/blaze3d/platform/SourceFactor;
 	public static final fun getStringWidth (Ljava/lang/String;)I
-	public static final fun light (II)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun lineWidth (F)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun multiply (Lorg/joml/Quaternionf;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun normal (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun overlay (II)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun popMatrix ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun pos (FF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun pos (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun pos$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun pushMatrix ()Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun pushMatrix (Lgg/essential/universal/UMatrixStack;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun pushMatrix$default (Lgg/essential/universal/UMatrixStack;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun rotate (F)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun rotate (FF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun rotate (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun rotate (FFFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun rotate$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun scale (F)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun scale (FF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun scale (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun scale$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun tex (FF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun translate (FF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun translate (FFF)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static synthetic fun translate$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer;
-	public static final fun tryBlendFuncSeparate (IIII)Lcom/chattriggers/ctjs/api/render/Renderer;
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer$DrawMode : java/lang/Enum {
-	public static final field Companion Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode$Companion;
-	public static final field LINES Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final field LINE_STRIP Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final field QUADS Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final field TRIANGLES Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final field TRIANGLE_FAN Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final field TRIANGLE_STRIP Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static final fun fromUC (Lgg/essential/universal/UGraphics$DrawMode;)Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public final fun toUC ()Lgg/essential/universal/UGraphics$DrawMode;
-	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-	public static fun values ()[Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer$DrawMode$Companion {
-	public final fun fromUC (Lgg/essential/universal/UGraphics$DrawMode;)Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer$ScreenWrapper {
-	public fun <init> ()V
-	public final fun getHeight ()I
-	public final fun getScale ()D
-	public final fun getWidth ()I
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer$VertexFormat : java/lang/Enum {
-	public static final field Companion Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat$Companion;
-	public static final field LINES Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_COLOR Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_COLOR_TEXTURE_LIGHT Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_TEXTURE Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_TEXTURE_COLOR Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_TEXTURE_COLOR_LIGHT Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_TEXTURE_COLOR_NORMAL Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final field POSITION_TEXTURE_LIGHT_COLOR Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static final fun fromMC (Lcom/mojang/blaze3d/vertex/VertexFormat;)Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public final fun toMC ()Lcom/mojang/blaze3d/vertex/VertexFormat;
-	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-	public static fun values ()[Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer$VertexFormat$Companion {
-	public final fun fromMC (Lcom/mojang/blaze3d/vertex/VertexFormat;)Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;
-}
-
-public final class com/chattriggers/ctjs/api/render/Renderer3d {
-	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun begin ()Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun begin (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun begin (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static synthetic fun begin$default (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;Lcom/chattriggers/ctjs/api/render/Renderer$VertexFormat;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun color (FFF)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun color (FFFF)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun color (III)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun color (IIII)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun color (J)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static synthetic fun color$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static synthetic fun color$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun draw ()V
-	public static final fun drawLine (JFFFFFFF)V
-	public static final fun drawString (Ljava/lang/String;FFF)V
-	public static final fun drawString (Ljava/lang/String;FFFJ)V
-	public static final fun drawString (Ljava/lang/String;FFFJZ)V
-	public static final fun drawString (Ljava/lang/String;FFFJZF)V
-	public static final fun drawString (Ljava/lang/String;FFFJZFZ)V
-	public static final fun drawString (Ljava/lang/String;FFFJZFZZ)V
-	public static final fun drawString (Ljava/lang/String;FFFJZFZZZ)V
-	public static final fun drawString (Lorg/mozilla/javascript/NativeObject;)V
-	public static synthetic fun drawString$default (Ljava/lang/String;FFFJZFZZZILjava/lang/Object;)V
-	public static final fun light (II)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun lineWidth (F)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun normal (FFF)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun overlay (II)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun pos (FFF)Lcom/chattriggers/ctjs/api/render/Renderer3d;
-	public static final fun tex (FF)Lcom/chattriggers/ctjs/api/render/Renderer3d;
+	public static final fun light (II)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun lineWidth (F)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun multiply (Lorg/joml/Quaternionf;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun normal (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun overlay (II)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun popMatrix ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun pos (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun pushMatrix ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun pushMatrix (Lgg/essential/universal/UMatrixStack;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun pushMatrix$default (Lgg/essential/universal/UMatrixStack;ILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun resetLineWidth ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun rotate (F)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun rotate (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun rotate (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun rotate (FFFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun rotate$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun scale (F)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun scale (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun scale (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun scale$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun setShaderTexture (ILcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun setShaderTexture (ILcom/mojang/blaze3d/textures/GpuTexture;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun tex (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun translate (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun translate (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static synthetic fun translate$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun tryBlendFuncSeparate (IIII)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun tryBlendFuncSeparate (Lcom/mojang/blaze3d/platform/SourceFactor;Lcom/mojang/blaze3d/platform/DestFactor;Lcom/mojang/blaze3d/platform/SourceFactor;Lcom/mojang/blaze3d/platform/DestFactor;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun worldPos (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 }
 
 public final class com/chattriggers/ctjs/api/render/Shape {
@@ -1834,14 +2044,16 @@ public final class com/chattriggers/ctjs/api/render/Shape {
 	public final fun copy ()Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun draw ()Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun getColor ()J
-	public final fun getDrawMode ()Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;
+	public final fun getDrawMode ()Lcom/chattriggers/ctjs/api/render/DrawMode;
+	public final fun getVertexFormat ()Lcom/chattriggers/ctjs/api/render/VertexFormat;
 	public final fun getVertexes ()Ljava/util/List;
 	public final fun insertVertex (IFF)Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun removeVertex (I)Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun setCircle (FFFI)Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun setColor (J)Lcom/chattriggers/ctjs/api/render/Shape;
-	public final fun setDrawMode (Lcom/chattriggers/ctjs/api/render/Renderer$DrawMode;)Lcom/chattriggers/ctjs/api/render/Shape;
+	public final fun setDrawMode (Lcom/chattriggers/ctjs/api/render/DrawMode;)Lcom/chattriggers/ctjs/api/render/Shape;
 	public final fun setLine (FFFFF)Lcom/chattriggers/ctjs/api/render/Shape;
+	public final fun setVertexFormat (Lcom/chattriggers/ctjs/api/render/VertexFormat;)Lcom/chattriggers/ctjs/api/render/Shape;
 }
 
 public final class com/chattriggers/ctjs/api/render/Text {
@@ -1912,6 +2124,518 @@ public final class com/chattriggers/ctjs/api/render/Toast : net/minecraft/client
 	public final fun setTitle (Ljava/lang/Object;)V
 	public final fun show ()Lcom/chattriggers/ctjs/api/render/Toast;
 	public fun update (Lnet/minecraft/client/toast/ToastManager;J)V
+}
+
+public final class com/chattriggers/ctjs/api/render/VertexFormat : java/lang/Enum {
+	public static final field BLIT_SCREEN Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field Companion Lcom/chattriggers/ctjs/api/render/VertexFormat$Companion;
+	public static final field POSITION Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR_LIGHT Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR_NORMAL Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR_TEXTURE_LIGHT Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR_TEXTURE_LIGHT_NORMAL Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_TEXTURE Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_TEXTURE_COLOR Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_TEXTURE_COLOR_LIGHT Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_TEXTURE_COLOR_NORMAL Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final field POSITION_TEXTURE_LIGHT_COLOR Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static final fun fromMC (Lcom/mojang/blaze3d/vertex/VertexFormat;)Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun toMC ()Lcom/mojang/blaze3d/vertex/VertexFormat;
+	public static fun valueOf (Ljava/lang/String;)Lcom/chattriggers/ctjs/api/render/VertexFormat;
+	public static fun values ()[Lcom/chattriggers/ctjs/api/render/VertexFormat;
+}
+
+public final class com/chattriggers/ctjs/api/render/VertexFormat$Companion {
+	public final fun fromMC (Lcom/mojang/blaze3d/vertex/VertexFormat;)Lcom/chattriggers/ctjs/api/render/VertexFormat;
+}
+
+public final class com/chattriggers/ctjs/api/render/WorldRenderer {
+	public static final field INSTANCE Lcom/chattriggers/ctjs/api/render/WorldRenderer;
+	public static final fun drawBox (FFF)V
+	public static final fun drawBox (FFFF)V
+	public static final fun drawBox (FFFFF)V
+	public static final fun drawBox (FFFFFF)V
+	public static final fun drawBox (FFFFFFJ)V
+	public static final fun drawBox (FFFFFFJZ)V
+	public static final fun drawBox (FFFFFFJZZ)V
+	public static final fun drawBox (FFFFFFJZZF)V
+	public static synthetic fun drawBox$default (FFFFFFJZZFILjava/lang/Object;)V
+	public static final fun drawBoxRGBA (FFF)V
+	public static final fun drawBoxRGBA (FFFF)V
+	public static final fun drawBoxRGBA (FFFFF)V
+	public static final fun drawBoxRGBA (FFFFFF)V
+	public static final fun drawBoxRGBA (FFFFFFI)V
+	public static final fun drawBoxRGBA (FFFFFFII)V
+	public static final fun drawBoxRGBA (FFFFFFIII)V
+	public static final fun drawBoxRGBA (FFFFFFIIII)V
+	public static final fun drawBoxRGBA (FFFFFFIIIIZ)V
+	public static final fun drawBoxRGBA (FFFFFFIIIIZZ)V
+	public static final fun drawBoxRGBA (FFFFFFIIIIZZF)V
+	public static synthetic fun drawBoxRGBA$default (FFFFFFIIIIZZFILjava/lang/Object;)V
+	public static final fun drawCone (FFF)V
+	public static final fun drawCone (FFFF)V
+	public static final fun drawCone (FFFFF)V
+	public static final fun drawCone (FFFFFJ)V
+	public static final fun drawCone (FFFFFJI)V
+	public static final fun drawCone (FFFFFJIZ)V
+	public static final fun drawCone (FFFFFJIZZ)V
+	public static final fun drawCone (FFFFFJIZZF)V
+	public static synthetic fun drawCone$default (FFFFFJIZZFILjava/lang/Object;)V
+	public static final fun drawConeRGBA (FFF)V
+	public static final fun drawConeRGBA (FFFF)V
+	public static final fun drawConeRGBA (FFFFF)V
+	public static final fun drawConeRGBA (FFFFFI)V
+	public static final fun drawConeRGBA (FFFFFII)V
+	public static final fun drawConeRGBA (FFFFFIII)V
+	public static final fun drawConeRGBA (FFFFFIIII)V
+	public static final fun drawConeRGBA (FFFFFIIIII)V
+	public static final fun drawConeRGBA (FFFFFIIIIIZ)V
+	public static final fun drawConeRGBA (FFFFFIIIIIZZ)V
+	public static final fun drawConeRGBA (FFFFFIIIIIZZF)V
+	public static synthetic fun drawConeRGBA$default (FFFFFIIIIIZZFILjava/lang/Object;)V
+	public static final fun drawCylinder (FFF)V
+	public static final fun drawCylinder (FFFF)V
+	public static final fun drawCylinder (FFFFF)V
+	public static final fun drawCylinder (FFFFFF)V
+	public static final fun drawCylinder (FFFFFFJ)V
+	public static final fun drawCylinder (FFFFFFJI)V
+	public static final fun drawCylinder (FFFFFFJIZ)V
+	public static final fun drawCylinder (FFFFFFJIZZ)V
+	public static final fun drawCylinder (FFFFFFJIZZF)V
+	public static synthetic fun drawCylinder$default (FFFFFFJIZZFILjava/lang/Object;)V
+	public static final fun drawCylinderRGBA (FFF)V
+	public static final fun drawCylinderRGBA (FFFF)V
+	public static final fun drawCylinderRGBA (FFFFF)V
+	public static final fun drawCylinderRGBA (FFFFFF)V
+	public static final fun drawCylinderRGBA (FFFFFFI)V
+	public static final fun drawCylinderRGBA (FFFFFFII)V
+	public static final fun drawCylinderRGBA (FFFFFFIII)V
+	public static final fun drawCylinderRGBA (FFFFFFIIII)V
+	public static final fun drawCylinderRGBA (FFFFFFIIIII)V
+	public static final fun drawCylinderRGBA (FFFFFFIIIIIZ)V
+	public static final fun drawCylinderRGBA (FFFFFFIIIIIZZ)V
+	public static final fun drawCylinderRGBA (FFFFFFIIIIIZZF)V
+	public static synthetic fun drawCylinderRGBA$default (FFFFFFIIIIIZZFILjava/lang/Object;)V
+	public static final fun drawLine (FFFFFF)V
+	public static final fun drawLine (FFFFFFJ)V
+	public static final fun drawLine (FFFFFFJZ)V
+	public static final fun drawLine (FFFFFFJZF)V
+	public static synthetic fun drawLine$default (FFFFFFJZFILjava/lang/Object;)V
+	public static final fun drawLineRGBA (FFFFFF)V
+	public static final fun drawLineRGBA (FFFFFFI)V
+	public static final fun drawLineRGBA (FFFFFFII)V
+	public static final fun drawLineRGBA (FFFFFFIII)V
+	public static final fun drawLineRGBA (FFFFFFIIII)V
+	public static final fun drawLineRGBA (FFFFFFIIIIZ)V
+	public static final fun drawLineRGBA (FFFFFFIIIIZF)V
+	public static synthetic fun drawLineRGBA$default (FFFFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawPyramid (FFF)V
+	public static final fun drawPyramid (FFFF)V
+	public static final fun drawPyramid (FFFFF)V
+	public static final fun drawPyramid (FFFFFF)V
+	public static final fun drawPyramid (FFFFFFJ)V
+	public static final fun drawPyramid (FFFFFFJZ)V
+	public static final fun drawPyramid (FFFFFFJZZ)V
+	public static final fun drawPyramid (FFFFFFJZZF)V
+	public static synthetic fun drawPyramid$default (FFFFFFJZZFILjava/lang/Object;)V
+	public static final fun drawPyramidRGBA (FFF)V
+	public static final fun drawPyramidRGBA (FFFF)V
+	public static final fun drawPyramidRGBA (FFFFF)V
+	public static final fun drawPyramidRGBA (FFFFFF)V
+	public static final fun drawPyramidRGBA (FFFFFFI)V
+	public static final fun drawPyramidRGBA (FFFFFFII)V
+	public static final fun drawPyramidRGBA (FFFFFFIII)V
+	public static final fun drawPyramidRGBA (FFFFFFIIII)V
+	public static final fun drawPyramidRGBA (FFFFFFIIIIZ)V
+	public static final fun drawPyramidRGBA (FFFFFFIIIIZZ)V
+	public static final fun drawPyramidRGBA (FFFFFFIIIIZZF)V
+	public static synthetic fun drawPyramidRGBA$default (FFFFFFIIIIZZFILjava/lang/Object;)V
+	public static final fun drawSimpleCylinder (FFF)V
+	public static final fun drawSimpleCylinder (FFFF)V
+	public static final fun drawSimpleCylinder (FFFFF)V
+	public static final fun drawSimpleCylinder (FFFFFI)V
+	public static final fun drawSimpleCylinder (FFFFFII)V
+	public static final fun drawSimpleCylinder (FFFFFIII)V
+	public static final fun drawSimpleCylinder (FFFFFIIII)V
+	public static final fun drawSimpleCylinder (FFFFFIIIII)V
+	public static final fun drawSimpleCylinder (FFFFFIIIIIZ)V
+	public static final fun drawSimpleCylinder (FFFFFIIIIIZZ)V
+	public static final fun drawSimpleCylinder (FFFFFIIIIIZZF)V
+	public static synthetic fun drawSimpleCylinder$default (FFFFFIIIIIZZFILjava/lang/Object;)V
+	public static final fun drawSimpleCylinderRGBA (FFF)V
+	public static final fun drawSimpleCylinderRGBA (FFFF)V
+	public static final fun drawSimpleCylinderRGBA (FFFFF)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFI)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFII)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIII)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIIII)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIIIII)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIIIIIZ)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIIIIIZZ)V
+	public static final fun drawSimpleCylinderRGBA (FFFFFIIIIIZZF)V
+	public static synthetic fun drawSimpleCylinderRGBA$default (FFFFFIIIIIZZFILjava/lang/Object;)V
+	public static final fun drawSimpleSolidCube (FFF)V
+	public static final fun drawSimpleSolidCube (FFFF)V
+	public static final fun drawSimpleSolidCube (FFFFJ)V
+	public static final fun drawSimpleSolidCube (FFFFJZ)V
+	public static final fun drawSimpleSolidCube (FFFFJZF)V
+	public static synthetic fun drawSimpleSolidCube$default (FFFFJZFILjava/lang/Object;)V
+	public static final fun drawSimpleSolidCubeRGBA (FFF)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFF)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFI)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFII)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFIII)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFIIII)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFIIIIZ)V
+	public static final fun drawSimpleSolidCubeRGBA (FFFFIIIIZF)V
+	public static synthetic fun drawSimpleSolidCubeRGBA$default (FFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawSimpleSolidCylinder (FFF)V
+	public static final fun drawSimpleSolidCylinder (FFFF)V
+	public static final fun drawSimpleSolidCylinder (FFFFF)V
+	public static final fun drawSimpleSolidCylinder (FFFFFJ)V
+	public static final fun drawSimpleSolidCylinder (FFFFFJI)V
+	public static final fun drawSimpleSolidCylinder (FFFFFJIZ)V
+	public static synthetic fun drawSimpleSolidCylinder$default (FFFFFJIZILjava/lang/Object;)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFF)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFF)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFF)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFI)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFII)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFIII)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFIIII)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFIIIII)V
+	public static final fun drawSimpleSolidCylinderRGBA (FFFFFIIIIIZ)V
+	public static synthetic fun drawSimpleSolidCylinderRGBA$default (FFFFFIIIIIZILjava/lang/Object;)V
+	public static final fun drawSimpleSolidPyramid (FFF)V
+	public static final fun drawSimpleSolidPyramid (FFFF)V
+	public static final fun drawSimpleSolidPyramid (FFFFJ)V
+	public static final fun drawSimpleSolidPyramid (FFFFJZ)V
+	public static synthetic fun drawSimpleSolidPyramid$default (FFFFJZILjava/lang/Object;)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFF)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFF)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFFI)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFFII)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFFIII)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFFIIII)V
+	public static final fun drawSimpleSolidPyramidRGBA (FFFFIIIIZ)V
+	public static synthetic fun drawSimpleSolidPyramidRGBA$default (FFFFIIIIZILjava/lang/Object;)V
+	public static final fun drawSimpleSolidSphere (FFF)V
+	public static final fun drawSimpleSolidSphere (FFFF)V
+	public static final fun drawSimpleSolidSphere (FFFFJ)V
+	public static final fun drawSimpleSolidSphere (FFFFJI)V
+	public static final fun drawSimpleSolidSphere (FFFFJIZ)V
+	public static synthetic fun drawSimpleSolidSphere$default (FFFFJIZILjava/lang/Object;)V
+	public static final fun drawSimpleSolidSphereRGBA (FFF)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFF)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFI)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFII)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFIII)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFIIII)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFIIIII)V
+	public static final fun drawSimpleSolidSphereRGBA (FFFFIIIIIZ)V
+	public static synthetic fun drawSimpleSolidSphereRGBA$default (FFFFIIIIIZILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeCube (FFF)V
+	public static final fun drawSimpleWireframeCube (FFFF)V
+	public static final fun drawSimpleWireframeCube (FFFFJ)V
+	public static final fun drawSimpleWireframeCube (FFFFJZ)V
+	public static final fun drawSimpleWireframeCube (FFFFJZF)V
+	public static synthetic fun drawSimpleWireframeCube$default (FFFFJZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFF)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFF)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFI)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFII)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFIII)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFIIII)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFIIIIZ)V
+	public static final fun drawSimpleWireframeCubeRGBA (FFFFIIIIZF)V
+	public static synthetic fun drawSimpleWireframeCubeRGBA$default (FFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeCylinder (FFF)V
+	public static final fun drawSimpleWireframeCylinder (FFFF)V
+	public static final fun drawSimpleWireframeCylinder (FFFFF)V
+	public static final fun drawSimpleWireframeCylinder (FFFFFJ)V
+	public static final fun drawSimpleWireframeCylinder (FFFFFJI)V
+	public static final fun drawSimpleWireframeCylinder (FFFFFJIZ)V
+	public static final fun drawSimpleWireframeCylinder (FFFFFJIZF)V
+	public static synthetic fun drawSimpleWireframeCylinder$default (FFFFFJIZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFF)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFF)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFF)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFI)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFII)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFIII)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFIIII)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFIIIII)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFIIIIIZ)V
+	public static final fun drawSimpleWireframeCylinderRGBA (FFFFFIIIIIZF)V
+	public static synthetic fun drawSimpleWireframeCylinderRGBA$default (FFFFFIIIIIZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframePyramid (FFF)V
+	public static final fun drawSimpleWireframePyramid (FFFF)V
+	public static final fun drawSimpleWireframePyramid (FFFFJ)V
+	public static final fun drawSimpleWireframePyramid (FFFFJZ)V
+	public static final fun drawSimpleWireframePyramid (FFFFJZF)V
+	public static synthetic fun drawSimpleWireframePyramid$default (FFFFJZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFF)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFF)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFI)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFII)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFIII)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFIIII)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFIIIIZ)V
+	public static final fun drawSimpleWireframePyramidRGBA (FFFFIIIIZF)V
+	public static synthetic fun drawSimpleWireframePyramidRGBA$default (FFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeSphere (FFF)V
+	public static final fun drawSimpleWireframeSphere (FFFF)V
+	public static final fun drawSimpleWireframeSphere (FFFFJ)V
+	public static final fun drawSimpleWireframeSphere (FFFFJI)V
+	public static final fun drawSimpleWireframeSphere (FFFFJIZ)V
+	public static final fun drawSimpleWireframeSphere (FFFFJIZF)V
+	public static synthetic fun drawSimpleWireframeSphere$default (FFFFJIZFILjava/lang/Object;)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFF)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFF)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFI)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFII)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFIII)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFIIII)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFIIIII)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFIIIIIZ)V
+	public static final fun drawSimpleWireframeSphereRGBA (FFFFIIIIIZF)V
+	public static synthetic fun drawSimpleWireframeSphereRGBA$default (FFFFIIIIIZFILjava/lang/Object;)V
+	public static final fun drawSolidBox (FFF)V
+	public static final fun drawSolidBox (FFFF)V
+	public static final fun drawSolidBox (FFFFF)V
+	public static final fun drawSolidBox (FFFFFF)V
+	public static final fun drawSolidBox (FFFFFFJ)V
+	public static final fun drawSolidBox (FFFFFFJZ)V
+	public static final fun drawSolidBox (FFFFFFJZF)V
+	public static synthetic fun drawSolidBox$default (FFFFFFJZFILjava/lang/Object;)V
+	public static final fun drawSolidBoxRGBA (FFF)V
+	public static final fun drawSolidBoxRGBA (FFFF)V
+	public static final fun drawSolidBoxRGBA (FFFFF)V
+	public static final fun drawSolidBoxRGBA (FFFFFF)V
+	public static final fun drawSolidBoxRGBA (FFFFFFI)V
+	public static final fun drawSolidBoxRGBA (FFFFFFII)V
+	public static final fun drawSolidBoxRGBA (FFFFFFIII)V
+	public static final fun drawSolidBoxRGBA (FFFFFFIIII)V
+	public static final fun drawSolidBoxRGBA (FFFFFFIIIIZ)V
+	public static final fun drawSolidBoxRGBA (FFFFFFIIIIZF)V
+	public static synthetic fun drawSolidBoxRGBA$default (FFFFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawSolidCone (FFF)V
+	public static final fun drawSolidCone (FFFF)V
+	public static final fun drawSolidCone (FFFFF)V
+	public static final fun drawSolidCone (FFFFFJ)V
+	public static final fun drawSolidCone (FFFFFJI)V
+	public static final fun drawSolidCone (FFFFFJIZ)V
+	public static synthetic fun drawSolidCone$default (FFFFFJIZILjava/lang/Object;)V
+	public static final fun drawSolidConeRGBA (FFF)V
+	public static final fun drawSolidConeRGBA (FFFF)V
+	public static final fun drawSolidConeRGBA (FFFFF)V
+	public static final fun drawSolidConeRGBA (FFFFFI)V
+	public static final fun drawSolidConeRGBA (FFFFFII)V
+	public static final fun drawSolidConeRGBA (FFFFFIII)V
+	public static final fun drawSolidConeRGBA (FFFFFIIII)V
+	public static final fun drawSolidConeRGBA (FFFFFIIIII)V
+	public static final fun drawSolidConeRGBA (FFFFFIIIIIZ)V
+	public static synthetic fun drawSolidConeRGBA$default (FFFFFIIIIIZILjava/lang/Object;)V
+	public static final fun drawSolidCylinder (FFF)V
+	public static final fun drawSolidCylinder (FFFF)V
+	public static final fun drawSolidCylinder (FFFFF)V
+	public static final fun drawSolidCylinder (FFFFFF)V
+	public static final fun drawSolidCylinder (FFFFFFJ)V
+	public static final fun drawSolidCylinder (FFFFFFJI)V
+	public static final fun drawSolidCylinder (FFFFFFJIZ)V
+	public static synthetic fun drawSolidCylinder$default (FFFFFFJIZILjava/lang/Object;)V
+	public static final fun drawSolidCylinderRGBA (FFF)V
+	public static final fun drawSolidCylinderRGBA (FFFF)V
+	public static final fun drawSolidCylinderRGBA (FFFFF)V
+	public static final fun drawSolidCylinderRGBA (FFFFFF)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFI)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFII)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFIII)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFIIII)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFIIIII)V
+	public static final fun drawSolidCylinderRGBA (FFFFFFIIIIIZ)V
+	public static synthetic fun drawSolidCylinderRGBA$default (FFFFFFIIIIIZILjava/lang/Object;)V
+	public static final fun drawSolidPyramid (FFF)V
+	public static final fun drawSolidPyramid (FFFF)V
+	public static final fun drawSolidPyramid (FFFFF)V
+	public static final fun drawSolidPyramid (FFFFFF)V
+	public static final fun drawSolidPyramid (FFFFFFJ)V
+	public static final fun drawSolidPyramid (FFFFFFJZ)V
+	public static synthetic fun drawSolidPyramid$default (FFFFFFJZILjava/lang/Object;)V
+	public static final fun drawSolidPyramidRGBA (FFF)V
+	public static final fun drawSolidPyramidRGBA (FFFF)V
+	public static final fun drawSolidPyramidRGBA (FFFFF)V
+	public static final fun drawSolidPyramidRGBA (FFFFFF)V
+	public static final fun drawSolidPyramidRGBA (FFFFFFI)V
+	public static final fun drawSolidPyramidRGBA (FFFFFFII)V
+	public static final fun drawSolidPyramidRGBA (FFFFFFIII)V
+	public static final fun drawSolidPyramidRGBA (FFFFFFIIII)V
+	public static final fun drawSolidPyramidRGBA (FFFFFFIIIIZ)V
+	public static synthetic fun drawSolidPyramidRGBA$default (FFFFFFIIIIZILjava/lang/Object;)V
+	public static final fun drawSolidSphere (FFF)V
+	public static final fun drawSolidSphere (FFFF)V
+	public static final fun drawSolidSphere (FFFFF)V
+	public static final fun drawSolidSphere (FFFFFF)V
+	public static final fun drawSolidSphere (FFFFFFJ)V
+	public static final fun drawSolidSphere (FFFFFFJI)V
+	public static final fun drawSolidSphere (FFFFFFJIZ)V
+	public static synthetic fun drawSolidSphere$default (FFFFFFJIZILjava/lang/Object;)V
+	public static final fun drawSolidSphereRGBA (FFF)V
+	public static final fun drawSolidSphereRGBA (FFFF)V
+	public static final fun drawSolidSphereRGBA (FFFFF)V
+	public static final fun drawSolidSphereRGBA (FFFFFF)V
+	public static final fun drawSolidSphereRGBA (FFFFFFI)V
+	public static final fun drawSolidSphereRGBA (FFFFFFII)V
+	public static final fun drawSolidSphereRGBA (FFFFFFIII)V
+	public static final fun drawSolidSphereRGBA (FFFFFFIIII)V
+	public static final fun drawSolidSphereRGBA (FFFFFFIIIII)V
+	public static final fun drawSolidSphereRGBA (FFFFFFIIIIIZ)V
+	public static synthetic fun drawSolidSphereRGBA$default (FFFFFFIIIIIZILjava/lang/Object;)V
+	public static final fun drawSphere (FFF)V
+	public static final fun drawSphere (FFFF)V
+	public static final fun drawSphere (FFFFF)V
+	public static final fun drawSphere (FFFFFF)V
+	public static final fun drawSphere (FFFFFFJ)V
+	public static final fun drawSphere (FFFFFFJI)V
+	public static final fun drawSphere (FFFFFFJIZ)V
+	public static final fun drawSphere (FFFFFFJIZZ)V
+	public static final fun drawSphere (FFFFFFJIZZF)V
+	public static synthetic fun drawSphere$default (FFFFFFJIZZFILjava/lang/Object;)V
+	public static final fun drawSphereRGBA (FFF)V
+	public static final fun drawSphereRGBA (FFFF)V
+	public static final fun drawSphereRGBA (FFFFF)V
+	public static final fun drawSphereRGBA (FFFFFF)V
+	public static final fun drawSphereRGBA (FFFFFFI)V
+	public static final fun drawSphereRGBA (FFFFFFII)V
+	public static final fun drawSphereRGBA (FFFFFFIII)V
+	public static final fun drawSphereRGBA (FFFFFFIIII)V
+	public static final fun drawSphereRGBA (FFFFFFIIIII)V
+	public static final fun drawSphereRGBA (FFFFFFIIIIIZ)V
+	public static final fun drawSphereRGBA (FFFFFFIIIIIZZ)V
+	public static final fun drawSphereRGBA (FFFFFFIIIIIZZF)V
+	public static synthetic fun drawSphereRGBA$default (FFFFFFIIIIIZZFILjava/lang/Object;)V
+	public static final fun drawString (Ljava/lang/String;FFF)V
+	public static final fun drawString (Ljava/lang/String;FFFJ)V
+	public static final fun drawString (Ljava/lang/String;FFFJF)V
+	public static final fun drawString (Ljava/lang/String;FFFJFZ)V
+	public static final fun drawString (Ljava/lang/String;FFFJFZZ)V
+	public static final fun drawString (Ljava/lang/String;FFFJFZZZ)V
+	public static final fun drawString (Ljava/lang/String;FFFJFZZZZ)V
+	public static final fun drawString (Lorg/mozilla/javascript/NativeObject;)V
+	public static synthetic fun drawString$default (Ljava/lang/String;FFFJFZZZZILjava/lang/Object;)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFF)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFI)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIII)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIIIF)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIIIFZ)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIIIFZZ)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIIIFZZZ)V
+	public static final fun drawStringRGBA (Ljava/lang/String;FFFIIIIFZZZZ)V
+	public static synthetic fun drawStringRGBA$default (Ljava/lang/String;FFFIIIIFZZZZILjava/lang/Object;)V
+	public static final fun drawWireframeBox (FFF)V
+	public static final fun drawWireframeBox (FFFF)V
+	public static final fun drawWireframeBox (FFFFF)V
+	public static final fun drawWireframeBox (FFFFFF)V
+	public static final fun drawWireframeBox (FFFFFFJ)V
+	public static final fun drawWireframeBox (FFFFFFJZ)V
+	public static final fun drawWireframeBox (FFFFFFJZF)V
+	public static synthetic fun drawWireframeBox$default (FFFFFFJZFILjava/lang/Object;)V
+	public static final fun drawWireframeBoxRGBA (FFF)V
+	public static final fun drawWireframeBoxRGBA (FFFF)V
+	public static final fun drawWireframeBoxRGBA (FFFFF)V
+	public static final fun drawWireframeBoxRGBA (FFFFFF)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFI)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFII)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFIII)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFIIII)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFIIIIZ)V
+	public static final fun drawWireframeBoxRGBA (FFFFFFIIIIZF)V
+	public static synthetic fun drawWireframeBoxRGBA$default (FFFFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawWireframeCone (FFF)V
+	public static final fun drawWireframeCone (FFFF)V
+	public static final fun drawWireframeCone (FFFFF)V
+	public static final fun drawWireframeCone (FFFFFJ)V
+	public static final fun drawWireframeCone (FFFFFJI)V
+	public static final fun drawWireframeCone (FFFFFJIZ)V
+	public static final fun drawWireframeCone (FFFFFJIZF)V
+	public static synthetic fun drawWireframeCone$default (FFFFFJIZFILjava/lang/Object;)V
+	public static final fun drawWireframeConeRGBA (FFF)V
+	public static final fun drawWireframeConeRGBA (FFFF)V
+	public static final fun drawWireframeConeRGBA (FFFFF)V
+	public static final fun drawWireframeConeRGBA (FFFFFI)V
+	public static final fun drawWireframeConeRGBA (FFFFFII)V
+	public static final fun drawWireframeConeRGBA (FFFFFIII)V
+	public static final fun drawWireframeConeRGBA (FFFFFIIII)V
+	public static final fun drawWireframeConeRGBA (FFFFFIIIII)V
+	public static final fun drawWireframeConeRGBA (FFFFFIIIIIZ)V
+	public static final fun drawWireframeConeRGBA (FFFFFIIIIIZF)V
+	public static synthetic fun drawWireframeConeRGBA$default (FFFFFIIIIIZFILjava/lang/Object;)V
+	public static final fun drawWireframeCylinder (FFF)V
+	public static final fun drawWireframeCylinder (FFFF)V
+	public static final fun drawWireframeCylinder (FFFFF)V
+	public static final fun drawWireframeCylinder (FFFFFF)V
+	public static final fun drawWireframeCylinder (FFFFFFJ)V
+	public static final fun drawWireframeCylinder (FFFFFFJI)V
+	public static final fun drawWireframeCylinder (FFFFFFJIZ)V
+	public static final fun drawWireframeCylinder (FFFFFFJIZF)V
+	public static synthetic fun drawWireframeCylinder$default (FFFFFFJIZFILjava/lang/Object;)V
+	public static final fun drawWireframeCylinderRGBA (FFF)V
+	public static final fun drawWireframeCylinderRGBA (FFFF)V
+	public static final fun drawWireframeCylinderRGBA (FFFFF)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFF)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFI)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFII)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFIII)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFIIII)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFIIIII)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFIIIIIZ)V
+	public static final fun drawWireframeCylinderRGBA (FFFFFFIIIIIZF)V
+	public static synthetic fun drawWireframeCylinderRGBA$default (FFFFFFIIIIIZFILjava/lang/Object;)V
+	public static final fun drawWireframePyramid (FFF)V
+	public static final fun drawWireframePyramid (FFFF)V
+	public static final fun drawWireframePyramid (FFFFF)V
+	public static final fun drawWireframePyramid (FFFFFF)V
+	public static final fun drawWireframePyramid (FFFFFFJ)V
+	public static final fun drawWireframePyramid (FFFFFFJZ)V
+	public static final fun drawWireframePyramid (FFFFFFJZF)V
+	public static synthetic fun drawWireframePyramid$default (FFFFFFJZFILjava/lang/Object;)V
+	public static final fun drawWireframePyramidRGBA (FFF)V
+	public static final fun drawWireframePyramidRGBA (FFFF)V
+	public static final fun drawWireframePyramidRGBA (FFFFF)V
+	public static final fun drawWireframePyramidRGBA (FFFFFF)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFI)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFII)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFIII)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFIIII)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFIIIIZ)V
+	public static final fun drawWireframePyramidRGBA (FFFFFFIIIIZF)V
+	public static synthetic fun drawWireframePyramidRGBA$default (FFFFFFIIIIZFILjava/lang/Object;)V
+	public static final fun drawWireframeSphere (FFF)V
+	public static final fun drawWireframeSphere (FFFF)V
+	public static final fun drawWireframeSphere (FFFFF)V
+	public static final fun drawWireframeSphere (FFFFFF)V
+	public static final fun drawWireframeSphere (FFFFFFJ)V
+	public static final fun drawWireframeSphere (FFFFFFJI)V
+	public static final fun drawWireframeSphere (FFFFFFJIZ)V
+	public static final fun drawWireframeSphere (FFFFFFJIZF)V
+	public static synthetic fun drawWireframeSphere$default (FFFFFFJIZFILjava/lang/Object;)V
+	public static final fun drawWireframeSphereRGBA (FFF)V
+	public static final fun drawWireframeSphereRGBA (FFFF)V
+	public static final fun drawWireframeSphereRGBA (FFFFF)V
+	public static final fun drawWireframeSphereRGBA (FFFFFF)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFI)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFII)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFIII)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFIIII)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFIIIII)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFIIIIIZ)V
+	public static final fun drawWireframeSphereRGBA (FFFFFFIIIIIZF)V
+	public static synthetic fun drawWireframeSphereRGBA$default (FFFFFFIIIIIZFILjava/lang/Object;)V
 }
 
 public class com/chattriggers/ctjs/api/triggers/CancellableEvent {
@@ -1991,7 +2715,7 @@ public final class com/chattriggers/ctjs/api/triggers/EventTrigger : com/chattri
 
 public abstract interface class com/chattriggers/ctjs/api/triggers/ITriggerType {
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun triggerAll ([Ljava/lang/Object;)V
+	public fun triggerAll ([Ljava/lang/Object;)V
 }
 
 public final class com/chattriggers/ctjs/api/triggers/ITriggerType$DefaultImpls {
@@ -2057,7 +2781,6 @@ public final class com/chattriggers/ctjs/api/triggers/Trigger$Priority : java/la
 
 public final class com/chattriggers/ctjs/api/triggers/TriggerType : java/lang/Enum, com/chattriggers/ctjs/api/triggers/ITriggerType {
 	public static final field ACTION_BAR Lcom/chattriggers/ctjs/api/triggers/TriggerType;
-	public static final field BLOCK_HIGHLIGHT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field CHAT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field CLICKED Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field COMMAND Lcom/chattriggers/ctjs/api/triggers/TriggerType;
@@ -2072,20 +2795,23 @@ public final class com/chattriggers/ctjs/api/triggers/TriggerType : java/lang/En
 	public static final field GUI_MOUSE_CLICK Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field GUI_MOUSE_DRAG Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field GUI_OPENED Lcom/chattriggers/ctjs/api/triggers/TriggerType;
-	public static final field GUI_RENDER Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field ITEM_TOOLTIP Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field MESSAGE_SENT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field OTHER Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field PACKET_RECEIVED Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field PACKET_SENT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field PLAYER_INTERACT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
-	public static final field POST_GUI_RENDER Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field POST_RENDER_GUI Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field POST_RENDER_WORLD Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field PRE_RENDER_GUI Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field PRE_RENDER_WORLD Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field RENDER_BLOCK_ENTITY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field RENDER_BLOCK_HIGHLIGHT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field RENDER_ENTITY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
-	public static final field RENDER_OVERLAY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field RENDER_HIDEABLE_SCREEN_OVERLAY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field RENDER_HUD_OVERLAY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field RENDER_PLAYER_LIST Lcom/chattriggers/ctjs/api/triggers/TriggerType;
+	public static final field RENDER_SCREEN_OVERLAY Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field SCROLLED Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field SERVER_CONNECT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
 	public static final field SERVER_DISCONNECT Lcom/chattriggers/ctjs/api/triggers/TriggerType;
@@ -2715,19 +3441,21 @@ public final class com/chattriggers/ctjs/engine/Register {
 	public static final fun registerGuiMouseClick (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerGuiMouseDrag (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerGuiOpened (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
-	public static final fun registerGuiRender (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerItemTooltip (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerMessageSent (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerPacketReceived (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerPacketSent (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerPlayerInteract (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
-	public static final fun registerPostGuiRender (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
+	public static final fun registerPostRenderGui (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerPostRenderWorld (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
+	public static final fun registerPreRenderGui (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerPreRenderWorld (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerRenderBlockEntity (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerRenderEntity (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
-	public static final fun registerRenderOverlay (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
+	public static final fun registerRenderHideableScreenOverlay (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
+	public static final fun registerRenderHudOverlay (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerRenderPlayerList (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
+	public static final fun registerRenderScreenOverlay (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerRenderWorld (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerScrolled (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
 	public static final fun registerServerConnect (Ljava/lang/Object;)Lcom/chattriggers/ctjs/api/triggers/Trigger;
