@@ -149,7 +149,7 @@ internal abstract class InjectorGenerator(protected val ctx: GenerationContext, 
             Descriptor.Primitive.FLOAT -> invokestatic(java.lang.Float::class, "valueOf", java.lang.Float::class, float)
             Descriptor.Primitive.LONG -> invokestatic(java.lang.Long::class, "valueOf", java.lang.Long::class, long)
             Descriptor.Primitive.DOUBLE -> invokestatic(java.lang.Double::class, "valueOf", java.lang.Double::class, double)
-            else -> throw IllegalStateException("Unexpected primitive type: $descriptor")
+            else -> { }
         }
     }
 
