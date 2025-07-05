@@ -31,7 +31,8 @@ public class ItemStackMixin implements TooltipOverridable, Skippable {
     @Inject(
         method = "getTooltip",
         at = @At(
-            value = "HEAD"),
+            value = "HEAD"
+        ),
         cancellable = true
     )
     private void injectGetTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> cir) {

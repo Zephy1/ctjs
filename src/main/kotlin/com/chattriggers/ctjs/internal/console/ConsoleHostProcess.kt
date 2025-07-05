@@ -94,8 +94,7 @@ object ConsoleHostProcess : Initializer {
                 ConsoleClientProcess::class.qualifiedName,
                 PORT.toString(),
                 ProcessHandle.current().pid().toString(),
-            )
-            .start()
+            ).start()
 
         while (running) {
             ServerSocket(PORT).accept().use { socket ->
