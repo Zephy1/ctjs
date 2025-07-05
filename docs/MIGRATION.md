@@ -96,7 +96,7 @@ Here is a list of targeted changes for various different APIs:
   - Removed `CancellableEvent` from the global scope
 - `Message`/`TextComponent`
   - `Message` has been removed, and its primary functionality (i.e. `chat()`/`actionBar()`) has been added to `TextComponent`
-  - `TextComponent` has been heavily changed such that it can be easily introspected. It now implements `List<NativeObject>`, and each object is of the form `{ text: '...', bold: true, underline: true, ... }`. This form can also be used to construct and create new `TextComponent`s
+  - `TextComponent` has been heavily changed such that it can be easily introspected. It now implements `MutableList<NativeObject>`, and each object is of the form `{ text: '...', bold: true, underline: true, ... }`. This form can also be used to construct and create new `TextComponent`s
   - `TextComponent` is now immutable. Methods such as `withText()` can be used to return a modified `TextComponent` based on the original
 - The `/ct` command
   - Removed `/ct copy`. Replace this with `Client.copy(text: String)`
@@ -122,7 +122,7 @@ Here is a list of targeted changes for various different APIs:
 - `Item`
   - This API has also been completely reworked, similarly to `PotionEffect` and `Block`. It has been split into an `Item` class which represents a single stack of items in an inventory, and an `ItemType` class which represents the type of the `Item`.
   - Renamed `isDamagable()` to `isDamageable()`, fixing the typo
-  - Removed `getRawNBT()`, prefer using `getNBT()` which gives access to a wide range of powerful NBT-related APIs
+  - Removed `getRawNBT()`, prefer using `getComponents()` which gives access to a wide range of powerful Component-related APIs
   - You can no longer wrap empty ItemStacks. Creating an Item with an empty stack will throw an error. Use `Item.fromMC` instead.
 - `NBTTagList.removeTag()` now wraps the removed element in CT's NBT wrappers
 - `NBTTagCompound.getTag()` and `NBTTagCompound.getTagList()` now returns a wrapped version instead of the raw MC version

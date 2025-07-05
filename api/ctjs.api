@@ -1104,6 +1104,7 @@ public final class com/chattriggers/ctjs/api/inventory/Item : com/chattriggers/c
 	public final fun draw (FFFF)V
 	public static synthetic fun draw$default (Lcom/chattriggers/ctjs/api/inventory/Item;FFFFILjava/lang/Object;)V
 	public static final fun fromMC (Lnet/minecraft/item/ItemStack;)Lcom/chattriggers/ctjs/api/inventory/Item;
+	public final fun getComponents ()Lnet/minecraft/component/ComponentMap;
 	public final fun getDamage ()I
 	public final fun getDurability ()I
 	public final fun getEnchantments ()Ljava/util/Map;
@@ -1114,7 +1115,6 @@ public final class com/chattriggers/ctjs/api/inventory/Item : com/chattriggers/c
 	public final fun getMaxDamage ()I
 	public synthetic fun getMcValue ()Ljava/lang/Object;
 	public fun getMcValue ()Lnet/minecraft/item/ItemStack;
-	public final fun getNBT ()Lnet/minecraft/component/ComponentMap;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getStackSize ()I
 	public final fun getType ()Lcom/chattriggers/ctjs/api/inventory/ItemType;
@@ -1949,7 +1949,7 @@ public final class com/chattriggers/ctjs/api/render/RenderUtils {
 	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun bindTexture (Lcom/chattriggers/ctjs/api/render/Image;I)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static synthetic fun bindTexture$default (Lcom/chattriggers/ctjs/api/render/Image;IILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
-	public static final fun blendFunction (Lcom/mojang/blaze3d/pipeline/BlendFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun blendFunc (Lcom/mojang/blaze3d/pipeline/BlendFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun cameraPos (FF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun cameraPos (FFF)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static synthetic fun cameraPos$default (FFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
@@ -1971,7 +1971,7 @@ public final class com/chattriggers/ctjs/api/render/RenderUtils {
 	public static synthetic fun colorize$default (FFFFILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static synthetic fun colorize$default (IIIIILjava/lang/Object;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun deleteTexture (Lcom/chattriggers/ctjs/api/render/Image;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
-	public static final fun depthTestFunction (Lcom/mojang/blaze3d/platform/DepthTestFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
+	public static final fun depthFunc (Lcom/mojang/blaze3d/platform/DepthTestFunction;)Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun disableBlend ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun disableCull ()Lcom/chattriggers/ctjs/api/render/RenderUtils;
 	public static final fun disableDepth ()Lcom/chattriggers/ctjs/api/render/RenderUtils;

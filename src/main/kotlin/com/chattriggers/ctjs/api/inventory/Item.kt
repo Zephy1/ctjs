@@ -80,7 +80,7 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
     }
 
     @JvmOverloads
-    fun getLore(advanced: Boolean = false): List<TextComponent> {
+    fun getLore(advanced: Boolean = false): MutableList<TextComponent> {
         mcValue.asMixin<Skippable>().ctjs_setShouldSkip(true)
         val tooltip = mcValue
             .getTooltip(
@@ -108,7 +108,7 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
     }
 
     // TODO: make a component wrapper?
-    fun getNBT() = mcValue.components
+    fun getComponents() = mcValue.components
 
     /**
      * Renders the item icon to the client's overlay, with customizable overlay information.
