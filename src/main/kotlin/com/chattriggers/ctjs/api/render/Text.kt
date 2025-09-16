@@ -2,13 +2,14 @@ package com.chattriggers.ctjs.api.render
 
 import com.chattriggers.ctjs.api.message.ChatLib
 import com.chattriggers.ctjs.internal.utils.getOption
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.text.Style
 import org.mozilla.javascript.NativeObject
 
 class Text {
     private lateinit var string: String
-    private var x: Float = 0f
-    private var y: Float = 0f
+    private var x: Int = 0
+    private var y: Int = 0
 
     private val lines = mutableListOf<String>()
 
@@ -25,7 +26,7 @@ class Text {
     private var scale = 1f
 
     @JvmOverloads
-    constructor(string: String, x: Float = 0f, y: Float = 0f) {
+    constructor(string: String, x: Int = 0, y: Int = 0) {
         setString(string)
         setX(x)
         setY(y)
@@ -39,8 +40,8 @@ class Text {
         setAlign(config.getOption("align", Align.LEFT))
         setBackground(config.getOption("background", false).toBoolean())
         setBackgroundColor(config.getOption("backgroundColor", 0x00000000).toLong())
-        setX(config.getOption("x", 0f).toFloat())
-        setY(config.getOption("y", 0f).toFloat())
+        setX(config.getOption("x", 0).toInt())
+        setY(config.getOption("y", 0).toInt())
         setMaxLines((config.getOption("maxLines", Int.MAX_VALUE)).toDouble().toInt())
         setScale(config.getOption("scale", 1f).toFloat())
         setMaxWidth(config.getOption("maxWidth", 0).toInt())
@@ -100,15 +101,15 @@ class Text {
         this.backgroundColor = backgroundColor
     }
 
-    fun getX(): Float = x
+    fun getX(): Int = x
 
-    fun setX(x: Float) = apply {
+    fun setX(x: Int) = apply {
         this.x = x
     }
 
-    fun getY(): Float = y
+    fun getY(): Int = y
 
-    fun setY(y: Float) = apply {
+    fun setY(y: Int) = apply {
         this.y = y
     }
 
@@ -159,22 +160,27 @@ class Text {
 
     @JvmOverloads
     fun draw(
-        x: Float? = null,
-        y: Float? = null,
+        ctx: DrawContext,
+        x: Int? = null,
+        y: Int? = null
     ) = apply {
-        draw(x, y, null, null)
+        draw(ctx, x, y, null, null)
     }
 
     internal fun draw(
-        x: Float? = null,
-        y: Float? = null,
-        backgroundX: Float? = null,
-        backgroundWidth: Float? = null,
+        ctx: DrawContext,
+        x: Int? = null,
+        y: Int? = null,
+        backgroundX: Int? = null,
+        backgroundWidth: Int? = null
     ) = apply {
-        RenderUtils
-            .pushMatrix()
-            .enableBlend()
-            .scale(scale, scale, scale)
+        //#if MC>12105
+        //$$ctx.matrices.pushMatrix()
+        //$$ctx.matrices.scale(scale, scale)
+        //#else
+        ctx.matrices.push()
+        ctx.matrices.scale(scale, scale, 1f)
+        //#endif
 
         var longestLine = lines.maxOf { RenderUtils.getStringWidth(it) * scale }
         if (maxWidth != 0) {
@@ -191,25 +197,36 @@ class Text {
         }
 
         if (background) {
-            GUIRenderer
-                .drawRect(
-                    backgroundX ?: xHolder,
-                    yHolder,
-                    backgroundWidth ?: width,
-                    getHeight(),
-                    backgroundColor,
-                )
+            val ox = (backgroundX ?: xHolder) as Int
+
+            ctx.fill(
+                ox,
+                yHolder,
+                ox + (backgroundWidth ?: width) as Int,
+                yHolder + getHeight().toInt(),
+                backgroundColor.toInt()
+            )
         }
 
         for (i in 0 until maxLines) {
             if (i >= lines.size) break
-            GUIRenderer.drawString(lines[i], xHolder, yHolder, color, textShadow = shadow)
-            yHolder += scale * 10
+            ctx.drawText(
+                RenderUtils.getFontRenderer(),
+                lines[i],
+                xHolder as Int,
+                yHolder,
+                color.toInt(),
+                shadow
+            )
+            yHolder += (scale * 10).toInt()
         }
-        RenderUtils
-            .disableBlend()
-            .popMatrix()
+        //#if MC>12105
+        //$$ctx.matrices.popMatrix()
+        //#else
+        ctx.matrices.pop()
+        //#endif
     }
+
     private fun updateFormatting() {
         string =
             if (formatted) {
@@ -237,11 +254,11 @@ class Text {
 
     override fun toString() =
         "Text{" +
-            "string=$string, x=$x, y=$y, " +
-            "lines=$lines, color=$color, scale=$scale, " +
-            "formatted=$formatted, shadow=$shadow, " + //align=$align, " +
-            "width=$width, maxWidth=$maxWidth, maxLines=$maxLines" +
-        "}"
+                "string=$string, x=$x, y=$y, " +
+                "lines=$lines, color=$color, scale=$scale, " +
+                "formatted=$formatted, shadow=$shadow, " + //align=$align, " +
+                "width=$width, maxWidth=$maxWidth, maxLines=$maxLines" +
+                "}"
 
     enum class Align {
         LEFT,
