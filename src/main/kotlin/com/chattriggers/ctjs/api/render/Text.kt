@@ -20,7 +20,7 @@ class Text {
     private var align = Align.LEFT
     private var background = false
 
-    private var width = 0f
+    private var width = 0
     private var maxWidth = 0
     private var maxLines = Int.MAX_VALUE
     private var scale = 1f
@@ -119,7 +119,7 @@ class Text {
      *
      * @return the width of the text
      */
-    fun getWidth(): Float = width
+    fun getWidth(): Int = width
 
     fun getLines(): List<String> = lines
 
@@ -186,7 +186,7 @@ class Text {
         if (maxWidth != 0) {
             longestLine = longestLine.coerceAtMost(maxWidth.toFloat())
         }
-        width = longestLine
+        width = longestLine.toInt()
 
         var yHolder = y ?: this.y
 
