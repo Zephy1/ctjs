@@ -1,10 +1,11 @@
 package com.chattriggers.ctjs.internal.engine.module
 
 import com.chattriggers.ctjs.api.message.ChatLib
-import com.chattriggers.ctjs.api.render.GUIRenderer
 import com.chattriggers.ctjs.api.render.RenderUtils
 import com.chattriggers.ctjs.api.render.Text
 import com.fasterxml.jackson.core.Version
+import net.minecraft.client.gui.DrawContext
+import org.joml.Quaternionf
 import java.io.File
 
 class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
@@ -13,57 +14,68 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
 
     private val gui = object {
         var collapsed = true
-        var x = 0f
-        var y = 0f
+        var x = 0
+        var y = 0
         var description = Text(metadata.description ?: "No description provided in the metadata")
     }
 
     fun draw(
-        x: Float,
-        y: Float,
-        width: Float,
-    ): Float {
+        ctx: DrawContext,
+        x: Int,
+        y: Int,
+        width: Int
+    ): Int {
         gui.x = x
         gui.y = y
 
-        RenderUtils.pushMatrix()
-        GUIRenderer.drawRect(
-            x,
-            y,
-            width,
-            13f,
-            0xAA000000,
-        )
-        GUIRenderer.drawStringWithShadow(
+        //#if MC>12105
+        //$$ctx.matrices.pushMatrix()
+        //#else
+        ctx.matrices.push()
+        //#endif
+
+        ctx.fill(x, y, x + width, y + 13, 0xaa000000.toInt())
+        ctx.drawTextWithShadow(
+            RenderUtils.getFontRenderer(),
             metadata.name ?: name,
-            x + 3,
-            y + 3,
+            x + 3, y + 3, -1
         )
 
         return if (gui.collapsed) {
-            RenderUtils
-                .translate(x + width - 5, y + 8)
-                .rotate(180f)
-            GUIRenderer.drawString("^", 0f, 0f)
-            RenderUtils.popMatrix()
-            15f
+            //#if MC>12105
+            //$$ctx.matrices.pushMatrix()
+            //$$ctx.matrices.translate(x + width - 5f, y + 8f)
+            //$$ctx.matrices.rotate(Math.PI.toFloat())
+            //$$ctx.drawText(RenderUtils.getFontRenderer(), "^", 0, 0, -1, false)
+            //$$ctx.matrices.popMatrix()
+            //#else
+            ctx.matrices.push()
+            ctx.matrices.translate(x + width - 5f, y + 8f, 0f)
+            ctx.matrices.multiply(Quaternionf().rotateAxis(Math.PI.toFloat(), 0f, 0f, 0f))
+            ctx.drawText(RenderUtils.getFontRenderer(), "^", 0, 0, -1, false)
+            ctx.matrices.pop()
+            //#endif
+            16
         } else {
-            gui.description.setMaxWidth(width.toInt() - 5)
+            gui.description.setMaxWidth(width - 5)
 
-            GUIRenderer.drawRect(x, y + 13, width, gui.description.getHeight() + 12, 0x50000000)
-            GUIRenderer.drawString("^", x + width - 10, y + 5)
+            ctx.fill(x, y + 13, x + width, y + (gui.description.getHeight().toInt() + 25), 0x50000000)
+            ctx.drawText(RenderUtils.getFontRenderer(), "^", x + width - 10, y + 5, -1, false)
 
-            gui.description.draw(x + 3, y + 15)
+            gui.description.draw(ctx, x + 3, y + 15)
 
             if (metadata.version != null) {
-                GUIRenderer.drawStringWithShadow(
+                ctx.drawTextWithShadow(
+                    RenderUtils.getFontRenderer(),
                     ChatLib.addColor("&8v${metadata.version}"),
                     x + width - RenderUtils.getStringWidth(ChatLib.addColor("&8v${metadata.version}")),
-                    y + gui.description.getHeight() + 15,
+                    y + gui.description.getHeight().toInt() + 15,
+                    -1
                 )
             }
 
-            GUIRenderer.drawStringWithShadow(
+            ctx.drawTextWithShadow(
+                RenderUtils.getFontRenderer(),
                 ChatLib.addColor(
                     if (metadata.isRequired && requiredBy.isNotEmpty()) {
                         "&8required by $requiredBy"
@@ -72,11 +84,16 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
                     },
                 ),
                 x + 3,
-                y + gui.description.getHeight() + 15,
+                y + gui.description.getHeight().toInt() + 15,
+                -1
             )
 
-            RenderUtils.popMatrix()
-            gui.description.getHeight() + 27
+            //#if MC>12105
+            //$$ctx.matrices.popMatrix()
+            //#else
+            ctx.matrices.pop()
+            //#endif
+            gui.description.getHeight().toInt() + 27
         }
     }
 

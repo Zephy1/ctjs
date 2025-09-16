@@ -3,7 +3,6 @@ package com.chattriggers.ctjs.internal.engine.module
 import com.chattriggers.ctjs.api.client.Player
 import com.chattriggers.ctjs.api.message.ChatLib
 import com.chattriggers.ctjs.api.render.GUIRenderer
-import com.chattriggers.ctjs.api.render.RenderUtils
 import com.chattriggers.ctjs.api.render.Text
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
@@ -16,13 +15,16 @@ object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
         var scroll = 0f
     }
 
-    override fun render(context: DrawContext?, mouseX: Int, mouseY: Int, deltaTicks: Float) {
-        super.render(context, mouseX, mouseY, deltaTicks)
+    override fun render(ctx: DrawContext?, mouseX: Int, mouseY: Int, deltaTicks: Float) {
+        //#if MC>12105
+        //$$ctx!!.matrices.pushMatrix()
+        //#else
+        ctx!!.matrices.push()
+        //#endif
 
-        RenderUtils.pushMatrix()
-
-        val middle = GUIRenderer.screen.getWidth() / 2f
-        val width = (GUIRenderer.screen.getWidth() - 100f).coerceAtMost(500f)
+        ctx.fill(0, 0, ctx.scaledWindowWidth, ctx.scaledWindowHeight, 0x50000000)
+        val middle = GUIRenderer.screen.getWidth() / 2
+        val width = (GUIRenderer.screen.getWidth() - 100).coerceAtMost(500)
 
         GUIRenderer.drawRect(
             0f,
@@ -41,18 +43,25 @@ object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
             GUIRenderer.drawString("^", GUIRenderer.screen.getWidth() - 12f, GUIRenderer.screen.getHeight() - 12f)
         }
 
-        GUIRenderer.drawRect(middle - width / 2f, window.scroll + 95f, width, window.height - 90, 0x50000000)
+        val ox = middle - width / 2
+        val oy = window.scroll.toInt() + 95
 
-        GUIRenderer.drawRect(middle - width / 2f, window.scroll + 95f, width, 25f, 0xAA000000)
-        window.title.draw((middle - width / 2f + 5) / 2f, (window.scroll + 100f) / 2f)
-        window.exit.draw((middle + width / 2f - 17) / 2f, (window.scroll + 99f) / 2f)
+        ctx.fill(ox, oy, ox + width, oy + (window.height.toInt() - 90), 0x50000000)
+        ctx.fill(ox, oy, ox + width, oy + 25, 0xaa000000.toInt())
+
+        window.title.draw(ctx, (middle - width / 2 + 5) / 2, (window.scroll.toInt() + 100) / 2)
+        window.exit.draw(ctx, (middle + width / 2 - 17) / 2, (window.scroll.toInt() + 99) / 2)
 
         window.height = 125f
         ModuleManager.cachedModules.sortedBy { it.name }.forEach {
-            window.height += it.draw(middle - width / 2f, window.scroll + window.height, width)
+            window.height += it.draw(ctx, middle - width / 2, (window.scroll + window.height).toInt(), width)
         }
 
-        RenderUtils.popMatrix()
+        //#if MC>12105
+        //$$ctx.matrices.popMatrix()
+        //#else
+        ctx.matrices.pop()
+        //#endif
     }
 
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
