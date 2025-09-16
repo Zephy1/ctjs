@@ -72,9 +72,7 @@ object ClientListener : Initializer {
                     if (it.delay-- <= 0) {
                         UMinecraft.getMinecraft().submit(it.callback)
                         true
-                    } else {
-                        false
-                    }
+                    } else false
                 }
             }
 
@@ -194,9 +192,9 @@ object ClientListener : Initializer {
             TriggerType.STEP.triggerAll()
         }
 
-        CTEvents.RENDER_HUD_OVERLAY.register { stack, partialTicks ->
+        CTEvents.RENDER_HUD_OVERLAY.register { ctx, stack, partialTicks ->
             GUIRenderer.withMatrix(UMatrixStack(stack).toMC(), partialTicks) {
-                TriggerType.RENDER_HUD_OVERLAY.triggerAll()
+                TriggerType.RENDER_HUD_OVERLAY.triggerAll(ctx)
             }
         }
 

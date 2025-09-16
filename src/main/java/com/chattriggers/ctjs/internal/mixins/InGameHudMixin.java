@@ -28,18 +28,19 @@ public class InGameHudMixin {
     }
 
     @Inject(
+        //#if MC>12105
+        //$$method = "renderBossBarHud",
+        //$$at = @At("TAIL")
+        //#else
         method = "render",
         at = @At(
             value = "INVOKE",
-            //#if MC>12105
-            //$$target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-            //#else
-            target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-            //#endif
+            target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
             shift = At.Shift.AFTER
         )
+        //#endif
     )
     private void injectRenderOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        CTEvents.RENDER_HUD_OVERLAY.invoker().render(new UMatrixStack(context.getMatrices()).toMC(), tickCounter.getDynamicDeltaTicks());
+        CTEvents.RENDER_HUD_OVERLAY.invoker().render(context, new UMatrixStack(context.getMatrices()).toMC(), tickCounter.getDynamicDeltaTicks());
     }
 }
