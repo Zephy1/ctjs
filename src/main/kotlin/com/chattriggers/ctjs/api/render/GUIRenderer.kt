@@ -9,8 +9,6 @@ import com.chattriggers.ctjs.engine.printToConsole
 import com.chattriggers.ctjs.internal.utils.getOrDefault
 import com.chattriggers.ctjs.internal.utils.toRadians
 import gg.essential.universal.UMatrixStack
-import gg.essential.universal.UMinecraft
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.network.AbstractClientPlayerEntity
@@ -669,7 +667,7 @@ object GUIRenderer {
         //$$DiffuseLighting.enableGuiShaderLighting()
         //#endif
 
-        val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
+        val entityRenderDispatcher = Client.getMinecraft().entityRenderDispatcher
 
         if (pitchModelRotation != null) {
             pitchModelRotation.conjugate()
@@ -684,7 +682,7 @@ object GUIRenderer {
         //$$entityRenderDispatcher.setRenderShadows(false)
         //$$val light = 0xF000F0
         //#endif
-        val vertexConsumers = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers
+        val vertexConsumers = Client.getMinecraft().bufferBuilders.entityVertexConsumers
 
         val entityRenderer = if (slim) slimCTRenderPlayer else normalCTRenderPlayer
         entityRenderer.setOptions(
@@ -767,10 +765,10 @@ object GUIRenderer {
     }
 
     class ScreenWrapper {
-        fun getWidth(): Int = UMinecraft.getMinecraft().window.scaledWidth
+        fun getWidth(): Int = Client.getMinecraft().window.scaledWidth
 
-        fun getHeight(): Int = UMinecraft.getMinecraft().window.scaledHeight
+        fun getHeight(): Int = Client.getMinecraft().window.scaledHeight
 
-        fun getScale(): Double = UMinecraft.getMinecraft().window.scaleFactor.toDouble()
+        fun getScale(): Double = Client.getMinecraft().window.scaleFactor.toDouble()
     }
 }

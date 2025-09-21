@@ -7,13 +7,12 @@ import com.chattriggers.ctjs.MCGraphicsMode
 import com.chattriggers.ctjs.MCParticlesMode
 import com.chattriggers.ctjs.api.CTWrapper
 import com.chattriggers.ctjs.api.world.World
-import gg.essential.universal.UMinecraft
 import net.minecraft.entity.player.PlayerModelPart
 import net.minecraft.sound.SoundCategory
 
 object Settings {
     @JvmStatic
-    fun toMC() = UMinecraft.getSettings()
+    fun toMC() = Client.getMinecraft().options
 
     @JvmStatic
     @Deprecated("Use toMC", ReplaceWith("toMC()"))

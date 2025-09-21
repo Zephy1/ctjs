@@ -44,8 +44,10 @@ object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
         if (-window.scroll < 0) window.scroll = 0f
 
         if (-window.scroll > 0) {
-            GUIRenderer.drawRect(drawContext, GUIRenderer.screen.getWidth() - 20f, GUIRenderer.screen.getHeight() - 20f, 20f, 20f, 0xAA000000)
-            GUIRenderer.drawString(drawContext, "^", GUIRenderer.screen.getWidth() - 12f, GUIRenderer.screen.getHeight() - 12f)
+            val width = GUIRenderer.screen.getWidth()
+            val height = GUIRenderer.screen.getHeight()
+            GUIRenderer.drawRect(drawContext, width - 20f, height - 20f, 20f, 20f, 0xAA000000)
+            GUIRenderer.drawString(drawContext, "^", width - 12f, height - 12f)
         }
 
         val ox = middle - width / 2

@@ -2,7 +2,6 @@ package com.chattriggers.ctjs.api.render
 
 import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.internal.utils.get
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.LightmapTextureManager
 import org.joml.Matrix4f
@@ -79,10 +78,10 @@ object WorldRenderer {
         disableDepth: Boolean = false,
     ) {
         val (lines, width, height) = RenderUtils.splitText(text)
-        val fontRenderer = MinecraftClient.getInstance().textRenderer
+        val fontRenderer = RenderUtils.getFontRenderer()
         val camera = Client.getMinecraft().gameRenderer.camera
         val cameraPos = camera.pos
-        val vertexConsumers = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers
+        val vertexConsumers = Client.getMinecraft().bufferBuilders.entityVertexConsumers
 
         val matrix = Matrix4f()
         val adjustedScale = (scale * 0.05).toFloat()

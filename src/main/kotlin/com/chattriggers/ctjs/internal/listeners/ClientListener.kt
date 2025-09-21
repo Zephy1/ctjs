@@ -1,5 +1,6 @@
 package com.chattriggers.ctjs.internal.listeners
 
+import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.api.entity.BlockEntity
 import com.chattriggers.ctjs.api.entity.Entity
 import com.chattriggers.ctjs.api.entity.PlayerInteraction
@@ -20,7 +21,6 @@ import com.chattriggers.ctjs.internal.engine.JSContextFactory
 import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.utils.Initializer
 import gg.essential.universal.UMatrixStack
-import gg.essential.universal.UMinecraft
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
@@ -70,7 +70,7 @@ object ClientListener : Initializer {
             synchronized(tasks) {
                 tasks.removeAll {
                     if (it.delay-- <= 0) {
-                        UMinecraft.getMinecraft().submit(it.callback)
+                        Client.getMinecraft().submit(it.callback)
                         true
                     } else false
                 }
@@ -106,7 +106,7 @@ object ClientListener : Initializer {
         //$$        HudRenderLayer.SLEEP.toMC(),
         //$$        Identifier.of("ctjs", "screen_overlay"),
         //$$    ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
-        //$$        if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        //$$        if (Client.getMinecraft().currentScreen != null) return@attachLayerAfter
         //$$        val partialTicks = tickCounter.dynamicDeltaTicks
         //$$        GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
         //$$            TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
@@ -119,7 +119,7 @@ object ClientListener : Initializer {
             Identifier.of("ctjs", "screen_overlay"))
         {  drawContext: DrawContext, tickCounter: RenderTickCounter ->
             // Don't render if a screen is open, calls trigger twice otherwise
-            if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+            if (Client.getMinecraft().currentScreen != null) return@attachElementAfter
 
             val partialTicks = tickCounter.dynamicDeltaTicks
             GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
@@ -135,7 +135,7 @@ object ClientListener : Initializer {
         //$$        HudRenderLayer.SUBTITLES.toMC(),
         //$$        Identifier.of("ctjs", "hideable_screen_overlay"),
         //$$    ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
-        //$$        if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        //$$        if (Client.getMinecraft().currentScreen != null) return@attachLayerAfter
         //$$        val partialTicks = tickCounter.dynamicDeltaTicks
         //$$        GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
         //$$            TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
@@ -148,7 +148,7 @@ object ClientListener : Initializer {
             Identifier.of("ctjs", "hideable_screen_overlay"))
         {  drawContext: DrawContext, tickCounter: RenderTickCounter ->
             // Don't render if a screen is open, calls trigger twice otherwise
-            if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+            if (Client.getMinecraft().currentScreen != null) return@attachElementAfter
 
             val partialTicks = tickCounter.dynamicDeltaTicks
             GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {

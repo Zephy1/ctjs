@@ -15,7 +15,6 @@ import gg.essential.elementa.dsl.component3
 import gg.essential.elementa.dsl.component4
 import gg.essential.universal.UGraphics
 import gg.essential.universal.UMatrixStack
-import gg.essential.universal.UMinecraft
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.Tessellator
 import org.joml.Quaternionf
@@ -31,6 +30,12 @@ import com.mojang.blaze3d.textures.GpuTextureView
 //#endif
 
 object RenderUtils {
+    @JvmStatic
+    fun getFontRenderer() = Client.getMinecraft().textRenderer
+
+    @JvmStatic
+    fun getRenderManager() = Client.getMinecraft().worldRenderer
+
     // WorldRenderer
     private val NEWLINE_REGEX = """\n|\r\n?""".toRegex()
     private var firstVertex = true
@@ -707,12 +712,6 @@ object RenderUtils {
             color
         }
     }
-
-    @JvmStatic
-    fun getFontRenderer() = UMinecraft.getFontRenderer()
-
-    @JvmStatic
-    fun getRenderManager() = UMinecraft.getMinecraft().worldRenderer
 
     @JvmStatic
     fun getStringWidth(text: String) = getFontRenderer().getWidth(ChatLib.addColor(text))
