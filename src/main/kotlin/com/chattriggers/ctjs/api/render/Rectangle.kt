@@ -1,8 +1,10 @@
 package com.chattriggers.ctjs.api.render
 
 import com.chattriggers.ctjs.api.vec.Vec2f
+import net.minecraft.client.gui.DrawContext
 
 class Rectangle(
+    private val drawContext: DrawContext,
     private var color: Long,
     private var x: Float,
     private var y: Float,
@@ -105,7 +107,7 @@ class Rectangle(
     fun draw() = apply {
         shadow.draw()
         outline.draw()
-        GUIRenderer.drawRect(x, y, width, height, color)
+        GUIRenderer.drawRect(drawContext, x, y, width, height, color)
     }
 
     private class Shadow(
@@ -117,6 +119,7 @@ class Rectangle(
         fun draw() {
             if (!on) return
             GUIRenderer.drawRect(
+                rect.drawContext,
                 rect.x + offset.x,
                 rect.y + rect.height,
                 rect.width,
@@ -124,6 +127,7 @@ class Rectangle(
                 color,
             )
             GUIRenderer.drawRect(
+                rect.drawContext,
                 rect.x + rect.width,
                 rect.y + offset.y,
                 offset.x,
@@ -142,6 +146,7 @@ class Rectangle(
         fun draw() {
             if (!on) return
             GUIRenderer.drawRect(
+                rect.drawContext,
                 rect.x - thickness,
                 rect.y - thickness,
                 rect.width + thickness * 2,

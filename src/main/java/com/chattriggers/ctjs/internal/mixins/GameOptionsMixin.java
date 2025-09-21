@@ -28,7 +28,11 @@ public class GameOptionsMixin implements BoundKeyUpdater {
     @Override
     public void ctjs_updateBoundKey(KeyBinding keyBinding) {
         String string = keyBinding.getBoundKeyTranslationKey();
-        String string2 = visitor.visitString("key_" + keyBinding.getTranslationKey(), string);
+        //#if MC<=12108
+        //$$String string2 = visitor.visitString("key_" + keyBinding.getTranslationKey(), string);
+        //#else
+        String string2 = visitor.visitString("key_" + keyBinding.getBoundKeyTranslationKey(), string);
+        //#endif
         if (!string.equals(string2)) {
             keyBinding.setBoundKey(InputUtil.fromTranslationKey(string2));
         }

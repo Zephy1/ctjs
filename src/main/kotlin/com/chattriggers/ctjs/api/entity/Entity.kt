@@ -18,11 +18,16 @@ import java.util.UUID
 import kotlin.math.sqrt
 
 open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
-    fun getX() = mcValue.pos.x
+    //#if MC<=12108
+    //$$fun getX() = mcValue.pos.x
+    //$$fun getY() = mcValue.pos.y
+    //$$fun getZ() = mcValue.pos.z
+    //#else
+    fun getX() = mcValue.entityPos.x
+    fun getY() = mcValue.entityPos.y
+    fun getZ() = mcValue.entityPos.z
+    //#endif
 
-    fun getY() = mcValue.pos.y
-
-    fun getZ() = mcValue.pos.z
 
     fun getBlockPos() = BlockPos(getX(), getY(), getZ())
 
@@ -208,7 +213,11 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun isWet() = mcValue.isTouchingWaterOrRain
 
-    fun getDimension() = mcValue.world.dimensionEntry.key.let { key ->
+    //#if MC<=12108
+    //$$fun getDimension() = mcValue.world.dimensionEntry.key.let { key ->
+    //#else
+    fun getDimension() = mcValue.entityWorld.dimensionEntry.key.let { key ->
+    //#endif
         DimensionType.entries.first { it.toMC() == key }
     }
 
@@ -224,10 +233,10 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
     @JvmOverloads
     fun getEyePosition(partialTicks: Float = GUIRenderer.partialTicks) = mcValue.eyePos
 
-    //#if MC>=12106
-    //$$fun canBeCollidedWith() = mcValue.isCollidable(null)
-    //#else
+    //#if MC<=12105
     //$$fun canBeCollidedWith() = mcValue.isCollidable
+    //#else
+    fun canBeCollidedWith() = mcValue.isCollidable(null)
     //#endif
 
     fun canBePushed() = mcValue.isPushable
@@ -242,7 +251,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun isBurning(): Boolean = mcValue.isOnFire
 
-    //#if MC>=12106
+    //#if MC<=12108
     //$$fun getWorld() = mcValue.world
     //#else
     fun getWorld() = mcValue.entityWorld

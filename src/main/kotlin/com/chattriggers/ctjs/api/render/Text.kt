@@ -174,12 +174,12 @@ class Text {
         backgroundX: Int? = null,
         backgroundWidth: Int? = null
     ) = apply {
-        //#if MC>=12106
-        //$$ctx.matrices.pushMatrix()
-        //$$ctx.matrices.scale(scale, scale)
+        //#if MC<=12105
+        //$$ctx.matrices.push()
+        //$$ctx.matrices.scale(scale, scale, 1f)
         //#else
-        ctx.matrices.push()
-        ctx.matrices.scale(scale, scale, 1f)
+        ctx.matrices.pushMatrix()
+        ctx.matrices.scale(scale, scale)
         //#endif
 
         var longestLine = lines.maxOf { RenderUtils.getStringWidth(it) * scale }
@@ -220,10 +220,10 @@ class Text {
             )
             yHolder += (scale * 10).toInt()
         }
-        //#if MC>=12106
-        //$$ctx.matrices.popMatrix()
+        //#if MC<=12105
+        //$$ctx.matrices.pop()
         //#else
-        ctx.matrices.pop()
+        ctx.matrices.popMatrix()
         //#endif
     }
 

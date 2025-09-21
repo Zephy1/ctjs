@@ -6,8 +6,11 @@ import com.mojang.blaze3d.platform.DepthTestFunction
 import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.render.RenderPhase
 import net.minecraft.util.Identifier
-import net.minecraft.util.TriState
 import java.util.OptionalDouble
+
+//#if MC<=12105
+//$$import net.minecraft.util.TriState
+//#endif
 
 object PipelineBuilder {
     private val layerList = mutableMapOf<String, RenderLayer>()
@@ -22,6 +25,7 @@ object PipelineBuilder {
     private var vertexFormat = VertexFormat.POSITION_COLOR
     private var snippet = RenderSnippet.POSITION_COLOR_SNIPPET
     private var location: String? = null
+    private var bufferSize: Int? = null
 
     @JvmStatic
     @JvmOverloads
@@ -96,6 +100,11 @@ object PipelineBuilder {
     }
 
     @JvmStatic
+    fun setBufferSize(size: Int) = apply {
+        bufferSize = size
+    }
+
+    @JvmStatic
     fun build(): RenderPipeline {
         if (pipelineList.containsKey(state())) return pipelineList[state()]!!
 
@@ -143,16 +152,16 @@ object PipelineBuilder {
             }
 
             if (textureIdentifier != null) {
-                //#if MC>=12106
-                //$$layerBuilder.texture(RenderPhase.Texture(textureIdentifier, false))
+                //#if MC<=12105
+                //$$layerBuilder.texture(RenderPhase.Texture(textureIdentifier, TriState.FALSE, false))
                 //#else
-                layerBuilder.texture(RenderPhase.Texture(textureIdentifier, TriState.FALSE, false))
+                layerBuilder.texture(RenderPhase.Texture(textureIdentifier, false))
                 //#endif
             }
 
             val layer = RenderLayer.of(
                 "ctjs/custom/layers/${location ?: hashCode()}",
-                RenderLayer.DEFAULT_BUFFER_SIZE,
+                bufferSize ?: RenderLayer.DEFAULT_BUFFER_SIZE,
                 build(),
                 layerBuilder.build(false),
             )
@@ -176,6 +185,7 @@ object PipelineBuilder {
         vertexFormat = VertexFormat.POSITION_COLOR
         snippet = RenderSnippet.POSITION_COLOR_SNIPPET
         location = null
+        bufferSize = null
     }
 
     @JvmStatic
@@ -192,6 +202,7 @@ object PipelineBuilder {
                 "vertexFormat=${vertexFormat.name}, " +
                 "snippet=${snippet.name}, " +
                 "textureIdentifier=$textureIdentifier" +
+                "bufferSize=${bufferSize}" +
             "]"
         )
     }

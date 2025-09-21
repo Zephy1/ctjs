@@ -11,12 +11,21 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+//#if MC<=12108
+//$$import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+//#else
+import net.minecraft.client.input.MouseInput;
+//#endif
 
 @Mixin(Mouse.class)
 public class MouseMixin {
     @Shadow
-    private int activeButton;
+    //#if MC<=12108
+    //$$private int activeButton;
+    //#else
+    private MouseInput activeButton;
+    //#endif
 
     @Inject(
         method = "onMouseButton",
@@ -26,8 +35,13 @@ public class MouseMixin {
             opcode = Opcodes.GETFIELD
         )
     )
-    private void injectOnMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
-        MouseListener.onRawMouseInput(button, action);
+    //#if MC<=12108
+    //$$private void injectOnMouseButton(long window, int button, int action, int mods, CallbackInfo ci) {
+    //$$    MouseListener.onRawMouseInput(button, action);
+    //#else
+    private void injectOnMouseButton(long window, MouseInput input, int action, CallbackInfo ci) {
+        MouseListener.onRawMouseInput(input.button(), action);
+    //#endif
     }
 
     @Inject(
@@ -46,7 +60,11 @@ public class MouseMixin {
         method = "tick",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(DDIDD)Z"
+            //#if MC<=12108
+            //$$target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(DDIDD)Z"
+            //#else
+            target = "Lnet/minecraft/client/gui/screen/Screen;mouseDragged(Lnet/minecraft/client/gui/Click;DD)Z"
+            //#endif
         ),
         cancellable = true
     )
@@ -59,7 +77,11 @@ public class MouseMixin {
         @Local(ordinal = 3) double g)
     {
         if (screen != null) {
-            CTEvents.GUI_MOUSE_DRAG.invoker().process(f, g, d, e, activeButton, screen, ci);
+            //#if MC<=12108
+            //$$CTEvents.GUI_MOUSE_DRAG.invoker().process(f, g, d, e, activeButton, screen, ci);
+            //#else
+            CTEvents.GUI_MOUSE_DRAG.invoker().process(f, g, d, e, activeButton.button(), screen, ci);
+            //#endif
         }
     }
 }

@@ -14,6 +14,10 @@ import net.minecraft.client.resource.language.I18n
 import org.apache.commons.lang3.ArrayUtils
 import java.util.concurrent.CopyOnWriteArrayList
 
+//#if MC>=12109
+import net.minecraft.util.Identifier
+//#endif
+
 class KeyBind {
     private val keyBinding: KeyBinding
     private var onKeyPress: RegularTrigger? = null
@@ -33,8 +37,14 @@ class KeyBind {
     @JvmOverloads
     constructor(description: String, keyCode: Int, category: String = "ChatTriggers") {
         val possibleDuplicate = Client.getMinecraft().options.allKeys.find {
-            I18n.translate(it.translationKey) == I18n.translate(description) &&
-                I18n.translate(it.category) == I18n.translate(category)
+            //#if MC<=12108
+            //$$I18n.translate(it.translationKey) == I18n.translate(description) &&
+            //$$    I18n.translate(it.category) == I18n.translate(category)
+            //#else
+            I18n.translate(it.boundKeyTranslationKey) == I18n.translate(description) &&
+                // TODO: check if this is right
+                I18n.translate(it.category.id.toTranslationKey("key.category")) == I18n.translate(category)
+            //#endif
         }
 
         if (possibleDuplicate != null) {
@@ -44,11 +54,20 @@ class KeyBind {
             }
             keyBinding = possibleDuplicate
         } else {
-            if (category !in KeyBindingAccessor.getKeyCategories()) {
+            //#if MC<=12108
+            //$$if (category !in KeyBindingAccessor.getKeyCategories()) {
+            //#else
+            val keyCategory = KeyBinding.Category.create(Identifier.of(category))
+            if (keyCategory !in KeyBindingAccessor.Category.getCategoryList()) {
+            //#endif
                 uniqueCategories[category] = 0
             }
             uniqueCategories[category] = uniqueCategories[category]!! + 1
-            keyBinding = KeyBinding(description, keyCode, category)
+            //#if MC<=12108
+            //$$keyBinding = KeyBinding(description, keyCode, category)
+            //#else
+            keyBinding = KeyBinding(description, keyCode, keyCategory)
+            //#endif
 
             // We need to update the bound key for the KeyBind we just made to the previous binding,
             // just in case it existed last time the game was opened. This will only matter for the first
@@ -141,7 +160,11 @@ class KeyBind {
      *
      * @return the description
      */
-    fun getDescription(): String = keyBinding.translationKey
+    //#if MC<=12108
+    //$$fun getDescription(): String = keyBinding.translationKey
+    //#else
+    fun getDescription(): String = keyBinding.boundKeyTranslationKey
+    //#endif
 
     /**
      * Gets the key code of the key.
@@ -155,7 +178,11 @@ class KeyBind {
      *
      * @return the category
      */
-    fun getCategory(): String = keyBinding.category
+    //#if MC<=12108
+    //$$fun getCategory(): String = keyBinding.category
+    //#else
+    fun getCategory(): String = keyBinding.category.id.toTranslationKey("key.category")
+    //#endif
 
     /**
      * Sets the state of the key.
@@ -196,6 +223,12 @@ class KeyBind {
             keyBinds.clear()
         }
 
+        //#if MC>=12109
+        internal fun getCategoryName(category: KeyBinding.Category): String {
+            return category.id.toTranslationKey("key.category")
+        }
+        //#endif
+
         private fun removeKeyBinding(keyBinding: KeyBinding) {
             Client.getMinecraft().options.asMixin<GameOptionsAccessor>().setAllKeys(
                 ArrayUtils.removeElement(
@@ -205,13 +238,22 @@ class KeyBind {
             )
             val category = keyBinding.category
 
-            if (category in uniqueCategories) {
-                uniqueCategories[category] = uniqueCategories[category]!! - 1
-
-                if (uniqueCategories[category] == 0) {
-                    uniqueCategories.remove(category)
-                    KeyBindingAccessor.getKeyCategories().remove(category)
+            //#if MC<=12108
+            //$$if (category in uniqueCategories) {
+            //$$    uniqueCategories[category] = uniqueCategories[category]!! - 1
+            //$$    if (uniqueCategories[category] == 0) {
+            //$$        uniqueCategories.remove(category)
+            //$$        KeyBindingAccessor.getKeyCategories().remove(category)
+            //$$    }
+            //#else
+            if (getCategoryName(category) in uniqueCategories) {
+                val categoryName = getCategoryName(category)
+                uniqueCategories[categoryName] = uniqueCategories[categoryName]!! - 1
+                if (uniqueCategories[categoryName] == 0) {
+                    uniqueCategories.remove(categoryName)
+                    KeyBindingAccessor.Category.getCategoryList().remove(category)
                 }
+            //#endif
             }
         }
 
@@ -232,10 +274,14 @@ class KeyBind {
                 ),
             )
 
-            val categoryMap = KeyBindingAccessor.getCategoryMap()
-            val maxInt = categoryMap.values.max() ?: 0
-            categoryMap[keyBinding.category] = maxInt + 1
-
+            //#if MC<=12108
+            //$$val categoryMap = KeyBindingAccessor.getCategoryMap()
+            //$$val maxInt = categoryMap.values.max() ?: 0
+            //$$categoryMap[keyBinding.category] = maxInt + 1
+            //#else
+            val categoryList = KeyBindingAccessor.Category.getCategoryList()
+            categoryList.add(keyBinding.category)
+            //#endif
             return keyBinding
         }
     }

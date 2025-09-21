@@ -13,7 +13,6 @@ import com.chattriggers.ctjs.internal.Skippable
 import com.chattriggers.ctjs.internal.TooltipOverridable
 import com.chattriggers.ctjs.internal.utils.asMixin
 import net.minecraft.block.pattern.CachedBlockPosition
-import net.minecraft.client.render.DiffuseLighting
 import net.minecraft.client.render.OverlayTexture
 import net.minecraft.client.render.item.ItemRenderState
 import net.minecraft.component.DataComponentTypes
@@ -25,6 +24,10 @@ import net.minecraft.item.tooltip.TooltipType
 import net.minecraft.util.crash.CrashException
 import net.minecraft.util.crash.CrashReport
 import kotlin.jvm.optionals.getOrNull
+
+//#if MC<=12105
+//$$import net.minecraft.client.render.DiffuseLighting
+//#endif
 
 class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
     val type: ItemType = ItemType(mcValue.item)
@@ -136,26 +139,41 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
             .pushMatrix()
             .translate(x + 8, y + 8, 150 + z)
         try {
+            //#if MC>=12109
+            val orderedRender = Client.getMinecraft().gameRenderer.entityRenderCommandQueue
+            //#endif
             val vertexConsumers = Client.getMinecraft().bufferBuilders.entityVertexConsumers
             RenderUtils.scale(16.0f, -16.0f, 16.0f)
             if (!itemRenderState.isSideLit) {
                 vertexConsumers.draw()
                 //#if MC<=12105
-                DiffuseLighting.enableGuiDepthLighting()
+                //$$DiffuseLighting.enableGuiDepthLighting()
                 //#endif
             }
 
-            itemRenderState.render(RenderUtils.matrixStack.toMC(), vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV)
+            itemRenderState.render(
+                RenderUtils.matrixStack.toMC(),
+                //#if MC<=12108
+                //$$vertexConsumers,
+                //#else
+                orderedRender,
+                //#endif
+                15728880,
+                OverlayTexture.DEFAULT_UV,
+                //#if MC>=12109
+                0,
+                //#endif
+            )
 
             RenderUtils.disableDepth()
             vertexConsumers.draw()
             RenderUtils.enableDepth()
 
-            if (!itemRenderState.isSideLit) {
-                //#if MC<=12105
-                DiffuseLighting.enableGuiDepthLighting()
-                //#endif
-            }
+            //#if MC<=12105
+            //$$if (!itemRenderState.isSideLit) {
+            //$$    DiffuseLighting.enableGuiDepthLighting()
+            //$$}
+            //#endif
         } catch (e: Throwable) {
             val crashReport = CrashReport.create(e, "Rendering item")
             val crashReportSection = crashReport.addElement("Item being rendered")

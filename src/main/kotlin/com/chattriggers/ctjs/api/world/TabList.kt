@@ -7,7 +7,6 @@ import com.chattriggers.ctjs.api.client.Player
 import com.chattriggers.ctjs.api.entity.Team
 import com.chattriggers.ctjs.api.message.TextComponent
 import com.chattriggers.ctjs.internal.mixins.ClientPlayNetworkHandlerAccessor
-import com.chattriggers.ctjs.internal.mixins.MinecraftClientAccessor
 import com.chattriggers.ctjs.internal.mixins.PlayerListEntryAccessor
 import com.chattriggers.ctjs.internal.mixins.PlayerListHudAccessor
 import com.chattriggers.ctjs.internal.utils.asMixin
@@ -19,9 +18,16 @@ import net.minecraft.client.network.PlayerListEntry
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.scoreboard.ScoreboardObjective
 import net.minecraft.text.Text
-import net.minecraft.util.ApiServices
 import net.minecraft.world.GameMode
 import java.util.UUID
+
+//#if MC<=12108
+//$$import com.chattriggers.ctjs.internal.mixins.MinecraftClientAccessor
+//$$import net.minecraft.util.ApiServices
+//#else
+import net.minecraft.util.Util
+import java.util.concurrent.CompletableFuture
+//#endif
 
 object TabList {
     private var needsUpdate = true
@@ -215,26 +221,42 @@ object TabList {
         }
 
         val mc = Client.getMinecraft()
-        val apiServices =
-            ApiServices.create(mc.asMixin<MinecraftClientAccessor>().authenticationService, mc.runDirectory)
-        apiServices.userCache.setExecutor(mc)
+        //#if MC<=12108
+        //$$val apiServices = ApiServices.create(mc.asMixin<MinecraftClientAccessor>().authenticationService, mc.runDirectory)
+        //$$apiServices.userCache.setExecutor(mc)
+        //$$apiServices.userCache.findByNameAsync(username).thenAcceptAsync {
+        //$$    if (it.isPresent) {
+        //$$        val result = apiServices.sessionService.fetchProfile(it.get().id, true) ?: return@thenAcceptAsync
+        //$$        val entry = PlayerListEntry(result.profile, true)
+        //$$        entry.displayName = name
+        //$$        listedPlayerListEntries += entry
+        //$$        playerListEntries[result.profile.id] = entry
+        //$$        listedPlayerListEntries -= fakeEntry
+        //$$        playerListEntries.remove(uuid)
+        //$$        updateNames()
+        //$$    }
+        //$$}
+        //#else
+        val apiServices = mc.apiServices
+        val findName = CompletableFuture.supplyAsync ({
+            apiServices.nameToIdCache.findByName(username)
+        }, Util.getMainWorkerExecutor().named("getProfile"))
+        findName.thenAcceptAsync {
+            if (!it.isPresent) return@thenAcceptAsync
 
-        apiServices.userCache.findByNameAsync(username).thenAcceptAsync {
-            if (it.isPresent) {
-                val result = apiServices.sessionService.fetchProfile(it.get().id, true) ?: return@thenAcceptAsync
+            val result = apiServices.sessionService.fetchProfile(it.get().id, true) ?: return@thenAcceptAsync
+            val entry = PlayerListEntry(result.profile, true)
+            entry.displayName = name
 
-                val entry = PlayerListEntry(result.profile, true)
-                entry.displayName = name
+            listedPlayerListEntries += entry
+            playerListEntries[result.profile.id] = entry
 
-                listedPlayerListEntries += entry
-                playerListEntries[result.profile.id] = entry
+            listedPlayerListEntries -= fakeEntry
+            playerListEntries.remove(uuid)
 
-                listedPlayerListEntries -= fakeEntry
-                playerListEntries.remove(uuid)
-
-                updateNames()
-            }
+            updateNames()
         }
+        //#endif
     }
 
     @JvmStatic

@@ -28,19 +28,16 @@ public class InGameHudMixin {
     }
 
     @Inject(
-        //#if MC>=12106
-        //$$method = "render",
-        //$$at = @At(
-        //$$    value = "TAIL"
-        //$$)
-        //#else
-        method = "render",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-            shift = At.Shift.AFTER
-        )
-        //#endif
+		method = "render",
+		at = @At(
+			//#if MC<=12105
+			//$$value = "INVOKE",
+			//$$target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
+			//$$shift = At.Shift.AFTER
+			//#else
+            value = "TAIL"
+			//#endif
+		)
     )
     private void injectRenderOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         CTEvents.RENDER_HUD_OVERLAY.invoker().render(context, new UMatrixStack(context.getMatrices()).toMC(), tickCounter.getDynamicDeltaTicks());

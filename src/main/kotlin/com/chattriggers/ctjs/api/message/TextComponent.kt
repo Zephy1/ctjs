@@ -1,6 +1,5 @@
 package com.chattriggers.ctjs.api.message
 
-import com.chattriggers.ctjs.CTJS
 import com.chattriggers.ctjs.MCEntity
 import com.chattriggers.ctjs.api.client.Client
 import com.chattriggers.ctjs.api.client.Player
@@ -30,6 +29,12 @@ import java.net.URI
 import java.util.Optional
 import java.util.concurrent.ThreadLocalRandom
 import kotlin.streams.toList
+
+//#if MC<=12108
+//$$import com.chattriggers.ctjs.CTJS
+//#else
+import net.minecraft.text.StyleSpriteSource
+//#endif
 
 /**
  * A wrapper around the Minecraft Text class and it's various inheritors.
@@ -379,6 +384,7 @@ class TextComponent private constructor(
 
                     if (builder.isNotEmpty()) {
                         parts.add(Part(builder.toString(), lastStyle))
+
                     }
 
                     parts
@@ -394,11 +400,17 @@ class TextComponent private constructor(
     private class PartContent(val text: String, val style_: Style) : TextContent {
         override fun <T : Any?> visit(visitor: StringVisitable.Visitor<T>): Optional<T> = visitor.accept(text)
 
+        //#if MC>=12109
+        override fun getCodec(): MapCodec<out TextContent> = CODEC
+        //#endif
+
         override fun <T> visit(visitor: StringVisitable.StyledVisitor<T>, style: Style): Optional<T> {
             return visitor.accept(this.style_.withParent(style), text)
         }
 
-        override fun getType(): TextContent.Type<*> = TextContent.Type(CODEC, "${CTJS.MOD_ID}_part")
+        //#if MC<=12108
+        //$$override fun getType(): TextContent.Type<*> = TextContent.Type(CODEC, "${CTJS.MOD_ID}_part")
+        //#endif
 
         companion object {
             private val CODEC: MapCodec<PartContent> = RecordCodecBuilder.mapCodec { builder ->
@@ -458,11 +470,21 @@ class TextComponent private constructor(
                     },
                 )
                 .withFont(
-                    when (val font = obj["font"]) {
-                        null -> null
-                        is CharSequence -> font.toString().toIdentifier()
-                        else -> error("Expected \"font\" key to be a String")
-                    },
+                    //#if MC<=12108
+                    //$$when (val font = obj["font"]) {
+                    //$$    null -> null
+                    //$$    is CharSequence -> font.toString().toIdentifier()
+                    //$$    else -> error("Expected \"font\" key to be a String")
+                    //$$},
+                    //#else
+                    StyleSpriteSource.Font(
+                        when (val font = obj["font"]) {
+                            null -> null
+                            is CharSequence -> font.toString().toIdentifier()
+                            else -> error("Expected \"font\" key to be a String")
+                        },
+                    )
+                    //#endif
                 )
         }
 
@@ -520,8 +542,8 @@ class TextComponent private constructor(
                 ClickEvent.Action.CHANGE_PAGE -> clickValue.toIntOrNull()?. let { ClickEvent.ChangePage(it) }
                 ClickEvent.Action.COPY_TO_CLIPBOARD -> ClickEvent.CopyToClipboard(clickValue)
                 //#if MC>=12106
-                //$$ClickEvent.Action.SHOW_DIALOG -> TODO()
-                //$$ClickEvent.Action.CUSTOM -> TODO()
+                ClickEvent.Action.SHOW_DIALOG -> TODO()
+                ClickEvent.Action.CUSTOM -> TODO()
                 //#endif
             }
         }

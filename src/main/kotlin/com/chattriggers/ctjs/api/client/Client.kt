@@ -26,10 +26,11 @@ import net.minecraft.client.network.ServerInfo
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.realms.gui.screen.RealmsMainScreen
 import net.minecraft.network.packet.Packet
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 //#if MC>=12106
-//$$import net.minecraft.text.Text
+import net.minecraft.text.Text
 //#endif
 
 object Client {
@@ -50,7 +51,7 @@ object Client {
      * @return The Minecraft object
      */
     @JvmStatic
-    fun getMinecraft(): MinecraftClient = UMinecraft.getMinecraft()
+    fun getMinecraft(): MinecraftClient = MinecraftClient.getInstance()
 
     /**
      * Gets Minecraft's NetHandlerPlayClient object
@@ -79,11 +80,11 @@ object Client {
     @JvmStatic
     fun disconnect() {
         scheduleTask {
-            //#if MC>=12106
-            //$$World.toMC()?.disconnect(Text.empty())
+            //#if MC<=12105
+            //$$World.toMC()?.disconnect()
+            //$$getMinecraft().disconnect()
             //#else
-            World.toMC()?.disconnect()
-            getMinecraft().disconnect()
+            World.toMC()?.disconnect(Text.empty())
             //#endif
 
             getMinecraft().setScreen(
@@ -172,10 +173,10 @@ object Client {
     fun getSystemTime(): Long = (System.nanoTime() - referenceSystemTime) / 1_000_000
 
     @JvmStatic
-    fun getMouseX() = UMouse.Scaled.x
+    fun getMouseX() = getMinecraft().mouse.x * getMinecraft().window.scaledWidth / max(1, getMinecraft().window.scaledWidth)
 
     @JvmStatic
-    fun getMouseY() = UMouse.Scaled.y
+    fun getMouseY() = getMinecraft().mouse.y * getMinecraft().window.scaledHeight / max(1, getMinecraft().window.scaledHeight)
 
     @JvmStatic
     fun isInGui(): Boolean = currentGui.get() != null
@@ -206,7 +207,11 @@ object Client {
             val chatGui = getMinecraft().currentScreen as ChatScreen
             chatGui.asMixin<ChatScreenAccessor>().chatField.text = message
         } else {
-            currentGui.set(ChatScreen(message))
+            //#if MC<=12108
+            //$$currentGui.set(ChatScreen(message))
+            //#else
+            currentGui.set(ChatScreen(message, false))
+            //#endif
         }
     }
 
@@ -297,16 +302,15 @@ object Client {
      */
     @JvmStatic
     fun getKeyBindFromDescription(description: String): KeyBind? {
-        return KeyBind
-            .getKeyBinds()
-            .find {
-                it.getDescription() == description
-            } ?: getMinecraft()
-            .options
-            .allKeys
-            .find {
-                it.translationKey == description
-            }?.let(::KeyBind)
+        return KeyBind.getKeyBinds()
+            .find { it.getDescription() == description }
+            ?: getMinecraft().options.allKeys
+                //#if MC<=12108
+                //$$.find { it.translationKey == description }
+                //#else
+                .find { it.boundKeyTranslationKey == description }
+                //#endif
+                ?.let(::KeyBind)
     }
 
     class CurrentGuiWrapper {

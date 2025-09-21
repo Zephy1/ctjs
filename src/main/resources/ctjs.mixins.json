@@ -27,6 +27,7 @@
         "HandledScreenMixin",
         "InGameHudMixin",
         "KeyBindingAccessor",
+        "KeyBindingAccessor$Category",
         "MinecraftClientMixin",
         "MouseMixin",
         "ParticleAccessor",

@@ -25,6 +25,12 @@ import java.nio.charset.Charset
 import kotlin.concurrent.thread
 import kotlin.io.path.Path
 
+//#if MC<=12108
+//$$import kotlinx.serialization.encodeToString
+//#else
+import net.minecraft.util.Identifier
+//#endif
+
 /**
  * Responsible for spawning and managing a separate Java console process (which uses AWT)
  *
@@ -63,7 +69,11 @@ object ConsoleHostProcess : Initializer {
                 "ctjs.key.binding.console",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_GRAVE_ACCENT,
-                "ctjs.key.category",
+                //#if MC<=12108
+                //$$"ctjs.key.category",
+                //#else
+                KeyBinding.Category.create(Identifier.of("ctjs.key.category")),
+                //#endif
             ),
         )
 

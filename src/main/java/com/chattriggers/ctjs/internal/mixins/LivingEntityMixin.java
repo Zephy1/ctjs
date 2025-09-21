@@ -7,7 +7,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -26,7 +25,11 @@ public abstract class LivingEntityMixin extends Entity {
         )
     )
     private void chattriggers$entityDeath(DamageSource damageSource, CallbackInfo ci) {
-        if (getWorld().isClient) {
+        //#if MC<=12108
+        //$$if (getWorld().isClient) {
+        //#else
+        if (getEntityWorld().isClient()) {
+        //#endif
             TriggerType.ENTITY_DEATH.triggerAll(this);
         }
     }

@@ -6,7 +6,6 @@ import com.chattriggers.ctjs.engine.printTraceToConsole
 import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.utils.getOrNull
 import com.chattriggers.ctjs.internal.utils.toIdentifier
-import com.mojang.blaze3d.systems.RenderSystem
 import gg.essential.universal.UMatrixStack
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
@@ -19,10 +18,11 @@ import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.Undefined
 
-//#if MC>=12106
-//$$import net.minecraft.client.gl.RenderPipelines
+//#if MC<=12105
+//$$import net.minecraft.client.render.RenderLayer
+//$$import com.mojang.blaze3d.systems.RenderSystem
 //#else
-import net.minecraft.client.render.RenderLayer
+import net.minecraft.client.gl.RenderPipelines
 //#endif
 
 // https://github.com/Edgeburn/Toasts
@@ -139,21 +139,21 @@ class Toast(config: NativeObject) : Toast {
             }
         } else {
             backgroundBacker?.let {
-                //#if MC>=12106
-                //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, 0, 0, width, height)
+                //#if MC<=12105
+                //$$RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+                //$$context.drawGuiTexture(RenderLayer::getGuiTextured, it, 0, 0, width, height)
                 //#else
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-                context.drawGuiTexture(RenderLayer::getGuiTextured, it, 0, 0, width, height)
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, 0, 0, width, height)
                 //#endif
             }
 
             iconBacker?.let { it: Identifier ->
                 val iconSize = height - ICON_PADDING * 2
-                //#if MC>=12106
-                //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
+                //#if MC<=12105
+                //$$RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+                //$$context.drawGuiTexture(RenderLayer::getGuiTextured, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
                 //#else
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-                context.drawGuiTexture(RenderLayer::getGuiTextured, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
+                context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
                 //#endif
             }
 

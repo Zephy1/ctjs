@@ -2,6 +2,7 @@ package com.chattriggers.ctjs.api.render
 
 import com.chattriggers.ctjs.CTJS
 import com.chattriggers.ctjs.api.client.Client
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
@@ -75,6 +76,7 @@ class Image(var image: BufferedImage?) {
 
     @JvmOverloads
     fun draw(
+        drawContext: DrawContext,
         x: Float,
         y: Float,
         width: Float? = null,
@@ -82,7 +84,7 @@ class Image(var image: BufferedImage?) {
     ) = apply {
         val (drawWidth, drawHeight) = getImageSize(width, height)
         if (texture != null) {
-            GUIRenderer.drawImage(this, x, y, drawWidth, drawHeight)
+            GUIRenderer.drawImage(drawContext, this, x, y, drawWidth, drawHeight)
         }
     }
 

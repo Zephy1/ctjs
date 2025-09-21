@@ -28,10 +28,10 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
         gui.x = x
         gui.y = y
 
-        //#if MC>=12106
-        //$$ctx.matrices.pushMatrix()
+        //#if MC<=12105
+        //$$ctx.matrices.push()
         //#else
-        ctx.matrices.push()
+        ctx.matrices.pushMatrix()
         //#endif
 
         ctx.fill(x, y, x + width, y + 13, 0xaa000000.toInt())
@@ -42,18 +42,18 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
         )
 
         return if (gui.collapsed) {
-            //#if MC>=12106
-            //$$ctx.matrices.pushMatrix()
-            //$$ctx.matrices.translate(x + width - 5f, y + 8f)
-            //$$ctx.matrices.rotate(Math.PI.toFloat())
+            //#if MC<=12105
+            //$$ctx.matrices.push()
+            //$$ctx.matrices.translate(x + width - 5f, y + 8f, 0f)
+            //$$ctx.matrices.multiply(Quaternionf().rotateAxis(Math.PI.toFloat(), 0f, 0f, 0f))
             //$$ctx.drawText(RenderUtils.getFontRenderer(), "^", 0, 0, -1, false)
-            //$$ctx.matrices.popMatrix()
+            //$$ctx.matrices.pop()
             //#else
-            ctx.matrices.push()
-            ctx.matrices.translate(x + width - 5f, y + 8f, 0f)
-            ctx.matrices.multiply(Quaternionf().rotateAxis(Math.PI.toFloat(), 0f, 0f, 0f))
+            ctx.matrices.pushMatrix()
+            ctx.matrices.translate(x + width - 5f, y + 8f)
+            ctx.matrices.rotate(Math.PI.toFloat())
             ctx.drawText(RenderUtils.getFontRenderer(), "^", 0, 0, -1, false)
-            ctx.matrices.pop()
+            ctx.matrices.popMatrix()
             //#endif
             16
         } else {
@@ -88,10 +88,10 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
                 -1
             )
 
-            //#if MC>=12106
-            //$$ctx.matrices.popMatrix()
+            //#if MC<=12105
+            //$$ctx.matrices.pop()
             //#else
-            ctx.matrices.pop()
+            ctx.matrices.popMatrix()
             //#endif
             gui.description.getHeight().toInt() + 27
         }

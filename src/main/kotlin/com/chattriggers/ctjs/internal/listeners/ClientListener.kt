@@ -39,10 +39,10 @@ import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
 import org.mozilla.javascript.Context
 
-//#if MC>=12106
-//$$import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+//#if MC<=12105
+//$$import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 //#else
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 //#endif
 
 object ClientListener : Initializer {
@@ -100,71 +100,73 @@ object ClientListener : Initializer {
         }
 
         // Sleep layer isn't affected by screen hiding (F1)
-        //#if MC>=12106
-        //$$HudElementRegistry.attachElementAfter(
-        //$$    HudRenderLayer.SLEEP.toMC(),
-        //$$    Identifier.of("ctjs", "screen_overlay"))
-        //$${  drawContext: DrawContext, tickCounter: RenderTickCounter ->
-        //$$    // Don't render if a screen is open, calls trigger twice otherwise
-        //$$    if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
-        //$$
-        //$$    val partialTicks = tickCounter.dynamicDeltaTicks
-        //$$    GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-        //$$        TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //#if MC<=12105
+        //$$HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
+        //$$    layeredDrawer.attachLayerAfter(
+        //$$        HudRenderLayer.SLEEP.toMC(),
+        //$$        Identifier.of("ctjs", "screen_overlay"),
+        //$$    ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
+        //$$        if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        //$$        val partialTicks = tickCounter.dynamicDeltaTicks
+        //$$        GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+        //$$            TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //$$        }
         //$$    }
         //$$}
         //#else
-        HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
-            layeredDrawer.attachLayerAfter(
-                HudRenderLayer.SLEEP.toMC(),
-                Identifier.of("ctjs", "screen_overlay"),
-            ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
-                // Don't render if a screen is open, calls trigger twice otherwise
-                if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        HudElementRegistry.attachElementAfter(
+            HudRenderLayer.SLEEP.toMC(),
+            Identifier.of("ctjs", "screen_overlay"))
+        {  drawContext: DrawContext, tickCounter: RenderTickCounter ->
+            // Don't render if a screen is open, calls trigger twice otherwise
+            if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
 
-                val partialTicks = tickCounter.dynamicDeltaTicks
-                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-                    TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
-                }
+            val partialTicks = tickCounter.dynamicDeltaTicks
+            GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+                TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
             }
         }
         //#endif
 
         // Subtitles is last HUD layer to render
-        //#if MC>=12106
-        //$$HudElementRegistry.attachElementAfter(
-        //$$    HudRenderLayer.SUBTITLES.toMC(),
-        //$$    Identifier.of("ctjs", "hideable_screen_overlay"))
-        //$${  drawContext: DrawContext, tickCounter: RenderTickCounter ->
-        //$$    // Don't render if a screen is open, calls trigger twice otherwise
-        //$$    if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
-        //$$
-        //$$    val partialTicks = tickCounter.dynamicDeltaTicks
-        //$$    GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-        //$$        TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //#if MC<=12105
+        //$$HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
+        //$$    layeredDrawer.attachLayerAfter(
+        //$$        HudRenderLayer.SUBTITLES.toMC(),
+        //$$        Identifier.of("ctjs", "hideable_screen_overlay"),
+        //$$    ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
+        //$$        if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        //$$        val partialTicks = tickCounter.dynamicDeltaTicks
+        //$$        GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+        //$$            TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //$$        }
         //$$    }
         //$$}
         //#else
-        HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
-            layeredDrawer.attachLayerAfter(
-                HudRenderLayer.SUBTITLES.toMC(),
-                Identifier.of("ctjs", "hideable_screen_overlay"),
-            ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
-                // Don't render if a screen is open, calls trigger twice otherwise
-                if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
+        HudElementRegistry.attachElementAfter(
+            HudRenderLayer.SUBTITLES.toMC(),
+            Identifier.of("ctjs", "hideable_screen_overlay"))
+        {  drawContext: DrawContext, tickCounter: RenderTickCounter ->
+            // Don't render if a screen is open, calls trigger twice otherwise
+            if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
 
-                val partialTicks = tickCounter.dynamicDeltaTicks
-                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-                    TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
-                }
+            val partialTicks = tickCounter.dynamicDeltaTicks
+            GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+                TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
             }
         }
         //#endif
 
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
-            ScreenKeyboardEvents.allowKeyPress(screen).register { _, key, scancode, _ ->
+            //#if MC<=12108
+            //$$ScreenKeyboardEvents.allowKeyPress(screen).register { _, key, scancode, _ ->
+            //$$    val event = CancellableEvent()
+            //$$    TriggerType.GUI_KEY.triggerAll(GLFW.glfwGetKeyName(key, scancode), key, screen, event)
+            //#else
+            ScreenKeyboardEvents.allowKeyPress(screen).register { _, input ->
                 val event = CancellableEvent()
-                TriggerType.GUI_KEY.triggerAll(GLFW.glfwGetKeyName(key, scancode), key, screen, event)
+                TriggerType.GUI_KEY.triggerAll(GLFW.glfwGetKeyName(input.key, input.scancode), input.key, screen, event)
+            //#endif
                 !event.isCancelled()
             }
 
@@ -221,7 +223,12 @@ object ClientListener : Initializer {
         }
 
         AttackBlockCallback.EVENT.register { player, _, _, pos, direction ->
-            if (!player.world.isClient) return@register ActionResult.PASS
+            //#if MC<=12108
+            //$$if (!player.world.isClient) return@register ActionResult.PASS
+            //#else
+            if (!player.entityWorld.isClient) return@register ActionResult.PASS
+            //#endif
+
             val event = CancellableEvent()
 
             TriggerType.PLAYER_INTERACT.triggerAll(
@@ -234,7 +241,11 @@ object ClientListener : Initializer {
         }
 
         AttackEntityCallback.EVENT.register { player, _, _, entity, _ ->
-            if (!player.world.isClient) return@register ActionResult.PASS
+            //#if MC<=12108
+            //$$if (!player.world.isClient) return@register ActionResult.PASS
+            //#else
+            if (!player.entityWorld.isClient) return@register ActionResult.PASS
+            //#endif
             val event = CancellableEvent()
 
             TriggerType.PLAYER_INTERACT.triggerAll(
@@ -256,7 +267,11 @@ object ClientListener : Initializer {
         }
 
         UseBlockCallback.EVENT.register { player, _, hand, hitResult ->
-            if (!player.world.isClient) return@register ActionResult.PASS
+            //#if MC<=12108
+            //$$if (!player.world.isClient) return@register ActionResult.PASS
+            //#else
+            if (!player.entityWorld.isClient) return@register ActionResult.PASS
+            //#endif
             val event = CancellableEvent()
 
             TriggerType.PLAYER_INTERACT.triggerAll(
@@ -269,7 +284,11 @@ object ClientListener : Initializer {
         }
 
         UseEntityCallback.EVENT.register { player, _, hand, entity, _ ->
-            if (!player.world.isClient) return@register ActionResult.PASS
+            //#if MC<=12108
+            //$$if (!player.world.isClient) return@register ActionResult.PASS
+            //#else
+            if (!player.entityWorld.isClient) return@register ActionResult.PASS
+            //#endif
             val event = CancellableEvent()
 
             TriggerType.PLAYER_INTERACT.triggerAll(
@@ -282,7 +301,11 @@ object ClientListener : Initializer {
         }
 
         UseItemCallback.EVENT.register { player, _, hand ->
-            if (!player.world.isClient) return@register ActionResult.PASS
+            //#if MC<=12108
+            //$$if (!player.world.isClient) return@register ActionResult.PASS
+            //#else
+            if (!player.entityWorld.isClient) return@register ActionResult.PASS
+            //#endif
             val event = CancellableEvent()
 
             val stack = player.getStackInHand(hand)

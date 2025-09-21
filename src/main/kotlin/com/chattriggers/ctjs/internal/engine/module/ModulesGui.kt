@@ -7,6 +7,10 @@ import com.chattriggers.ctjs.api.render.Text
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 
+//#if MC>=12109
+import net.minecraft.client.gui.Click
+//#endif
+
 object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
     private val window = object {
         val title = Text("Modules").setScale(2f).setShadow(true)
@@ -15,18 +19,19 @@ object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
         var scroll = 0f
     }
 
-    override fun render(ctx: DrawContext?, mouseX: Int, mouseY: Int, deltaTicks: Float) {
-        //#if MC>12105
-        //$$ctx!!.matrices.pushMatrix()
+    override fun render(drawContext: DrawContext?, mouseX: Int, mouseY: Int, deltaTicks: Float) {
+        //#if MC<=12105
+        //$$drawContext!!.matrices.push()
         //#else
-        ctx!!.matrices.push()
+        drawContext!!.matrices.pushMatrix()
         //#endif
 
-        ctx.fill(0, 0, ctx.scaledWindowWidth, ctx.scaledWindowHeight, 0x50000000)
+        drawContext.fill(0, 0, drawContext.scaledWindowWidth, drawContext.scaledWindowHeight, 0x50000000)
         val middle = GUIRenderer.screen.getWidth() / 2
         val width = (GUIRenderer.screen.getWidth() - 100).coerceAtMost(500)
 
         GUIRenderer.drawRect(
+            drawContext,
             0f,
             0f,
             GUIRenderer.screen.getWidth().toFloat(),
@@ -39,34 +44,40 @@ object ModulesGui : Screen(net.minecraft.text.Text.literal("Modules")) {
         if (-window.scroll < 0) window.scroll = 0f
 
         if (-window.scroll > 0) {
-            GUIRenderer.drawRect(GUIRenderer.screen.getWidth() - 20f, GUIRenderer.screen.getHeight() - 20f, 20f, 20f, 0xAA000000)
-            GUIRenderer.drawString("^", GUIRenderer.screen.getWidth() - 12f, GUIRenderer.screen.getHeight() - 12f)
+            GUIRenderer.drawRect(drawContext, GUIRenderer.screen.getWidth() - 20f, GUIRenderer.screen.getHeight() - 20f, 20f, 20f, 0xAA000000)
+            GUIRenderer.drawString(drawContext, "^", GUIRenderer.screen.getWidth() - 12f, GUIRenderer.screen.getHeight() - 12f)
         }
 
         val ox = middle - width / 2
         val oy = window.scroll.toInt() + 95
 
-        ctx.fill(ox, oy, ox + width, oy + (window.height.toInt() - 90), 0x50000000)
-        ctx.fill(ox, oy, ox + width, oy + 25, 0xaa000000.toInt())
+        drawContext.fill(ox, oy, ox + width, oy + (window.height.toInt() - 90), 0x50000000)
+        drawContext.fill(ox, oy, ox + width, oy + 25, 0xaa000000.toInt())
 
-        window.title.draw(ctx, (middle - width / 2 + 5) / 2, (window.scroll.toInt() + 100) / 2)
-        window.exit.draw(ctx, (middle + width / 2 - 17) / 2, (window.scroll.toInt() + 99) / 2)
+        window.title.draw(drawContext, (middle - width / 2 + 5) / 2, (window.scroll.toInt() + 100) / 2)
+        window.exit.draw(drawContext, (middle + width / 2 - 17) / 2, (window.scroll.toInt() + 99) / 2)
 
         window.height = 125f
         ModuleManager.cachedModules.sortedBy { it.name }.forEach {
-            window.height += it.draw(ctx, middle - width / 2, (window.scroll + window.height).toInt(), width)
+            window.height += it.draw(drawContext, middle - width / 2, (window.scroll + window.height).toInt(), width)
         }
 
-        //#if MC>12105
-        //$$ctx.matrices.popMatrix()
+        //#if MC<=12105
+        //$$drawContext.matrices.pop()
         //#else
-        ctx.matrices.pop()
+        drawContext.matrices.popMatrix()
         //#endif
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
-        super.mouseClicked(mouseX, mouseY, button)
-
+    //#if MC<=12108
+    //$$override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    //$$    super.mouseClicked(mouseX, mouseY, button)
+    //#else
+    override fun mouseClicked(click: Click, double: Boolean): Boolean {
+        super.mouseClicked(click, double)
+        val mouseX = click.x
+        val mouseY = click.y
+    //#endif
         var width = GUIRenderer.screen.getWidth() - 100f
         if (width > 500) width = 500f
 

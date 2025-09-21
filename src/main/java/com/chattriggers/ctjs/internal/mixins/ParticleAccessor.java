@@ -42,29 +42,16 @@ public interface ParticleAccessor {
     @Accessor
     void setVelocityZ(double value);
 
-    @Accessor
-    float getRed();
-
-    @Accessor
-    void setRed(float value);
-
-    @Accessor
-    float getGreen();
-
-    @Accessor
-    void setGreen(float value);
-
-    @Accessor
-    float getBlue();
-
-    @Accessor
-    void setBlue(float value);
-
-    @Accessor
-    float getAlpha();
-
-    @Accessor
-    void setAlpha(float value);
+    //#if MC<=12108
+    //$$@Accessor float getRed();
+    //$$@Accessor void setRed(float value);
+    //$$@Accessor float getGreen();
+    //$$@Accessor void setGreen(float value);
+    //$$@Accessor float getBlue();
+    //$$@Accessor void setBlue(float value);
+    //$$@Accessor float getAlpha();
+    //$$@Accessor void setAlpha(float value);
+    //#endif
 
     @Accessor
     int getAge();

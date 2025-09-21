@@ -11,8 +11,11 @@ import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UScreen
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.gui.tooltip.Tooltip
 import net.minecraft.client.gui.widget.ButtonWidget
+
+//#if MC<=12105
+//$$import net.minecraft.client.gui.tooltip.Tooltip
+//#endif
 
 class Gui @JvmOverloads constructor(
     title: TextComponent = TextComponent(""),
@@ -217,8 +220,14 @@ class Gui @JvmOverloads constructor(
     override fun initScreen(width: Int, height: Int) {
         super.initScreen(width, height)
 
-        ScreenMouseEvents.afterMouseScroll(this).register { _, x, y, _, dy ->
+        //#if MC<=12108
+        //$$ScreenMouseEvents.afterMouseScroll(this).register { _, x, y, _, dy ->
+        //$$    onScroll?.trigger(arrayOf(x, y, dy))
+        //#else
+        ScreenMouseEvents.afterMouseScroll(this).register { _, x, y, _, dy, _ ->
             onScroll?.trigger(arrayOf(x, y, dy))
+            false
+        //#endif
         }
 
         buttons.values.forEach(::addDrawableChild)
@@ -490,7 +499,7 @@ class Gui @JvmOverloads constructor(
      */
     fun setTooltip(text: TextComponent) = apply {
         //#if MC<=12105
-        setTooltip(Tooltip.wrapLines(Client.getMinecraft(), text))
+        //$$setTooltip(Tooltip.wrapLines(Client.getMinecraft(), text))
         //#endif
     }
 

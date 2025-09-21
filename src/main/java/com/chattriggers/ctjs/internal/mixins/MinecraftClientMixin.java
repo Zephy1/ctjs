@@ -6,7 +6,6 @@ import com.chattriggers.ctjs.internal.engine.CTEvents;
 import com.chattriggers.ctjs.api.triggers.TriggerType;
 import com.chattriggers.ctjs.internal.engine.module.ModuleManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.client.world.ClientWorld;
@@ -16,6 +15,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+//#if MC<=12108
+//$$import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
+//#endif
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
@@ -30,7 +33,11 @@ public abstract class MinecraftClientMixin {
             value = "HEAD"
         )
     )
-    private void injectWorldUnload(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
+    //#if MC<=12108
+    //$$private void injectWorldUnload(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
+    //#else
+    private void injectWorldUnload(ClientWorld world, CallbackInfo ci) {
+    //#endif
         if (this.world == null && world != null) {
             TriggerType.SERVER_CONNECT.triggerAll();
         } else if (this.world != null && world == null) {
@@ -50,7 +57,11 @@ public abstract class MinecraftClientMixin {
             value = "TAIL"
         )
     )
-    private void injectWorldLoad(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
+    //#if MC<=12108
+    //$$private void injectWorldLoad(ClientWorld world, DownloadingTerrainScreen.WorldEntryReason worldEntryReason, CallbackInfo ci) {
+    //#else
+    private void injectWorldLoad(ClientWorld world, CallbackInfo ci) {
+    //#endif
         if (world != null) {
             TriggerType.WORLD_LOAD.triggerAll();
         }

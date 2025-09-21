@@ -17,7 +17,6 @@ import com.chattriggers.ctjs.internal.mixins.ClientChunkMapAccessor
 import com.chattriggers.ctjs.internal.mixins.ClientWorldAccessor
 import com.chattriggers.ctjs.internal.utils.asMixin
 import com.chattriggers.ctjs.internal.utils.toIdentifier
-import gg.essential.universal.UMinecraft
 import net.minecraft.block.BlockState
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.item.ItemStack
@@ -36,15 +35,15 @@ import net.minecraft.world.LightType
 import net.minecraft.world.event.BlockPositionSource
 import kotlin.math.roundToInt
 
-//#if MC>=12107
-//$$import net.minecraft.particle.TintedParticleEffect
+//#if MC<=12106
+//$$import net.minecraft.particle.EntityEffectParticleEffect
 //#else
-import net.minecraft.particle.EntityEffectParticleEffect
+import net.minecraft.particle.TintedParticleEffect
 //#endif
 
 object World {
     @JvmStatic
-    fun toMC() = UMinecraft.getMinecraft().world
+    fun toMC() = Client.getMinecraft().world
 
     @JvmField
     val spawn = SpawnWrapper()
@@ -277,21 +276,33 @@ object World {
          *
          * @return the spawn x location.
          */
-        fun getX(): Int = toMC()!!.spawnPos.x
+        //#if MC<=12108
+        //$$fun getX(): Int = toMC()!!.spawnPos.x
+        //#else
+        fun getX(): Int = toMC()!!.spawnPoint.pos.x
+        //#endif
 
         /**
          * Gets the spawn y location.
          *
          * @return the spawn y location.
          */
-        fun getY(): Int = toMC()!!.spawnPos.y
+        //#if MC<=12108
+        //$$fun getY(): Int = toMC()!!.spawnPos.y
+        //#else
+        fun getY(): Int = toMC()!!.spawnPoint.pos.y
+        //#endif
 
         /**
          * Gets the spawn z location.
          *
          * @return the spawn z location.
          */
-        fun getZ(): Int = toMC()!!.spawnPos.z
+        //#if MC<=12108
+        //$$fun getZ(): Int = toMC()!!.spawnPos.z
+        //#else
+        fun getZ(): Int = toMC()!!.spawnPoint.pos.z
+        //#endif
     }
 
     class ParticleWrapper {
@@ -349,10 +360,10 @@ object World {
                     ParticleTypes.SHRIEK -> ShriekParticleEffect(0)
                     ParticleTypes.VIBRATION -> VibrationParticleEffect(BlockPositionSource(blockPos.toMC()), 0)
 
-                    //#if MC>=12107
-                    //$$ParticleTypes.ENTITY_EFFECT -> TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
+                    //#if MC<=12106
+                    //$$ParticleTypes.ENTITY_EFFECT -> EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
                     //#else
-                    ParticleTypes.ENTITY_EFFECT -> EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
+                    ParticleTypes.ENTITY_EFFECT -> TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
                     //#endif
 
                     else -> throw IllegalStateException("Particle not accounted for: $particle")

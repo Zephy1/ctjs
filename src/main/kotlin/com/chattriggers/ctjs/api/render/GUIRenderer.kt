@@ -6,16 +6,14 @@ import com.chattriggers.ctjs.api.entity.PlayerMP
 import com.chattriggers.ctjs.api.render.RenderUtils.getColorRGBA
 import com.chattriggers.ctjs.engine.LogType
 import com.chattriggers.ctjs.engine.printToConsole
-import com.chattriggers.ctjs.internal.mixins.EntityRenderDispatcherAccessor
-import com.chattriggers.ctjs.internal.utils.asMixin
 import com.chattriggers.ctjs.internal.utils.getOrDefault
 import com.chattriggers.ctjs.internal.utils.toRadians
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UMinecraft
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
+import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.network.AbstractClientPlayerEntity
-import net.minecraft.client.render.DiffuseLighting
 import net.minecraft.client.render.entity.EntityRendererFactory
 import net.minecraft.client.util.math.MatrixStack
 import org.joml.Matrix4f
@@ -28,6 +26,13 @@ import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
+
+//#if MC<=12108
+//$$import net.minecraft.client.render.DiffuseLighting
+//$$import com.chattriggers.ctjs.internal.mixins.EntityRenderDispatcherAccessor
+//$$import com.chattriggers.ctjs.internal.utils.asMixin
+//$$import org.joml.Matrix3x2fStack
+//#endif
 
 object GUIRenderer {
     private lateinit var slimCTRenderPlayer: CTPlayerRenderer
@@ -61,6 +66,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawSquareRGBA(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         size: Float = 1f,
@@ -69,7 +75,7 @@ object GUIRenderer {
         blue: Int = 255,
         alpha: Int = 255,
     ) {
-        drawRect(xPosition, yPosition, size, size, RenderUtils.getColor(red, green, blue, alpha))
+        drawRect(drawContext, xPosition, yPosition, size, size, RenderUtils.getColor(red, green, blue, alpha))
     }
 
     /**
@@ -83,12 +89,13 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawSquare(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         size: Float = 1f,
         color: Long = RenderUtils.colorized ?: RenderUtils.WHITE,
     ) {
-        drawRect(xPosition, yPosition, size, size, color)
+        drawRect(drawContext, xPosition, yPosition, size, size, color)
     }
 
     /**
@@ -106,6 +113,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawRectRGBA(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         width: Float = 1f,
@@ -115,7 +123,7 @@ object GUIRenderer {
         blue: Int = 255,
         alpha: Int = 255,
     ) {
-        drawRect(xPosition, yPosition, width, height, RenderUtils.getColor(red, green, blue, alpha))
+        drawRect(drawContext, xPosition, yPosition, width, height, RenderUtils.getColor(red, green, blue, alpha))
     }
 
     /**
@@ -130,6 +138,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawRect(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         width: Float = 1f,
@@ -166,6 +175,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawLineRGBA(
+        drawContext: DrawContext,
         startX: Float,
         startY: Float,
         endX: Float,
@@ -176,7 +186,7 @@ object GUIRenderer {
         alpha: Int = 255,
         lineThickness: Float = 1f,
     ) {
-        drawLine(startX, startY, endX, endY, RenderUtils.getColor(red, green, blue, alpha), lineThickness)
+        drawLine(drawContext, startX, startY, endX, endY, RenderUtils.getColor(red, green, blue, alpha), lineThickness)
     }
 
     /**
@@ -192,6 +202,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawLine(
+        drawContext: DrawContext,
         startX: Float,
         startY: Float,
         endX: Float,
@@ -231,6 +242,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawSimpleCircleRGBA(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         radius: Float = 1f,
@@ -243,7 +255,7 @@ object GUIRenderer {
         xRotationOffset: Float = 0f,
         yRotationOffset: Float = 0f,
     ) {
-        drawCircle(xPosition, yPosition, radius, radius, RenderUtils.getColor(red, green, blue, alpha), edges, rotationDegrees, xRotationOffset, yRotationOffset)
+        drawCircle(drawContext, xPosition, yPosition, radius, radius, RenderUtils.getColor(red, green, blue, alpha), edges, rotationDegrees, xRotationOffset, yRotationOffset)
     }
 
     /**
@@ -261,6 +273,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawSimpleCircle(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         radius: Float = 1f,
@@ -270,7 +283,7 @@ object GUIRenderer {
         xRotationOffset: Float = 0f,
         yRotationOffset: Float = 0f,
     ) {
-        drawCircle(xPosition, yPosition, radius, radius, color, edges, rotationDegrees, xRotationOffset, yRotationOffset)
+        drawCircle(drawContext, xPosition, yPosition, radius, radius, color, edges, rotationDegrees, xRotationOffset, yRotationOffset)
     }
 
     /**
@@ -292,6 +305,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawCircleRGBA(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         xScale: Float = 1f,
@@ -305,7 +319,7 @@ object GUIRenderer {
         xRotationOffset: Float = 0f,
         yRotationOffset: Float = 0f,
     ) {
-        drawCircle(xPosition, yPosition, xScale, yScale, RenderUtils.getColor(red, green, blue, alpha), edges, rotationDegrees, xRotationOffset, yRotationOffset)
+        drawCircle(drawContext, xPosition, yPosition, xScale, yScale, RenderUtils.getColor(red, green, blue, alpha), edges, rotationDegrees, xRotationOffset, yRotationOffset)
     }
 
     /**
@@ -324,6 +338,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawCircle(
+        drawContext: DrawContext,
         xPosition: Float,
         yPosition: Float,
         xScale: Float = 1f,
@@ -383,6 +398,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawStringWithShadowRGBA(
+        drawContext: DrawContext,
         text: String,
         xPosition: Float,
         yPosition: Float,
@@ -393,7 +409,7 @@ object GUIRenderer {
         textScale: Float = 1f,
         renderBackground: Boolean = false,
     ) {
-        drawString(text, xPosition, yPosition, RenderUtils.getColor(red, green, blue, alpha), textScale, renderBackground, true)
+        drawString(drawContext, text, xPosition, yPosition, RenderUtils.getColor(red, green, blue, alpha), textScale, renderBackground, true)
     }
 
     /**
@@ -409,6 +425,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawStringWithShadow(
+        drawContext: DrawContext,
         text: String,
         xPosition: Float,
         yPosition: Float,
@@ -416,7 +433,7 @@ object GUIRenderer {
         textScale: Float = 1f,
         renderBackground: Boolean = false,
     ) {
-        drawString(text, xPosition, yPosition, color, textScale, renderBackground, true)
+        drawString(drawContext, text, xPosition, yPosition, color, textScale, renderBackground, true)
     }
 
     /**
@@ -436,6 +453,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawStringRGBA(
+        drawContext: DrawContext,
         text: String,
         xPosition: Float,
         yPosition: Float,
@@ -447,7 +465,7 @@ object GUIRenderer {
         renderBackground: Boolean = false,
         textShadow: Boolean = false,
     ) {
-        drawString(text, xPosition, yPosition, RenderUtils.getColor(red, green, blue, alpha), textScale, renderBackground, textShadow)
+        drawString(drawContext, text, xPosition, yPosition, RenderUtils.getColor(red, green, blue, alpha), textScale, renderBackground, textShadow)
     }
 
     /**
@@ -464,6 +482,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawString(
+        drawContext: DrawContext,
         text: String,
         xPosition: Float,
         yPosition: Float,
@@ -525,6 +544,7 @@ object GUIRenderer {
     @JvmStatic
     @JvmOverloads
     fun drawImage(
+        drawContext: DrawContext,
         image: Image,
         xPosition: Float,
         yPosition: Float,
@@ -538,10 +558,10 @@ object GUIRenderer {
 
         RenderUtils
             .pushMatrix()
-            //#if MC>=12106
-            //$$.setShaderTexture(0, texture.glTextureView)
+            //#if MC<=12105
+            //$$.setShaderTexture(0, texture.glTexture)
             //#else
-            .setShaderTexture(0, texture.glTexture)
+            .setShaderTexture(0, texture.glTextureView)
             //#endif
 
             .scale(1f, 1f, 50f)
@@ -646,20 +666,25 @@ object GUIRenderer {
 
         RenderUtils.matrixStack.multiply(flipModelRotation)
         //#if MC<=12105
-        DiffuseLighting.enableGuiShaderLighting()
+        //$$DiffuseLighting.enableGuiShaderLighting()
         //#endif
 
         val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
 
         if (pitchModelRotation != null) {
             pitchModelRotation.conjugate()
-            entityRenderDispatcher.rotation = pitchModelRotation
+            //#if MC<=12108
+            //$$entityRenderDispatcher.rotation = pitchModelRotation
+            //#else
+            entityRenderDispatcher.camera?.rotation?.set(pitchModelRotation)
+            //#endif
         }
 
-        entityRenderDispatcher.setRenderShadows(false)
+        //#if MC<=12108
+        //$$entityRenderDispatcher.setRenderShadows(false)
+        //$$val light = 0xF000F0
+        //#endif
         val vertexConsumers = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers
-
-        val light = 0xF000F0
 
         val entityRenderer = if (slim) slimCTRenderPlayer else normalCTRenderPlayer
         entityRenderer.setOptions(
@@ -686,20 +711,31 @@ object GUIRenderer {
         RenderUtils.matrixStack.push()
         RenderUtils.matrixStack.translate(d, e, f)
 
-        entityRenderer.render(playerEntityRenderState, RenderUtils.matrixStack.toMC(), vertexConsumers, light)
-        if (entity.doesRenderOnFire()) {
-            entityRenderDispatcher
-                .asMixin<EntityRenderDispatcherAccessor>()
-                .invokerRenderFire(RenderUtils.matrixStack.toMC(), vertexConsumers, playerEntityRenderState, Quaternionf())
-        }
+        //#if MC<=12108
+        //$$entityRenderer.render(playerEntityRenderState, RenderUtils.matrixStack.toMC(), vertexConsumers, light)
+        //$$if (entity.doesRenderOnFire()) {
+        //$$    entityRenderDispatcher
+        //$$        .asMixin<EntityRenderDispatcherAccessor>()
+        //$$        .invokerRenderFire(RenderUtils.matrixStack.toMC(), vertexConsumers, playerEntityRenderState, Quaternionf())
+        //$$}
+        //#else
+        entityRenderer.render(
+            playerEntityRenderState,
+            RenderUtils.matrixStack.toMC(),
+            Client.getMinecraft().gameRenderer.entityRenderCommandQueue,
+            Client.getMinecraft().gameRenderer.entityRenderStates.cameraRenderState
+        )
+        //#endif
 
         RenderUtils.matrixStack.pop()
-
         vertexConsumers.draw()
-        entityRenderDispatcher.setRenderShadows(true)
+        //#if MC<=12108
+        //$$entityRenderDispatcher.setRenderShadows(true)
+        //#endif
+
         RenderUtils.matrixStack.pop()
         //#if MC<=12105
-        DiffuseLighting.enableGuiDepthLighting()
+        //$$DiffuseLighting.enableGuiDepthLighting()
         //#endif
         RenderUtils.matrixStack.pop()
 

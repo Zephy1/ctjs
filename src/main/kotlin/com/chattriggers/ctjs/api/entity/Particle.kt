@@ -26,10 +26,12 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
     var motionY by mixed::velocityY
     var motionZ by mixed::velocityZ
 
-    var red by mixed::red
-    var green by mixed::green
-    var blue by mixed::blue
-    var alpha by mixed::alpha
+    //#if MC<=12108
+    //$$var red by mixed::red
+    //$$var green by mixed::green
+    //$$var blue by mixed::blue
+    //$$var alpha by mixed::alpha
+    //#endif
 
     var age by mixed::age
     var dead by mixed::dead
@@ -44,8 +46,11 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
      * @param green the green value between 0 and 1.
      * @param blue the blue value between 0 and 1.
      */
+    @Deprecated("Deprecated since mojang does not have a similar method") // for now perhaps
     fun setColor(red: Float, green: Float, blue: Float) = apply {
-        mcValue.setColor(red, green, blue)
+        //#if MC<=12108
+        //$$mcValue.setColor(red, green, blue)
+        //#endif
     }
 
     /**
@@ -55,26 +60,32 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
      * @param blue the blue value between 0 and 1.
      * @param alpha the alpha value between 0 and 1.
      */
+    @Deprecated("Deprecated since mojang does not have a similar method")
     fun setColor(red: Float, green: Float, blue: Float, alpha: Float) = apply {
-        setColor(red, green, blue)
-        setAlpha(alpha)
+        //#if MC<=12108
+        //$$setColor(red, green, blue)
+        //$$setAlpha(alpha)
+        //#endif
     }
 
+    @Deprecated("Deprecated since mojang does not have a similar method")
     fun setColor(color: Long) = apply {
-        val red = (color shr 16 and 255).toFloat() / 255.0f
-        val blue = (color shr 8 and 255).toFloat() / 255.0f
-        val green = (color and 255).toFloat() / 255.0f
-        val alpha = (color shr 24 and 255).toFloat() / 255.0f
-
-        setColor(red, green, blue, alpha)
+        //#if MC<=12108
+        //$$val red = (color shr 16 and 255).toFloat() / 255.0f
+        //$$val blue = (color shr 8 and 255).toFloat() / 255.0f
+        //$$val green = (color and 255).toFloat() / 255.0f
+        //$$val alpha = (color shr 24 and 255).toFloat() / 255.0f
+        //$$setColor(red, green, blue, alpha)
+        //#endif
     }
 
     /**
      * Sets the alpha of the particle.
      * @param alpha the alpha value between 0 and 1.
      */
+    @Deprecated("Deprecated since mojang does not have a similar method")
     fun setAlpha(alpha: Float) = apply {
-        mixed.alpha = alpha
+//        mixed.alpha = alpha
     }
 
     /**
@@ -82,7 +93,12 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
      *
      * @return A [Color] with the R, G, B and A values
      */
-    fun getColor() = Color(red, green, blue, alpha)
+    @Deprecated("Deprecated since mojang does not have a similar method")
+    fun getColor() = {
+        //#if MC<=12108
+        //$$Color(red, green, blue, alpha)
+        //#endif
+    }
 
     fun setColor(color: Color) = setColor(color.rgb.toLong())
 
@@ -99,5 +115,9 @@ class Particle(override val mcValue: MCParticle) : CTWrapper<MCParticle> {
         mcValue.markDead()
     }
 
-    override fun toString() = "Particle(type=${mcValue.javaClass.simpleName}, pos=($x, $y, $z), color=[$red, $green, $blue, $alpha], age=$age)"
+    //#if MC<=12108
+    //$$override fun toString() = "Particle(type=${mcValue.javaClass.simpleName}, pos=($x, $y, $z), color=[$red, $green, $blue, $alpha], age=$age)"
+    //#else
+    override fun toString() = "Particle(type=${mcValue.javaClass.simpleName}, pos=($x, $y, $z), age=$age)"
+    //#endif
 }

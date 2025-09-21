@@ -46,7 +46,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements NameTagO
         )
     )
     private void chattriggers$entityDamage(Entity target, CallbackInfo ci) {
-        if (getWorld().isClient) {
+        //#if MC<=12108
+        //$$if (getWorld().isClient) {
+        //#else
+        if (getEntityWorld().isClient()) {
+        //#endif
             TriggerType.ENTITY_DAMAGE.triggerAll(com.chattriggers.ctjs.api.entity.Entity.fromMC(target));
         }
     }
@@ -59,7 +63,11 @@ public abstract class PlayerEntityMixin extends LivingEntity implements NameTagO
         )
     )
     private void chattriggers$entityDamageSweeping(Entity target, CallbackInfo ci) {
-        if (getWorld().isClient) {
+        //#if MC<=12108
+        //$$if (getWorld().isClient) {
+        //#else
+        if (getEntityWorld().isClient()) {
+        //#endif
             TriggerType.ENTITY_DAMAGE.triggerAll(com.chattriggers.ctjs.api.entity.Entity.fromMC(target));
         }
     }
