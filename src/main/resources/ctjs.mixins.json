@@ -36,6 +36,7 @@
         "PlayerListHudAccessor",
         "PlayerListHudMixin",
         "RenderTickCounterMixin",
+        "WorldRendererMixin",
         "commands.ClientCommandSourceMixin",
         "commands.ClientPlayNetworkHandlerMixin",
         "sound.SoundAccessor",

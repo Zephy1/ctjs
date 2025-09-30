@@ -9,7 +9,10 @@ import com.chattriggers.ctjs.internal.console.ConsoleHostProcess
 import com.chattriggers.ctjs.internal.engine.module.ModuleUpdater
 import com.chattriggers.ctjs.internal.listeners.ClientListener
 import com.chattriggers.ctjs.internal.listeners.MouseListener
-import com.chattriggers.ctjs.internal.listeners.WorldListener
+
+//#if MC<=12108
+//$$import com.chattriggers.ctjs.internal.listeners.WorldListener
+//#endif
 
 internal interface Initializer {
     fun init()
@@ -25,7 +28,9 @@ internal interface Initializer {
             ModuleUpdater,
             MouseListener,
             StaticCommand,
-            WorldListener,
+            //#if MC<=12108
+            //$$WorldListener,
+            //#endif
         )
     }
 }
