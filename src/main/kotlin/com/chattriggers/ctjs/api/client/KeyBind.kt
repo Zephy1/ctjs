@@ -57,8 +57,8 @@ class KeyBind {
             //#if MC<=12108
             //$$if (category !in KeyBindingAccessor.getKeyCategories()) {
             //#else
-            val keyCategory = KeyBinding.Category.create(Identifier.of(category))
-            if (keyCategory !in KeyBindingAccessor.Category.getCategoryList()) {
+            val categoryList = KeyBindingAccessor.Category.getCategoryList()
+            if (!categoryList.stream().anyMatch { it.id.path.equals(category) }) {
             //#endif
                 uniqueCategories[category] = 0
             }
@@ -66,6 +66,7 @@ class KeyBind {
             //#if MC<=12108
             //$$keyBinding = KeyBinding(description, keyCode, category)
             //#else
+            val keyCategory = KeyBinding.Category.create(Identifier.of(category))
             keyBinding = KeyBinding(description, keyCode, keyCategory)
             //#endif
 
@@ -181,7 +182,7 @@ class KeyBind {
     //#if MC<=12108
     //$$fun getCategory(): String = keyBinding.category
     //#else
-    fun getCategory(): String = keyBinding.category.id.toTranslationKey("key.category")
+    fun getCategory(): String = keyBinding.category.id.path
     //#endif
 
     /**
@@ -246,12 +247,13 @@ class KeyBind {
             //$$        KeyBindingAccessor.getKeyCategories().remove(category)
             //$$    }
             //#else
-            if (getCategoryName(category) in uniqueCategories) {
+            val categoryName = getCategoryName(category)
+            if (categoryName in uniqueCategories) {
                 val categoryName = getCategoryName(category)
                 uniqueCategories[categoryName] = uniqueCategories[categoryName]!! - 1
                 if (uniqueCategories[categoryName] == 0) {
                     uniqueCategories.remove(categoryName)
-                    KeyBindingAccessor.Category.getCategoryList().remove(category)
+                    KeyBindingAccessor.Category.getCategoryList().removeIf { it.id.equals(category.id) }
                 }
             //#endif
             }
@@ -279,8 +281,7 @@ class KeyBind {
             //$$val maxInt = categoryMap.values.max() ?: 0
             //$$categoryMap[keyBinding.category] = maxInt + 1
             //#else
-            val categoryList = KeyBindingAccessor.Category.getCategoryList()
-            categoryList.add(keyBinding.category)
+            KeyBindingAccessor.Category.getCategoryList().add(keyBinding.category)
             //#endif
             return keyBinding
         }
