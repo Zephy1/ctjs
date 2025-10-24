@@ -140,7 +140,9 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
             RenderUtils.scale(16.0f, -16.0f, 16.0f)
             if (!itemRenderState.isSideLit) {
                 vertexConsumers.draw()
-                DiffuseLighting.disableGuiDepthLighting()
+                //#if MC==12105
+                //$$DiffuseLighting.enableGuiDepthLighting()
+                //#endif
             }
 
             itemRenderState.render(RenderUtils.matrixStack.toMC(), vertexConsumers, 15728880, OverlayTexture.DEFAULT_UV)
@@ -149,7 +151,11 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
             vertexConsumers.draw()
             RenderUtils.enableDepth()
 
-            if (!itemRenderState.isSideLit) DiffuseLighting.enableGuiDepthLighting()
+            if (!itemRenderState.isSideLit) {
+                //#if MC==12105
+                //$$DiffuseLighting.enableGuiDepthLighting()
+                //#endif
+            }
         } catch (e: Throwable) {
             val crashReport = CrashReport.create(e, "Rendering item")
             val crashReportSection = crashReport.addElement("Item being rendered")

@@ -489,7 +489,9 @@ class Gui @JvmOverloads constructor(
      * @param text the contents of the tooltip
      */
     fun setTooltip(text: TextComponent) = apply {
-        setTooltip(Tooltip.wrapLines(Client.getMinecraft(), text))
+        //#if MC==12105
+        //$$setTooltip(Tooltip.wrapLines(Client.getMinecraft(), text))
+        //#endif
     }
 
     /**

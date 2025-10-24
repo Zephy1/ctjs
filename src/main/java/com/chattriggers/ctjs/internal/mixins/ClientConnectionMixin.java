@@ -5,7 +5,6 @@ import com.chattriggers.ctjs.api.triggers.TriggerType;
 import io.netty.channel.ChannelHandlerContext;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.PacketCallbacks;
 import net.minecraft.network.packet.Packet;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,6 +12,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+//#if MC>12105
+//$$import io.netty.channel.ChannelFutureListener;
+//#else
+import net.minecraft.network.PacketCallbacks;
+//#endif
 
 @Mixin(ClientConnection.class)
 public abstract class ClientConnectionMixin {
@@ -35,13 +40,21 @@ public abstract class ClientConnectionMixin {
     }
 
     @Inject(
+        //#if MC>12105
+        //$$method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;)V",
+        //#else
         method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V",
+        //#endif
         at = @At(
             value = "HEAD"
         ),
         cancellable = true
     )
+    //#if MC>12105
+    //$$private void injectSendPacket(Packet<?> packet, ChannelFutureListener channelFutureListener, CallbackInfo ci) {
+    //#else
     private void injectSendPacket(Packet<?> packet, @Nullable PacketCallbacks callbacks, CallbackInfo ci) {
+    //#endif
         TriggerType.PACKET_SENT.triggerAll(packet, ci);
     }
 }

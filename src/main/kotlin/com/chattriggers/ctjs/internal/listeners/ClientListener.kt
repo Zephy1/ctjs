@@ -19,11 +19,11 @@ import com.chattriggers.ctjs.internal.engine.CTEvents
 import com.chattriggers.ctjs.internal.engine.JSContextFactory
 import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.utils.Initializer
+import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UMinecraft
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientReceiveMessageEvents
 import net.fabricmc.fabric.api.client.message.v1.ClientSendMessageEvents
-import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback
@@ -38,6 +38,12 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
 import org.mozilla.javascript.Context
+
+//#if MC>12105
+//$$import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+//#else
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
+//#endif
 
 object ClientListener : Initializer {
     private var ticksPassed: Int = 0
@@ -96,28 +102,56 @@ object ClientListener : Initializer {
         }
 
         // Sleep layer isn't affected by screen hiding (F1)
+        //#if MC>12105
+        //$$HudElementRegistry.attachElementAfter(
+        //#else
         HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
             layeredDrawer.attachLayerAfter(
+        //#endif
                 HudRenderLayer.SLEEP.toMC(),
                 Identifier.of("ctjs", "screen_overlay"),
             ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
                 // Don't render if a screen is open, calls trigger twice otherwise
+                //#if MC>12105
+                //$$if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+                //#else
                 if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
-                TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, tickCounter.dynamicDeltaTicks)
+                //#endif
+
+                val partialTicks = tickCounter.dynamicDeltaTicks
+                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+                    TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+                }
             }
+        //#if MC==12105
         }
+        //#endif
 
         // Subtitles is last HUD layer to render
+        //#if MC>12105
+        //$$HudElementRegistry.attachElementAfter(
+        //#else
         HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
             layeredDrawer.attachLayerAfter(
+        //#endif
                 HudRenderLayer.SUBTITLES.toMC(),
                 Identifier.of("ctjs", "hideable_screen_overlay"),
             ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
                 // Don't render if a screen is open, calls trigger twice otherwise
+                //#if MC>12105
+                //$$if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+                //#else
                 if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
-                TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, tickCounter.dynamicDeltaTicks)
+                //#endif
+
+                val partialTicks = tickCounter.dynamicDeltaTicks
+                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+                    TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+                }
             }
+        //#if MC==12105
         }
+        //#endif
 
         ScreenEvents.BEFORE_INIT.register { _, screen, _, _ ->
             ScreenKeyboardEvents.allowKeyPress(screen).register { _, key, scancode, _ ->
@@ -128,14 +162,14 @@ object ClientListener : Initializer {
 
             // Only ran while a screen is open (e.g. inventory, chat, etc.)
             ScreenEvents.beforeRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
-                GUIRenderer.withMatrix(drawContext.matrices, partialTicks) {
+                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
                     TriggerType.PRE_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
                 }
             }
 
             // Only ran while a screen is open (e.g. inventory, chat, etc.)
             ScreenEvents.afterRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
-                GUIRenderer.withMatrix(drawContext.matrices, partialTicks) {
+                GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
                     TriggerType.POST_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
 
                     TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
@@ -161,19 +195,19 @@ object ClientListener : Initializer {
         }
 
         CTEvents.RENDER_HUD_OVERLAY.register { stack, partialTicks ->
-            GUIRenderer.withMatrix(stack, partialTicks) {
+            GUIRenderer.withMatrix(UMatrixStack(stack).toMC(), partialTicks) {
                 TriggerType.RENDER_HUD_OVERLAY.triggerAll()
             }
         }
 
         CTEvents.RENDER_ENTITY.register { stack, entity, partialTicks, ci ->
-            GUIRenderer.withMatrix(stack, partialTicks) {
+            GUIRenderer.withMatrix(UMatrixStack(stack).toMC(), partialTicks) {
                 TriggerType.RENDER_ENTITY.triggerAll(Entity.fromMC(entity), partialTicks, ci)
             }
         }
 
         CTEvents.RENDER_BLOCK_ENTITY.register { stack, blockEntity, partialTicks, ci ->
-            GUIRenderer.withMatrix(stack, partialTicks) {
+            GUIRenderer.withMatrix(UMatrixStack(stack).toMC(), partialTicks) {
                 TriggerType.RENDER_BLOCK_ENTITY.triggerAll(BlockEntity(blockEntity), partialTicks, ci)
             }
         }

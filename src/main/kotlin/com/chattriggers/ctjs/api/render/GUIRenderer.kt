@@ -538,7 +538,12 @@ object GUIRenderer {
 
         RenderUtils
             .pushMatrix()
+            //#if MC>12105
+            //$$.setShaderTexture(0, texture.glTextureView)
+            //#else
             .setShaderTexture(0, texture.glTexture)
+            //#endif
+
             .scale(1f, 1f, 50f)
             .begin(CTRenderLayers.CT_TEXTURED_QUADS_ESP(textureIdentifier = identifier))
             .colorize(1f, 1f, 1f, 1f)
@@ -640,7 +645,9 @@ object GUIRenderer {
         )
 
         RenderUtils.matrixStack.multiply(flipModelRotation)
-        DiffuseLighting.enableGuiShaderLighting()
+        //#if MC==12105
+        //$$DiffuseLighting.enableGuiShaderLighting()
+        //#endif
 
         val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
 
@@ -691,7 +698,9 @@ object GUIRenderer {
         vertexConsumers.draw()
         entityRenderDispatcher.setRenderShadows(true)
         RenderUtils.matrixStack.pop()
-        DiffuseLighting.enableGuiDepthLighting()
+        //#if MC==12105
+        //$$DiffuseLighting.enableGuiDepthLighting()
+        //#endif
         RenderUtils.matrixStack.pop()
 
         entity.bodyYaw = oldBodyYaw
@@ -726,6 +735,6 @@ object GUIRenderer {
 
         fun getHeight(): Int = UMinecraft.getMinecraft().window.scaledHeight
 
-        fun getScale(): Double = UMinecraft.getMinecraft().window.scaleFactor
+        fun getScale(): Double = UMinecraft.getMinecraft().window.scaleFactor.toDouble()
     }
 }

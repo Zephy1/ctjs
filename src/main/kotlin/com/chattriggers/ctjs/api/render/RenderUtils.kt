@@ -9,7 +9,6 @@ import com.mojang.blaze3d.platform.DepthTestFunction
 import com.mojang.blaze3d.platform.DestFactor
 import com.mojang.blaze3d.platform.SourceFactor
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.textures.GpuTexture
 import gg.essential.elementa.dsl.component1
 import gg.essential.elementa.dsl.component2
 import gg.essential.elementa.dsl.component3
@@ -23,6 +22,12 @@ import org.joml.Quaternionf
 import java.awt.Color
 import kotlin.math.PI
 import kotlin.math.sin
+
+//#if MC>12105
+//$$import com.mojang.blaze3d.textures.GpuTextureView
+//#else
+import com.mojang.blaze3d.textures.GpuTexture
+//#endif
 
 object RenderUtils {
     // WorldRenderer
@@ -105,7 +110,14 @@ object RenderUtils {
      */
     @JvmStatic
     fun begin(renderLayer: RenderLayer = CTRenderLayers.CT_QUADS()) = apply {
-        pushMatrix().blendFunc(BlendFunction.PANORAMA)
+        pushMatrix().blendFunc(
+            BlendFunction(
+                SourceFactor.SRC_ALPHA,
+                DestFactor.ONE_MINUS_SRC_ALPHA,
+                SourceFactor.ONE,
+                DestFactor.ZERO
+            )
+        )
 
         colorized = null
         ucWorldRenderer.beginRenderLayer(renderLayer)
@@ -463,7 +475,11 @@ object RenderUtils {
     }
 
     @JvmStatic
+    //#if MC>12105
+    //$$fun setShaderTexture(textureIndex: Int, texture: GpuTextureView?) = apply {
+    //#else
     fun setShaderTexture(textureIndex: Int, texture: GpuTexture?) = apply {
+    //#endif
         RenderSystem.setShaderTexture(textureIndex, texture)
     }
 
@@ -471,7 +487,11 @@ object RenderUtils {
     fun setShaderTexture(textureIndex: Int, textureImage: Image) = apply {
         val gpuTexture = textureImage.getTexture()
         gpuTexture?.let {
+            //#if MC>12105
+            //$$RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTextureView)
+            //#else
             RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTexture)
+            //#endif
         }
     }
 
@@ -537,12 +557,14 @@ object RenderUtils {
         colorized = fixAlpha(getColor(red, green, blue, alpha))
         vertexColor = Color(colorized!!.toInt(), true)
 
-        RenderSystem.setShaderColor(
-            vertexColor!!.red / 255f,
-            vertexColor!!.green / 255f,
-            vertexColor!!.blue / 255f,
-            vertexColor!!.alpha / 255f,
-        )
+        //#if MC==12105
+        //$$RenderSystem.setShaderColor(
+        //$$    vertexColor!!.red / 255f,
+        //$$    vertexColor!!.green / 255f,
+        //$$    vertexColor!!.blue / 255f,
+        //$$    vertexColor!!.alpha / 255f,
+        //$$)
+        //#endif
     }
 
     @JvmStatic

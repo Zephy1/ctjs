@@ -7,18 +7,31 @@ import net.minecraft.client.sound.SoundSystem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+
+//#if MC>12105
+//$$import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+//#else
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+//#endif
 
 @Mixin(SoundSystem.class)
 public class SoundSystemMixin {
     @Inject(
+        //#if MC>12105
+        //$$method = "play(Lnet/minecraft/client/sound/SoundInstance;)Lnet/minecraft/client/sound/SoundSystem$PlayResult;",
+        //#else
         method = "play(Lnet/minecraft/client/sound/SoundInstance;)V",
+        //#endif
         at = @At(
             value = "HEAD"
         ),
         cancellable = true
     )
+    //#if MC>12105
+    //$$private void injectPlay(SoundInstance sound, CallbackInfoReturnable<SoundSystem.PlayResult> ci) {
+    //#else
     private void injectPlay(SoundInstance sound, CallbackInfo ci) {
+    //#endif
         float volume = 0f;
         float pitch = 0f;
 

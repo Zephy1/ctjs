@@ -26,7 +26,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun getBlockPos() = BlockPos(getX(), getY(), getZ())
 
-	fun getPos() = Vec3d(getX(), getY(), getZ())
+    fun getPos() = Vec3d(getX(), getY(), getZ())
 
     fun getRotation() = mcValue.rotationClient
 
@@ -224,7 +224,11 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
     @JvmOverloads
     fun getEyePosition(partialTicks: Float = GUIRenderer.partialTicks) = mcValue.eyePos
 
-    fun canBeCollidedWith() = mcValue.isCollidable
+    //#if MC>12105
+    //$$fun canBeCollidedWith() = mcValue.isCollidable(null)
+    //#else
+    //$$fun canBeCollidedWith() = mcValue.isCollidable
+    //#endif
 
     fun canBePushed() = mcValue.isPushable
 
@@ -238,7 +242,11 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun isBurning(): Boolean = mcValue.isOnFire
 
+    //#if MC>12105
+    //$$fun getWorld() = mcValue.world
+    //#else
     fun getWorld() = mcValue.entityWorld
+    //#endif
 
     fun getChunk(): Chunk = Chunk(getWorld().getWorldChunk(mcValue.blockPos))
 

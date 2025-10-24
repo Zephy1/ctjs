@@ -28,6 +28,10 @@ import net.minecraft.client.realms.gui.screen.RealmsMainScreen
 import net.minecraft.network.packet.Packet
 import kotlin.math.roundToInt
 
+//#if MC>12105
+//$$import net.minecraft.text.Text
+//#endif
+
 object Client {
     internal var referenceSystemTime: Long = 0
 
@@ -75,8 +79,12 @@ object Client {
     @JvmStatic
     fun disconnect() {
         scheduleTask {
+            //#if MC>12105
+            //$$World.toMC()?.disconnect(Text.empty())
+            //#else
             World.toMC()?.disconnect()
             getMinecraft().disconnect()
+            //#endif
 
             getMinecraft().setScreen(
                 when {

@@ -7,9 +7,9 @@ import com.chattriggers.ctjs.internal.engine.JSLoader
 import com.chattriggers.ctjs.internal.utils.getOrNull
 import com.chattriggers.ctjs.internal.utils.toIdentifier
 import com.mojang.blaze3d.systems.RenderSystem
+import gg.essential.universal.UMatrixStack
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.gui.DrawContext
-import net.minecraft.client.render.RenderLayer
 import net.minecraft.client.toast.ToastManager
 import net.minecraft.util.Identifier
 import net.minecraft.client.toast.Toast
@@ -18,6 +18,12 @@ import org.mozilla.javascript.Context
 import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.Undefined
+
+//#if MC>12105
+//$$import net.minecraft.client.gl.RenderPipelines
+//#else
+import net.minecraft.client.render.RenderLayer
+//#endif
 
 // https://github.com/Edgeburn/Toasts
 /**
@@ -121,7 +127,7 @@ class Toast(config: NativeObject) : Toast {
 
     override fun draw(context: DrawContext, textRenderer: TextRenderer, startTime: Long) {
         if (customRenderFunction != null) {
-            GUIRenderer.withMatrix(context.matrices) {
+            GUIRenderer.withMatrix(UMatrixStack(context.matrices).toMC()) {
                 try {
                     JSLoader.invoke(customRenderFunction!!, emptyArray(), thisObj = jsReceiver!!)
                 } catch (e: Throwable) {
@@ -133,14 +139,22 @@ class Toast(config: NativeObject) : Toast {
             }
         } else {
             backgroundBacker?.let {
+                //#if MC>12105
+                //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, 0, 0, width, height)
+                //#else
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
                 context.drawGuiTexture(RenderLayer::getGuiTextured, it, 0, 0, width, height)
+                //#endif
             }
 
             iconBacker?.let { it: Identifier ->
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
                 val iconSize = height - ICON_PADDING * 2
+                //#if MC>12105
+                //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
+                //#else
+                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
                 context.drawGuiTexture(RenderLayer::getGuiTextured, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
+                //#endif
             }
 
             val textX = if (icon == null) ICON_PADDING else height
