@@ -25,7 +25,6 @@ import net.minecraft.item.Items
 import net.minecraft.particle.BlockStateParticleEffect
 import net.minecraft.particle.DustColorTransitionParticleEffect
 import net.minecraft.particle.DustParticleEffect
-import net.minecraft.particle.EntityEffectParticleEffect
 import net.minecraft.particle.ItemStackParticleEffect
 import net.minecraft.particle.ParticleEffect
 import net.minecraft.particle.ParticleTypes
@@ -36,6 +35,12 @@ import net.minecraft.registry.Registries
 import net.minecraft.world.LightType
 import net.minecraft.world.event.BlockPositionSource
 import kotlin.math.roundToInt
+
+//#if MC>12106
+//$$import net.minecraft.particle.TintedParticleEffect
+//#else
+import net.minecraft.particle.EntityEffectParticleEffect
+//#endif
 
 object World {
     @JvmStatic
@@ -338,12 +343,17 @@ object World {
                     ParticleTypes.DUST -> DustParticleEffect.DEFAULT
                     ParticleTypes.DUST_COLOR_TRANSITION -> DustColorTransitionParticleEffect.DEFAULT
                     ParticleTypes.DUST_PILLAR -> BlockStateParticleEffect(ParticleTypes.DUST_PILLAR, blockState)
-                    ParticleTypes.ENTITY_EFFECT -> EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
                     ParticleTypes.FALLING_DUST -> BlockStateParticleEffect(ParticleTypes.FALLING_DUST, blockState)
                     ParticleTypes.ITEM -> ItemStackParticleEffect(ParticleTypes.ITEM, ItemStack(Items.STONE, 1))
                     ParticleTypes.SCULK_CHARGE -> SculkChargeParticleEffect(0f)
                     ParticleTypes.SHRIEK -> ShriekParticleEffect(0)
                     ParticleTypes.VIBRATION -> VibrationParticleEffect(BlockPositionSource(blockPos.toMC()), 0)
+
+                    //#if MC>12106
+                    //$$ParticleTypes.ENTITY_EFFECT -> TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
+                    //#else
+                    ParticleTypes.ENTITY_EFFECT -> EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
+                    //#endif
 
                     else -> throw IllegalStateException("Particle not accounted for: $particle")
                 }
