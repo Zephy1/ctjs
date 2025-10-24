@@ -15,10 +15,12 @@ buildscript {
 plugins {
     alias(libs.plugins.kotlin)
     alias(libs.plugins.serialization)
-    alias(libs.plugins.loom)
+//    alias(libs.plugins.loom)
     alias(libs.plugins.dokka)
-    alias(libs.plugins.validator)
+    id("org.jetbrains.kotlinx.binary-compatibility-validator")
     alias(libs.plugins.ksp)
+    id("gg.essential.multi-version")
+    id("gg.essential.defaults")
 }
 
 if (!project.hasProperty("full")) {
@@ -35,18 +37,22 @@ repositories {
 }
 
 dependencies {
-    // To change the versions see the gradle/libs.versions.toml
-    minecraft(libs.minecraft)
-    mappings(variantOf(libs.yarn) { classifier("v2") })
-    modImplementation(libs.bundles.fabric)
+    val fabricLoaderVersion = project.findProperty("fabric-loader").toString()
+    val fabricApiVersion = project.findProperty("fabric-api").toString()
+    val fabricKotlinVersion = project.findProperty("fabric-kotlin").toString()
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     modImplementation(libs.bundles.included) { include(this) }
-    modImplementation(libs.bundles.essential) {
-        exclude("gg.essential", "universalcraft")
-        include(this)
-    }
+    modImplementation(libs.bundles.essential) { include(this) }
+    val universalCraftVersion = project.findProperty("universalcraft").toString()
+    val universalCraftLibVersion = libs.versions.universalcraft.get()
+    modImplementation("gg.essential:universalcraft-$universalCraftVersion:${universalCraftLibVersion}") { include(this) }
 
-    modApi(libs.modmenu)
+    val modmenuVersion = project.findProperty("modmenu").toString()
+    modApi("com.terraformersmc:modmenu:$modmenuVersion")
+
     modRuntimeOnly(libs.devauth)
     dokkaPlugin(libs.versioning)
 
@@ -56,7 +62,14 @@ dependencies {
 }
 
 loom {
-    accessWidenerPath.set(file("src/main/resources/ctjs.accesswidener"))
+    accessWidenerPath.set(file("../../src/main/resources/ctjs.accesswidener"))
+
+    runConfigs {
+        named("client") {
+            ideConfigGenerated(true)
+            programArgs("--tweakClass", "gg.essential.loader.stage0.EssentialSetupTweaker")
+        }
+    }
 }
 
 base {
@@ -71,30 +84,29 @@ java {
 }
 
 apiValidation {
-    ignoredProjects += "typing-generator"
     ignoredPackages += "com.chattriggers.ctjs.internal"
 }
 
 tasks {
     processResources {
-        val flkVersion = libs.versions.fabric.kotlin.get()
-        val yarnVersion = libs.versions.yarn.get()
-        val fapiVersion = libs.versions.fabric.api.get()
-        val loaderVersion = libs.versions.loader.get()
+        val yarnVersion = project.findProperty("yarn").toString()
+        val fabricKotlinVersion = project.findProperty("fabric-kotlin").toString()
+        val fabricApiVersion = project.findProperty("fabric-kotlin").toString()
+        val fabricLoaderVersion = project.findProperty("fabric-loader").toString()
 
         inputs.property("version", project.version)
         inputs.property("yarn_mappings", yarnVersion)
-        inputs.property("fabric_kotlin_version", flkVersion)
-        inputs.property("fabric_api_version", fapiVersion)
-        inputs.property("loader_version", loaderVersion)
+        inputs.property("fabric_kotlin_version", fabricKotlinVersion)
+        inputs.property("fabric_api_version", fabricApiVersion)
+        inputs.property("loader_version", fabricLoaderVersion)
 
         filesMatching("fabric.mod.json") {
             expand(
                 "version" to project.version,
                 "yarn_mappings" to yarnVersion,
-                "fabric_kotlin_version" to flkVersion,
-                "fabric_api_version" to fapiVersion,
-                "loader_version" to loaderVersion,
+                "fabric_kotlin_version" to fabricKotlinVersion,
+                "fabric_api_version" to fabricApiVersion,
+                "loader_version" to fabricLoaderVersion,
             )
         }
     }
@@ -154,7 +166,7 @@ tasks {
                 }
 
                 externalDocumentationLink {
-                    val yarnVersion = libs.versions.yarn.get()
+                    val yarnVersion = project.findProperty("yarn").toString()
 
                     url.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnVersion/"))
                     packageListUrl.set(URL("https://maven.fabricmc.net/docs/yarn-$yarnVersion/element-list"))

@@ -1,41 +1,33 @@
 [versions]
-# Library versions
-minecraft = "1.21.5"
-yarn = "1.21.5+build.1"
-
-loader = "0.16.14"
-fabric-api = "0.128.0+1.21.5"
-fabric-kotlin = "1.13.4+kotlin.2.2.0"
-
 mapping-io = "0.7.1"
 rhino = "7c7c509668"
 jackson-core = "2.19.1"
 textarea = "3.6.0"
 serialization = "1.8.1"
 koffee = "315bc11234"
-
-universalcraft = "419"
-elementa = "710"
-vigilance = "306"
-
-modmenu = "14.0.0-rc.2"
 devauth = "1.2.1"
 dokka = "1.9.20"
+elementa = "712"
+vigilance = "312"
+universalcraft = "436"
 
 # Plugin Versions
-kotlin = "2.2.0"
-#loom = "1.11.0-alpha.31"
-loom = "1.10-SNAPSHOT"
-validator = "0.17.0"
-ksp = "2.2.0-2.0.2"
+kotlin = "2.0.21"
+#loom = "1.10-SNAPSHOT"
+#validator = "0.18.1"
+ksp = "2.0.21-1.0.26"
+#essentialMultiversion = "1.9.+"
+#essentialDefaults = "2.2.0-2.0.2"
+#essentialLoom = "0.6.10"
 
 [libraries]
-minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
-yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
-
-fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
-fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
-fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
+#fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
+#fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
+#fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
+#universalcraft = { module = "gg.essential:universalcraft-1.21.5-fabric", version.ref = "universalcraft" }
+elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
+vigilance = { module = "gg.essential:vigilance", version.ref = "vigilance" }
+#modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 
 mapping-io = { module = "net.fabricmc:mapping-io", version.ref = "mapping-io" }
 rhino = { module = "com.github.ChatTriggers:rhino", version.ref = "rhino" }
@@ -44,11 +36,6 @@ textarea = { module = "com.fifesoft:rsyntaxtextarea", version.ref = "textarea" }
 serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 koffee = { module = "com.github.ChatTriggers:koffee", version.ref = "koffee" }
 
-universalcraft = { module = "gg.essential:universalcraft-1.21.5-fabric", version.ref = "universalcraft" }
-elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
-vigilance = { module = "gg.essential:vigilance", version.ref = "vigilance" }
-
-modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 devauth = { module = "me.djtheredstoner:DevAuth-fabric", version.ref = "devauth" }
 versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
 
@@ -56,14 +43,16 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = 
 gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [bundles]
-fabric = ["fabric-loader", "fabric-api", "fabric-kotlin"]
+#fabric = ["fabric-loader", "fabric-api", "fabric-kotlin"]
 included = ["mapping-io", "rhino", "jackson-core", "textarea", "serialization", "koffee"]
-essential = ["universalcraft", "elementa", "vigilance"]
+essential = ["elementa", "vigilance"]
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-loom = { id = "fabric-loom", version.ref = "loom" }
+#loom = { id = "fabric-loom", version.ref = "loom" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "validator" }
+#validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "validator" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+#essentialMultiversion = { id = "gg.essential.multi-version", version.ref = "essentialMultiversion" }
+#essentialDefaults = { id = "gg.essential.defaults", version.ref = "essentialDefaults" }
