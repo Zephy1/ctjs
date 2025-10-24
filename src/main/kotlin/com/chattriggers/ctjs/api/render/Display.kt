@@ -120,7 +120,7 @@ class Display() {
         lines.clear()
     }
 
-    fun getX(): Float = x
+    fun getX(): Int = x
 
     fun setX(x: Int) = apply {
         this.x = x
