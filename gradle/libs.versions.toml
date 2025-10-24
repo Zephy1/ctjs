@@ -11,23 +11,15 @@ elementa = "712"
 vigilance = "312"
 universalcraft = "436"
 
-# Plugin Versions
+# Kotlin
 kotlin = "2.0.21"
-#loom = "1.10-SNAPSHOT"
-#validator = "0.18.1"
+fabricloader="0.17.2"
+fabrickotlin="1.12.3+kotlin.2.0.21"
 ksp = "2.0.21-1.0.26"
-#essentialMultiversion = "1.9.+"
-#essentialDefaults = "2.2.0-2.0.2"
-#essentialLoom = "0.6.10"
 
 [libraries]
-#fabric-loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
-#fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
-#fabric-kotlin = { module = "net.fabricmc:fabric-language-kotlin", version.ref = "fabric-kotlin" }
-#universalcraft = { module = "gg.essential:universalcraft-1.21.5-fabric", version.ref = "universalcraft" }
 elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
 vigilance = { module = "gg.essential:vigilance", version.ref = "vigilance" }
-#modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 
 mapping-io = { module = "net.fabricmc:mapping-io", version.ref = "mapping-io" }
 rhino = { module = "com.github.ChatTriggers:rhino", version.ref = "rhino" }

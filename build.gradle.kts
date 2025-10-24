@@ -37,9 +37,9 @@ repositories {
 }
 
 dependencies {
-    val fabricLoaderVersion = project.findProperty("fabric-loader").toString()
     val fabricApiVersion = project.findProperty("fabric-api").toString()
-    val fabricKotlinVersion = project.findProperty("fabric-kotlin").toString()
+    val fabricLoaderVersion = libs.versions.fabricloader.get()
+    val fabricKotlinVersion = libs.versions.fabrickotlin.get()
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
