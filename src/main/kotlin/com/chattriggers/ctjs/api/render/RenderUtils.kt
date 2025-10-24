@@ -553,6 +553,7 @@ object RenderUtils {
 
     @JvmStatic
     @JvmOverloads
+    @Deprecated("There is no longer an easy way to change the color globally, you need to find out each color you do.")
     fun colorize(red: Int, green: Int, blue: Int, alpha: Int = 255) = apply {
         colorized = fixAlpha(getColor(red, green, blue, alpha))
         vertexColor = Color(colorized!!.toInt(), true)
