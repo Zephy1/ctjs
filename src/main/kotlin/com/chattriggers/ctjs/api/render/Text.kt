@@ -174,7 +174,7 @@ class Text {
         backgroundX: Int? = null,
         backgroundWidth: Int? = null
     ) = apply {
-        //#if MC>12105
+        //#if MC>=12106
         //$$ctx.matrices.pushMatrix()
         //$$ctx.matrices.scale(scale, scale)
         //#else
@@ -220,7 +220,7 @@ class Text {
             )
             yHolder += (scale * 10).toInt()
         }
-        //#if MC>12105
+        //#if MC>=12106
         //$$ctx.matrices.popMatrix()
         //#else
         ctx.matrices.pop()

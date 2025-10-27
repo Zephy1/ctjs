@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-//#if MC>12105
+//#if MC>=12106
 //$$import io.netty.channel.ChannelFutureListener;
 //#else
 import net.minecraft.network.PacketCallbacks;
@@ -40,7 +40,7 @@ public abstract class ClientConnectionMixin {
     }
 
     @Inject(
-        //#if MC>12105
+        //#if MC>=12106
         //$$method = "send(Lnet/minecraft/network/packet/Packet;Lio/netty/channel/ChannelFutureListener;)V",
         //#else
         method = "send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;)V",
@@ -50,7 +50,7 @@ public abstract class ClientConnectionMixin {
         ),
         cancellable = true
     )
-    //#if MC>12105
+    //#if MC>=12106
     //$$private void injectSendPacket(Packet<?> packet, ChannelFutureListener channelFutureListener, CallbackInfo ci) {
     //#else
     private void injectSendPacket(Packet<?> packet, @Nullable PacketCallbacks callbacks, CallbackInfo ci) {

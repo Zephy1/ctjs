@@ -23,7 +23,7 @@ import java.awt.Color
 import kotlin.math.PI
 import kotlin.math.sin
 
-//#if MC>12105
+//#if MC>=12106
 //$$import com.mojang.blaze3d.textures.GpuTextureView
 //#else
 import com.mojang.blaze3d.textures.GpuTexture
@@ -475,7 +475,7 @@ object RenderUtils {
     }
 
     @JvmStatic
-    //#if MC>12105
+    //#if MC>=12106
     //$$fun setShaderTexture(textureIndex: Int, texture: GpuTextureView?) = apply {
     //#else
     fun setShaderTexture(textureIndex: Int, texture: GpuTexture?) = apply {
@@ -487,7 +487,7 @@ object RenderUtils {
     fun setShaderTexture(textureIndex: Int, textureImage: Image) = apply {
         val gpuTexture = textureImage.getTexture()
         gpuTexture?.let {
-            //#if MC>12105
+            //#if MC>=12106
             //$$RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTextureView)
             //#else
             RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTexture)
@@ -558,13 +558,13 @@ object RenderUtils {
         colorized = fixAlpha(getColor(red, green, blue, alpha))
         vertexColor = Color(colorized!!.toInt(), true)
 
-        //#if MC==12105
-        //$$RenderSystem.setShaderColor(
-        //$$    vertexColor!!.red / 255f,
-        //$$    vertexColor!!.green / 255f,
-        //$$    vertexColor!!.blue / 255f,
-        //$$    vertexColor!!.alpha / 255f,
-        //$$)
+        //#if MC<=12105
+        RenderSystem.setShaderColor(
+            vertexColor!!.red / 255f,
+            vertexColor!!.green / 255f,
+            vertexColor!!.blue / 255f,
+            vertexColor!!.alpha / 255f,
+        )
         //#endif
     }
 

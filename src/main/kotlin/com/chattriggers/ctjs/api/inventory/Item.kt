@@ -140,8 +140,8 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
             RenderUtils.scale(16.0f, -16.0f, 16.0f)
             if (!itemRenderState.isSideLit) {
                 vertexConsumers.draw()
-                //#if MC==12105
-                //$$DiffuseLighting.enableGuiDepthLighting()
+                //#if MC<=12105
+                DiffuseLighting.enableGuiDepthLighting()
                 //#endif
             }
 
@@ -152,8 +152,8 @@ class Item(override val mcValue: ItemStack) : CTWrapper<ItemStack> {
             RenderUtils.enableDepth()
 
             if (!itemRenderState.isSideLit) {
-                //#if MC==12105
-                //$$DiffuseLighting.enableGuiDepthLighting()
+                //#if MC<=12105
+                DiffuseLighting.enableGuiDepthLighting()
                 //#endif
             }
         } catch (e: Throwable) {

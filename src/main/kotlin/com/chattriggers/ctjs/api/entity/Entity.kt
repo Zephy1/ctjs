@@ -224,7 +224,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
     @JvmOverloads
     fun getEyePosition(partialTicks: Float = GUIRenderer.partialTicks) = mcValue.eyePos
 
-    //#if MC>12105
+    //#if MC>=12106
     //$$fun canBeCollidedWith() = mcValue.isCollidable(null)
     //#else
     //$$fun canBeCollidedWith() = mcValue.isCollidable
@@ -242,7 +242,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
 
     fun isBurning(): Boolean = mcValue.isOnFire
 
-    //#if MC>12105
+    //#if MC>=12106
     //$$fun getWorld() = mcValue.world
     //#else
     fun getWorld() = mcValue.entityWorld

@@ -28,7 +28,7 @@ import net.minecraft.client.realms.gui.screen.RealmsMainScreen
 import net.minecraft.network.packet.Packet
 import kotlin.math.roundToInt
 
-//#if MC>12105
+//#if MC>=12106
 //$$import net.minecraft.text.Text
 //#endif
 
@@ -79,7 +79,7 @@ object Client {
     @JvmStatic
     fun disconnect() {
         scheduleTask {
-            //#if MC>12105
+            //#if MC>=12106
             //$$World.toMC()?.disconnect(Text.empty())
             //#else
             World.toMC()?.disconnect()

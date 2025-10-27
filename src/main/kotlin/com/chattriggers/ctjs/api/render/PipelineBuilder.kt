@@ -142,7 +142,7 @@ object PipelineBuilder {
         }
 
         if (textureIdentifier != null) {
-            //#if MC>12105
+            //#if MC>=12106
             //$$layerBuilder.texture(RenderPhase.Texture(textureIdentifier, false))
             //#else
             layerBuilder.texture(RenderPhase.Texture(textureIdentifier, TriState.FALSE, false))

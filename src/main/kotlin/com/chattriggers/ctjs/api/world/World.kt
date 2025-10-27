@@ -36,7 +36,7 @@ import net.minecraft.world.LightType
 import net.minecraft.world.event.BlockPositionSource
 import kotlin.math.roundToInt
 
-//#if MC>12106
+//#if MC>=12107
 //$$import net.minecraft.particle.TintedParticleEffect
 //#else
 import net.minecraft.particle.EntityEffectParticleEffect
@@ -349,7 +349,7 @@ object World {
                     ParticleTypes.SHRIEK -> ShriekParticleEffect(0)
                     ParticleTypes.VIBRATION -> VibrationParticleEffect(BlockPositionSource(blockPos.toMC()), 0)
 
-                    //#if MC>12106
+                    //#if MC>=12107
                     //$$ParticleTypes.ENTITY_EFFECT -> TintedParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)
                     //#else
                     ParticleTypes.ENTITY_EFFECT -> EntityEffectParticleEffect.create(ParticleTypes.ENTITY_EFFECT, 1f, 0f, 0f)

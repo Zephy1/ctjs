@@ -2,7 +2,7 @@ package com.chattriggers.ctjs.api.render
 
 import net.minecraft.util.Identifier
 
-//#if MC>12105
+//#if MC>=12106
     //$$import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements
     //$$enum class HudRenderLayer(val mcValue: Identifier) {
     //$$MISC_OVERLAYS(VanillaHudElements.MISC_OVERLAYS),

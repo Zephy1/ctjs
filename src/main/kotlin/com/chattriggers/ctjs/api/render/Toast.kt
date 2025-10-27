@@ -19,7 +19,7 @@ import org.mozilla.javascript.NativeObject
 import org.mozilla.javascript.Scriptable
 import org.mozilla.javascript.Undefined
 
-//#if MC>12105
+//#if MC>=12106
 //$$import net.minecraft.client.gl.RenderPipelines
 //#else
 import net.minecraft.client.render.RenderLayer
@@ -139,7 +139,7 @@ class Toast(config: NativeObject) : Toast {
             }
         } else {
             backgroundBacker?.let {
-                //#if MC>12105
+                //#if MC>=12106
                 //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, 0, 0, width, height)
                 //#else
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
@@ -149,7 +149,7 @@ class Toast(config: NativeObject) : Toast {
 
             iconBacker?.let { it: Identifier ->
                 val iconSize = height - ICON_PADDING * 2
-                //#if MC>12105
+                //#if MC>=12106
                 //$$context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, it, ICON_PADDING, ICON_PADDING, iconSize,iconSize)
                 //#else
                 RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)

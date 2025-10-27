@@ -519,7 +519,7 @@ class TextComponent private constructor(
                 ClickEvent.Action.SUGGEST_COMMAND -> ClickEvent.SuggestCommand(clickValue)
                 ClickEvent.Action.CHANGE_PAGE -> clickValue.toIntOrNull()?. let { ClickEvent.ChangePage(it) }
                 ClickEvent.Action.COPY_TO_CLIPBOARD -> ClickEvent.CopyToClipboard(clickValue)
-                //#if MC>12105
+                //#if MC>=12106
                 //$$ClickEvent.Action.SHOW_DIALOG -> TODO()
                 //$$ClickEvent.Action.CUSTOM -> TODO()
                 //#endif

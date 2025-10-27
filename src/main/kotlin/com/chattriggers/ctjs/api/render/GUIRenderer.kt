@@ -538,7 +538,7 @@ object GUIRenderer {
 
         RenderUtils
             .pushMatrix()
-            //#if MC>12105
+            //#if MC>=12106
             //$$.setShaderTexture(0, texture.glTextureView)
             //#else
             .setShaderTexture(0, texture.glTexture)
@@ -645,8 +645,8 @@ object GUIRenderer {
         )
 
         RenderUtils.matrixStack.multiply(flipModelRotation)
-        //#if MC==12105
-        //$$DiffuseLighting.enableGuiShaderLighting()
+        //#if MC<=12105
+        DiffuseLighting.enableGuiShaderLighting()
         //#endif
 
         val entityRenderDispatcher = MinecraftClient.getInstance().entityRenderDispatcher
@@ -698,8 +698,8 @@ object GUIRenderer {
         vertexConsumers.draw()
         entityRenderDispatcher.setRenderShadows(true)
         RenderUtils.matrixStack.pop()
-        //#if MC==12105
-        //$$DiffuseLighting.enableGuiDepthLighting()
+        //#if MC<=12105
+        DiffuseLighting.enableGuiDepthLighting()
         //#endif
         RenderUtils.matrixStack.pop()
 

@@ -28,7 +28,7 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
         gui.x = x
         gui.y = y
 
-        //#if MC>12105
+        //#if MC>=12106
         //$$ctx.matrices.pushMatrix()
         //#else
         ctx.matrices.push()
@@ -42,7 +42,7 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
         )
 
         return if (gui.collapsed) {
-            //#if MC>12105
+            //#if MC>=12106
             //$$ctx.matrices.pushMatrix()
             //$$ctx.matrices.translate(x + width - 5f, y + 8f)
             //$$ctx.matrices.rotate(Math.PI.toFloat())
@@ -88,7 +88,7 @@ class Module(val name: String, var metadata: ModuleMetadata, val folder: File) {
                 -1
             )
 
-            //#if MC>12105
+            //#if MC>=12106
             //$$ctx.matrices.popMatrix()
             //#else
             ctx.matrices.pop()
