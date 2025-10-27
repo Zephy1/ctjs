@@ -6,21 +6,17 @@ pluginManagement {
         maven("https://maven.architectury.dev")
         maven("https://maven.minecraftforge.net")
         maven("https://repo.essential.gg/repository/maven-public")
-    }
-
-    plugins {
-        val egtVersion = "0.6.10"
-        id("gg.essential.loom") version "1.9.+"
-        id("gg.essential.multi-version.root") version egtVersion
+        maven("https://repo.legacyfabric.net/repository/legacyfabric/")
     }
 }
 
+// !! This uses my own fork of the toolkit, I couldn't get 1.21.9+ to build on the maven build (I couldn't update past Loom 1.9.x due to depreciated methods) !!
+includeBuild("../essential-gradle-toolkit")
 rootProject.name = "ctjs"
 rootProject.buildFileName = "root.gradle.kts"
 
 include(":typing-generator")
 listOf(
-//    "1.21.4-fabric",
     "1.21.5-fabric",
     "1.21.6-fabric",
     "1.21.7-fabric",

@@ -91,7 +91,6 @@ tasks {
     processResources {
         val yarnVersion = project.findProperty("yarn").toString()
         val fabricApiVersion = project.findProperty("fabric-api").toString()
-        val fabricLoaderVersion = libs.versions.fabricloader.get()
         val fabricKotlinVersion = libs.versions.fabrickotlin.get()
 
         inputs.property("version", project.version)
