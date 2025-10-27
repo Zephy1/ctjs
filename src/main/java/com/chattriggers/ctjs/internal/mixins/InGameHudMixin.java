@@ -28,14 +28,16 @@ public class InGameHudMixin {
     }
 
     @Inject(
-        //#if MC>12105
-        //$$method = "renderBossBarHud",
-        //$$at = @At("TAIL")
+        //#if MC>=12106
+        //$$method = "render",
+        //$$at = @At(
+        //$$    value = "TAIL"
+        //$$)
         //#else
         method = "render",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMainHud(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
+            target = "Lnet/minecraft/client/gui/LayeredDrawer;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
             shift = At.Shift.AFTER
         )
         //#endif
