@@ -3,15 +3,15 @@ package com.chattriggers.ctjs.api.render
 import com.mojang.blaze3d.pipeline.RenderPipeline
 import net.minecraft.client.gl.RenderPipelines
 
-enum class RenderSnippet(val mcSnippet: RenderPipeline.Snippet) {
+enum class RenderSnippet(val mcValue: RenderPipeline.Snippet) {
     //#if MC<=12105
-    MATRICES_SNIPPET(RenderPipelines.MATRICES_SNIPPET),
-    FOG_NO_COLOR_SNIPPET(RenderPipelines.FOG_NO_COLOR_SNIPPET),
-    FOG_SNIPPET(RenderPipelines.FOG_SNIPPET),
-    MATRICES_COLOR_SNIPPET(RenderPipelines.MATRICES_COLOR_SNIPPET),
-    MATRICES_COLOR_FOG_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET),
-    MATRICES_COLOR_FOG_OFFSET_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_OFFSET_SNIPPET),
-    MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET),
+    //$$MATRICES_SNIPPET(RenderPipelines.MATRICES_SNIPPET),
+    //$$FOG_NO_COLOR_SNIPPET(RenderPipelines.FOG_NO_COLOR_SNIPPET),
+    //$$FOG_SNIPPET(RenderPipelines.FOG_SNIPPET),
+    //$$MATRICES_COLOR_SNIPPET(RenderPipelines.MATRICES_COLOR_SNIPPET),
+    //$$MATRICES_COLOR_FOG_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_SNIPPET),
+    //$$MATRICES_COLOR_FOG_OFFSET_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_OFFSET_SNIPPET),
+    //$$MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET(RenderPipelines.MATRICES_COLOR_FOG_LIGHT_DIR_SNIPPET),
     //#endif
 
     TERRAIN_SNIPPET(RenderPipelines.TERRAIN_SNIPPET),
@@ -27,5 +27,12 @@ enum class RenderSnippet(val mcSnippet: RenderPipeline.Snippet) {
     GUI_SNIPPET(RenderPipelines.GUI_SNIPPET),
     POSITION_TEX_COLOR_SNIPPET(RenderPipelines.POSITION_TEX_COLOR_SNIPPET),
     RENDERTYPE_OUTLINE_SNIPPET(RenderPipelines.RENDERTYPE_OUTLINE_SNIPPET),
-    POST_EFFECT_PROCESSOR_SNIPPET(RenderPipelines.POST_EFFECT_PROCESSOR_SNIPPET),
+    POST_EFFECT_PROCESSOR_SNIPPET(RenderPipelines.POST_EFFECT_PROCESSOR_SNIPPET);
+
+    fun toMC() = mcValue
+
+    companion object {
+        @JvmStatic
+        fun fromUC(mcValue: RenderPipeline.Snippet) = RenderSnippet.entries.first { it.mcValue == mcValue }
+    }
 }

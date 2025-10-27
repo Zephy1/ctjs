@@ -1,10 +1,12 @@
 package com.chattriggers.ctjs.api.render
 
-import com.chattriggers.ctjs.MCVertexFormat
+import com.mojang.blaze3d.vertex.VertexFormat
 import net.minecraft.client.render.VertexFormats
 
-enum class VertexFormat(private val mcValue: MCVertexFormat) {
+enum class VertexFormat(private val mcValue: VertexFormat) {
+    //#if MC<=12108
     BLIT_SCREEN(VertexFormats.BLIT_SCREEN),
+    //#endif
     POSITION_COLOR_TEXTURE_LIGHT_NORMAL(VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL),
     POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL(VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL),
     POSITION_TEXTURE_COLOR_LIGHT(VertexFormats.POSITION_TEXTURE_COLOR_LIGHT),
@@ -22,6 +24,6 @@ enum class VertexFormat(private val mcValue: MCVertexFormat) {
 
     companion object {
         @JvmStatic
-        fun fromMC(ucValue: MCVertexFormat) = entries.first { it.mcValue == ucValue }
+        fun fromMC(ucValue: VertexFormat) = entries.first { it.mcValue == ucValue }
     }
 }

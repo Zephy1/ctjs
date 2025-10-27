@@ -83,6 +83,20 @@ object CTRenderPipelines {
     ): PipelineBuilder = createESPPipelineBuilder("triangle_strip_esp", drawMode, vertexFormat, snippet)
 
     @JvmStatic
+    fun CT_TRIANGLE_FAN(
+        drawMode: DrawMode = DrawMode.TRIANGLE_FAN,
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR,
+        snippet: RenderSnippet = RenderSnippet.POSITION_COLOR_SNIPPET,
+    ): PipelineBuilder = createPipelineBuilder("triangle_fan", drawMode, vertexFormat, snippet)
+
+    @JvmStatic
+    fun CT_TRIANGLE_FAN_ESP(
+        drawMode: DrawMode = DrawMode.TRIANGLE_FAN,
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR,
+        snippet: RenderSnippet = RenderSnippet.POSITION_COLOR_SNIPPET,
+    ): PipelineBuilder = createESPPipelineBuilder("triangle_fan_esp", drawMode, vertexFormat, snippet)
+
+    @JvmStatic
     fun CT_QUADS(
         drawMode: DrawMode = DrawMode.QUADS,
         vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR,

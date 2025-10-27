@@ -21,8 +21,8 @@ object CTRenderLayers {
             DrawMode.LINE_STRIP -> ::CT_LINE_STRIP
             DrawMode.TRIANGLES -> ::CT_TRIANGLES
             DrawMode.TRIANGLE_STRIP -> ::CT_TRIANGLE_STRIP
+            DrawMode.TRIANGLE_FAN -> ::CT_TRIANGLE_FAN
             DrawMode.QUADS -> ::CT_QUADS
-            else -> null
         }
     }
 
@@ -32,8 +32,8 @@ object CTRenderLayers {
             DrawMode.LINE_STRIP -> ::CT_LINE_STRIP
             DrawMode.TRIANGLES -> ::CT_TRIANGLES
             DrawMode.TRIANGLE_STRIP -> ::CT_TRIANGLE_STRIP
+            DrawMode.TRIANGLE_FAN -> ::CT_TRIANGLE_FAN
             DrawMode.QUADS -> ::CT_QUADS
-            else -> null
         }
     }
 
@@ -43,8 +43,8 @@ object CTRenderLayers {
             DrawMode.LINE_STRIP -> ::CT_LINE_STRIP
             DrawMode.TRIANGLES -> ::CT_TRIANGLES
             DrawMode.TRIANGLE_STRIP -> ::CT_TRIANGLE_STRIP
+            DrawMode.TRIANGLE_FAN -> ::CT_TRIANGLE_FAN
             DrawMode.QUADS -> ::CT_QUADS
-            else -> null
         }
     }
 
@@ -141,6 +141,28 @@ object CTRenderLayers {
     ): RenderLayer {
         return CTRenderPipelines
             .CT_TRIANGLE_STRIP_ESP(drawMode, vertexFormat, snippet)
+            .layer()
+    }
+
+    @JvmStatic
+    fun CT_TRIANGLE_FAN(
+        drawMode: DrawMode = DrawMode.TRIANGLE_FAN,
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR,
+        snippet: RenderSnippet = RenderSnippet.POSITION_COLOR_SNIPPET,
+    ): RenderLayer {
+        return CTRenderPipelines
+            .CT_TRIANGLE_FAN(drawMode, vertexFormat, snippet)
+            .layer()
+    }
+
+    @JvmStatic
+    fun CT_TRIANGLE_FAN_ESP(
+        drawMode: DrawMode = DrawMode.TRIANGLE_FAN,
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR,
+        snippet: RenderSnippet = RenderSnippet.POSITION_COLOR_SNIPPET,
+    ): RenderLayer {
+        return CTRenderPipelines
+            .CT_TRIANGLE_FAN_ESP(drawMode, vertexFormat, snippet)
             .layer()
     }
 

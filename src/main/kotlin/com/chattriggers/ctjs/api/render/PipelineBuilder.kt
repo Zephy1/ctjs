@@ -100,9 +100,9 @@ object PipelineBuilder {
         if (pipelineList.containsKey(state())) return pipelineList[state()]!!
 
         val basePipeline = RenderPipeline
-            .builder(snippet.mcSnippet)
+            .builder(snippet.toMC())
             .withLocation("ctjs/custom/pipelines/${location ?: hashCode()}")
-            .withVertexFormat(vertexFormat.toMC(), drawMode.toUC().mcMode)
+            .withVertexFormat(vertexFormat.toMC(), drawMode.toMC())
 
         blendFunction?.let {
             basePipeline.withBlend(it)
@@ -129,51 +129,70 @@ object PipelineBuilder {
 
     @JvmStatic
     fun layer(): RenderLayer {
-        if (layerList.containsKey(state())) return layerList[state()]!!
+        try {
+            if (layerList.containsKey(state())) return layerList[state()]!!
 
-        val layerBuilder = RenderLayer.MultiPhaseParameters.builder()
+            val layerBuilder = RenderLayer.MultiPhaseParameters.builder()
 
-        if (lineWidth != null) {
-            layerBuilder.lineWidth(RenderPhase.LineWidth(OptionalDouble.of(lineWidth!!.toDouble())))
+            if (lineWidth != null) {
+                layerBuilder.lineWidth(RenderPhase.LineWidth(OptionalDouble.of(lineWidth!!.toDouble())))
+            }
+
+            if (layering != null) {
+                layerBuilder.layering(layering!!)
+            }
+
+            if (textureIdentifier != null) {
+                //#if MC>=12106
+                //$$layerBuilder.texture(RenderPhase.Texture(textureIdentifier, false))
+                //#else
+                layerBuilder.texture(RenderPhase.Texture(textureIdentifier, TriState.FALSE, false))
+                //#endif
+            }
+
+            val layer = RenderLayer.of(
+                "ctjs/custom/layers/${location ?: hashCode()}",
+                RenderLayer.DEFAULT_BUFFER_SIZE,
+                build(),
+                layerBuilder.build(false),
+            )
+            layerList[state()] = layer
+
+            return layer
+        } finally {
+            reset()
         }
+    }
 
-        if (layering != null) {
-            layerBuilder.layering(layering!!)
-        }
-
-        if (textureIdentifier != null) {
-            //#if MC>=12106
-            //$$layerBuilder.texture(RenderPhase.Texture(textureIdentifier, false))
-            //#else
-            layerBuilder.texture(RenderPhase.Texture(textureIdentifier, TriState.FALSE, false))
-            //#endif
-        }
-
-        val layer = RenderLayer.of(
-            "ctjs/custom/layers/${location ?: hashCode()}",
-            1536,
-            build(),
-            layerBuilder.build(false),
-        )
-        layerList[state()] = layer
-
-        return layer
+    @JvmStatic
+    private fun reset() {
+        cull = null
+        depthTestFunction = null
+        blendFunction = null
+        lineWidth = null
+        layering = null
+        textureIdentifier = null
+        drawMode = DrawMode.QUADS
+        vertexFormat = VertexFormat.POSITION_COLOR
+        snippet = RenderSnippet.POSITION_COLOR_SNIPPET
+        location = null
     }
 
     @JvmStatic
     fun state(): String {
         return (
-            "PipelineBuilder[" +
-                "location=$location, " +
-                "cull=$cull, " +
-                "depth=$depthTestFunction, " +
-                "blend=$blendFunction, " +
-                "layering=$layering, " +
-                "lineWidth=$lineWidth, " +
-                "drawMode=${drawMode.name}, " +
-                "vertexFormat=${vertexFormat.name}, " +
-                "snippet=${snippet.name}" +
-            "]"
-        )
+                "PipelineBuilder[" +
+                        "location=$location, " +
+                        "cull=$cull, " +
+                        "depth=$depthTestFunction, " +
+                        "blend=$blendFunction, " +
+                        "layering=$layering, " +
+                        "lineWidth=$lineWidth, " +
+                        "drawMode=${drawMode.name}, " +
+                        "vertexFormat=${vertexFormat.name}, " +
+                        "snippet=${snippet.name}, " +
+                        "textureIdentifier=$textureIdentifier" +
+                    "]"
+                )
     }
 }
