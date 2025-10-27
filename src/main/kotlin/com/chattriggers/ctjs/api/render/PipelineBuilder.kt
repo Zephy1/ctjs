@@ -181,18 +181,18 @@ object PipelineBuilder {
     @JvmStatic
     fun state(): String {
         return (
-                "PipelineBuilder[" +
-                        "location=$location, " +
-                        "cull=$cull, " +
-                        "depth=$depthTestFunction, " +
-                        "blend=$blendFunction, " +
-                        "layering=$layering, " +
-                        "lineWidth=$lineWidth, " +
-                        "drawMode=${drawMode.name}, " +
-                        "vertexFormat=${vertexFormat.name}, " +
-                        "snippet=${snippet.name}, " +
-                        "textureIdentifier=$textureIdentifier" +
-                    "]"
-                )
+            "PipelineBuilder[" +
+                "location=$location, " +
+                "cull=$cull, " +
+                "depth=$depthTestFunction, " +
+                "blend=$blendFunction, " +
+                "layering=$layering, " +
+                "lineWidth=$lineWidth, " +
+                "drawMode=${drawMode.name}, " +
+                "vertexFormat=${vertexFormat.name}, " +
+                "snippet=${snippet.name}, " +
+                "textureIdentifier=$textureIdentifier" +
+            "]"
+        )
     }
 }
