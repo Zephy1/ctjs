@@ -90,15 +90,14 @@ apiValidation {
 tasks {
     processResources {
         val yarnVersion = project.findProperty("yarn").toString()
-        val fabricKotlinVersion = project.findProperty("fabric-kotlin").toString()
-        val fabricApiVersion = project.findProperty("fabric-kotlin").toString()
-        val fabricLoaderVersion = project.findProperty("fabric-loader").toString()
+        val fabricApiVersion = project.findProperty("fabric-api").toString()
+        val fabricLoaderVersion = libs.versions.fabricloader.get()
+        val fabricKotlinVersion = libs.versions.fabrickotlin.get()
 
         inputs.property("version", project.version)
         inputs.property("yarn_mappings", yarnVersion)
         inputs.property("fabric_kotlin_version", fabricKotlinVersion)
         inputs.property("fabric_api_version", fabricApiVersion)
-        inputs.property("loader_version", fabricLoaderVersion)
 
         filesMatching("fabric.mod.json") {
             expand(
@@ -106,7 +105,6 @@ tasks {
                 "yarn_mappings" to yarnVersion,
                 "fabric_kotlin_version" to fabricKotlinVersion,
                 "fabric_api_version" to fabricApiVersion,
-                "loader_version" to fabricLoaderVersion,
             )
         }
     }
