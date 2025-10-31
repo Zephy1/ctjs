@@ -33,6 +33,6 @@ enum class RenderSnippet(val mcValue: RenderPipeline.Snippet) {
 
     companion object {
         @JvmStatic
-        fun fromUC(mcValue: RenderPipeline.Snippet) = RenderSnippet.entries.first { it.mcValue == mcValue }
+        fun fromMC(mcValue: RenderPipeline.Snippet) = RenderSnippet.entries.first { it.mcValue == mcValue }
     }
 }

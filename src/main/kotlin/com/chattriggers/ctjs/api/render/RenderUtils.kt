@@ -337,7 +337,12 @@ object RenderUtils {
         began = false
 
         ucWorldRenderer.endVertex()
+        //#if MC>=12106
+        //$$ val vertexConsumers = Client.getMinecraft().bufferBuilders.entityVertexConsumers
+        //$$ vertexConsumers.draw()
+        //#else
         ucWorldRenderer.drawDirect()
+        //#endif
 
         colorize(1f, 1f, 1f, 1f)
             .disableBlend()
