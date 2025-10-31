@@ -39,7 +39,7 @@ import net.minecraft.util.Identifier
 import org.lwjgl.glfw.GLFW
 import org.mozilla.javascript.Context
 
-//#if MC>12105
+//#if MC>=12106
 //$$import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 //#else
 import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback
@@ -100,54 +100,64 @@ object ClientListener : Initializer {
         }
 
         // Sleep layer isn't affected by screen hiding (F1)
-        //#if MC>12105
+        //#if MC>=12106
         //$$HudElementRegistry.attachElementAfter(
+        //$$    HudRenderLayer.SLEEP.toMC(),
+        //$$    Identifier.of("ctjs", "screen_overlay"))
+        //$${  drawContext: DrawContext, tickCounter: RenderTickCounter ->
+        //$$    // Don't render if a screen is open, calls trigger twice otherwise
+        //$$    if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+        //$$
+        //$$    //val partialTicks = tickCounter.dynamicDeltaTicks
+        //$$    //GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+        //$$        //TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //$$    //}
+        //$$}
         //#else
         HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
             layeredDrawer.attachLayerAfter(
-        //#endif
                 HudRenderLayer.SLEEP.toMC(),
                 Identifier.of("ctjs", "screen_overlay"),
             ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
                 // Don't render if a screen is open, calls trigger twice otherwise
-                //#if MC>12105
-                //$$if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
-                //#else
                 if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
-                //#endif
 
                 val partialTicks = tickCounter.dynamicDeltaTicks
                 GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
                     TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
                 }
             }
-        //#if MC==12105
         }
         //#endif
 
         // Subtitles is last HUD layer to render
-        //#if MC>12105
+        //#if MC>=12106
         //$$HudElementRegistry.attachElementAfter(
+        //$$    HudRenderLayer.SUBTITLES.toMC(),
+        //$$    Identifier.of("ctjs", "hideable_screen_overlay"))
+        //$${  drawContext: DrawContext, tickCounter: RenderTickCounter ->
+        //$$    // Don't render if a screen is open, calls trigger twice otherwise
+        //$$    if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
+        //$$
+        //$$    val partialTicks = tickCounter.dynamicDeltaTicks
+        //$$    GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+        //$$        TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //$$    }
+        //$$}
         //#else
         HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
             layeredDrawer.attachLayerAfter(
-        //#endif
                 HudRenderLayer.SUBTITLES.toMC(),
                 Identifier.of("ctjs", "hideable_screen_overlay"),
             ) { drawContext: DrawContext, tickCounter: RenderTickCounter ->
                 // Don't render if a screen is open, calls trigger twice otherwise
-                //#if MC>12105
-                //$$if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
-                //#else
                 if (UMinecraft.getMinecraft().currentScreen != null) return@attachLayerAfter
-                //#endif
 
                 val partialTicks = tickCounter.dynamicDeltaTicks
                 GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
                     TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
                 }
             }
-        //#if MC==12105
         }
         //#endif
 
@@ -194,7 +204,7 @@ object ClientListener : Initializer {
 
         CTEvents.RENDER_HUD_OVERLAY.register { ctx, stack, partialTicks ->
             GUIRenderer.withMatrix(UMatrixStack(stack).toMC(), partialTicks) {
-                TriggerType.RENDER_HUD_OVERLAY.triggerAll(ctx)
+                TriggerType.RENDER_HUD_OVERLAY.triggerAll(ctx, partialTicks)
             }
         }
 
