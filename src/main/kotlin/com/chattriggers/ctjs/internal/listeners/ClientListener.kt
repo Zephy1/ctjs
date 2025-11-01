@@ -108,10 +108,10 @@ object ClientListener : Initializer {
         //$$    // Don't render if a screen is open, calls trigger twice otherwise
         //$$    if (UMinecraft.getMinecraft().currentScreen != null) return@attachElementAfter
         //$$
-        //$$    //val partialTicks = tickCounter.dynamicDeltaTicks
-        //$$    //GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-        //$$        //TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
-        //$$    //}
+        //$$    val partialTicks = tickCounter.dynamicDeltaTicks
+        //$$    GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
+        //$$        TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
+        //$$    }
         //$$}
         //#else
         HudLayerRegistrationCallback.EVENT.register { layeredDrawer ->
