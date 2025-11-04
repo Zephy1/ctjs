@@ -148,11 +148,11 @@ class Text {
 
     fun getMaxWidth(): Int = maxWidth
 
-    fun getHeight(): Float {
+    fun getHeight(): Int {
         return if (lines.size > 1) {
-            lines.size.coerceAtMost(maxLines) * 10f
+            lines.size.coerceAtMost(maxLines) * 10
         } else {
-            10f
+            10
         }
     }
 
@@ -203,8 +203,8 @@ class Text {
                 ox,
                 yHolder,
                 ox + (backgroundWidth ?: width),
-                yHolder + getHeight().toInt(),
-                backgroundColor.toInt()
+                yHolder + getHeight(),
+                backgroundColor.toInt(),
             )
         }
 
@@ -216,9 +216,9 @@ class Text {
                 xHolder,
                 yHolder,
                 color.toInt(),
-                shadow
+                shadow,
             )
-            yHolder += (scale * 10f).toInt()
+            yHolder += 10
         }
         //#if MC<=12105
         //$$ctx.matrices.pop()
