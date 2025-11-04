@@ -173,14 +173,14 @@ object ClientListener : Initializer {
             // Only ran while a screen is open (e.g. inventory, chat, etc.)
             ScreenEvents.beforeRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
                 GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-                    TriggerType.PRE_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
+                    TriggerType.PRE_RENDER_GUI.triggerAll(drawContext, mouseX, mouseY, screen, partialTicks)
                 }
             }
 
             // Only ran while a screen is open (e.g. inventory, chat, etc.)
             ScreenEvents.afterRender(screen).register { _, drawContext, mouseX, mouseY, partialTicks ->
                 GUIRenderer.withMatrix(UMatrixStack(drawContext.matrices).toMC(), partialTicks) {
-                    TriggerType.POST_RENDER_GUI.triggerAll(mouseX, mouseY, screen, partialTicks, drawContext)
+                    TriggerType.POST_RENDER_GUI.triggerAll(drawContext, mouseX, mouseY, screen, partialTicks, )
 
                     TriggerType.RENDER_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
                     TriggerType.RENDER_HIDEABLE_SCREEN_OVERLAY.triggerAll(drawContext, partialTicks)
