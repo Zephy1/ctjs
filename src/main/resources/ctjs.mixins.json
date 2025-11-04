@@ -19,7 +19,9 @@
         "ClientPlayNetworkHandlerAccessor",
         "ClientWorldAccessor",
         "CreativeInventoryScreenMixin",
-        "EntityRenderDispatcherAccessor",
+        //#if MC<=12108
+        //$$"EntityRenderDispatcherAccessor",
+        //#endif
         "EntityRenderDispatcherMixin",
         "GameOptionsAccessor",
         "GameOptionsMixin",
@@ -27,7 +29,9 @@
         "HandledScreenMixin",
         "InGameHudMixin",
         "KeyBindingAccessor",
+        //#if MC>=12109
         "KeyBindingAccessor$Category",
+        //#endif
         "MinecraftClientMixin",
         "MouseMixin",
         "ParticleAccessor",
@@ -36,7 +40,9 @@
         "PlayerListHudAccessor",
         "PlayerListHudMixin",
         "RenderTickCounterMixin",
+        //#if MC>=12109
         "WorldRendererMixin",
+        //#endif
         "commands.ClientCommandSourceMixin",
         "commands.ClientPlayNetworkHandlerMixin",
         "sound.SoundAccessor",
@@ -54,7 +60,9 @@
         "ClientConnectionMixin",
         "ItemStackMixin",
         "LivingEntityMixin",
-        "MinecraftClientAccessor",
+        //#if MC<=12108
+        //$$"MinecraftClientAccessor",
+        //#endif
         "NbtCompoundAccessor",
         "PlayerEntityMixin",
         "PlayerScreenHandlerMixin",
