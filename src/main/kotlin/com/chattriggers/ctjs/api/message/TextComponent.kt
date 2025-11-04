@@ -34,6 +34,7 @@ import kotlin.streams.toList
 //$$import com.chattriggers.ctjs.CTJS
 //#else
 import net.minecraft.text.StyleSpriteSource
+import net.minecraft.util.Identifier
 //#endif
 
 /**
@@ -479,7 +480,7 @@ class TextComponent private constructor(
                     //#else
                     StyleSpriteSource.Font(
                         when (val font = obj["font"]) {
-                            null -> null
+                            null -> Identifier.ofVanilla("default")
                             is CharSequence -> font.toString().toIdentifier()
                             else -> error("Expected \"font\" key to be a String")
                         },
