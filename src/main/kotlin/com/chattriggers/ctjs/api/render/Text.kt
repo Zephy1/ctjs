@@ -149,9 +149,11 @@ class Text {
     fun getMaxWidth(): Int = maxWidth
 
     fun getHeight(): Float {
-        return if (lines.size > 1)
-            lines.size.coerceAtMost(maxLines) * scale * 10
-        else scale * 10
+        return if (lines.size > 1) {
+            lines.size.coerceAtMost(maxLines) * 10f
+        } else {
+            10f
+        }
     }
 
     fun exceedsMaxLines(): Boolean {
@@ -189,7 +191,6 @@ class Text {
         width = longestLine.toInt()
 
         var yHolder = y ?: this.y
-
         val xHolder = when (align) {
             Align.CENTER -> (x ?: this.x) - width / 2
             Align.RIGHT -> (x ?: this.x) - width
@@ -197,12 +198,11 @@ class Text {
         }
 
         if (background) {
-            val ox = (backgroundX ?: xHolder) as Int
-
+            val ox = backgroundX ?: xHolder
             ctx.fill(
                 ox,
                 yHolder,
-                ox + (backgroundWidth ?: width) as Int,
+                ox + (backgroundWidth ?: width),
                 yHolder + getHeight().toInt(),
                 backgroundColor.toInt()
             )
@@ -213,12 +213,12 @@ class Text {
             ctx.drawText(
                 RenderUtils.getFontRenderer(),
                 lines[i],
-                xHolder as Int,
+                xHolder,
                 yHolder,
                 color.toInt(),
                 shadow
             )
-            yHolder += (scale * 10).toInt()
+            yHolder += (scale * 10f).toInt()
         }
         //#if MC<=12105
         //$$ctx.matrices.pop()
@@ -254,15 +254,15 @@ class Text {
 
     override fun toString() =
         "Text{" +
-                "string=$string, x=$x, y=$y, " +
-                "lines=$lines, color=$color, scale=$scale, " +
-                "formatted=$formatted, shadow=$shadow, " + //align=$align, " +
-                "width=$width, maxWidth=$maxWidth, maxLines=$maxLines" +
-                "}"
+            "string=$string, x=$x, y=$y, " +
+            "lines=$lines, color=$color, scale=$scale, " +
+            "formatted=$formatted, shadow=$shadow,  + align=$align, " +
+            "width=$width, maxWidth=$maxWidth, maxLines=$maxLines" +
+        "}"
 
     enum class Align {
         LEFT,
         CENTER,
-        RIGHT,
+        RIGHT;
     }
 }
