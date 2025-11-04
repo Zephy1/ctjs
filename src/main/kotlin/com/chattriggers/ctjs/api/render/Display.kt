@@ -194,11 +194,11 @@ class Display() {
     enum class Background {
         NONE,
         FULL,
-        PER_LINE,
+        PER_LINE;
     }
 
     enum class Order {
         REVERSED,
-        NORMAL,
+        NORMAL;
     }
 }

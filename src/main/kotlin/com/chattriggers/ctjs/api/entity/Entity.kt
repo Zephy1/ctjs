@@ -270,7 +270,7 @@ open class Entity(override val mcValue: MCEntity) : CTWrapper<MCEntity> {
         OVERWORLD(DimensionTypes.OVERWORLD),
         NETHER(DimensionTypes.THE_NETHER),
         END(DimensionTypes.THE_END),
-        OVERWORLD_CAVES(DimensionTypes.OVERWORLD_CAVES),
+        OVERWORLD_CAVES(DimensionTypes.OVERWORLD_CAVES);
     }
 
     companion object {

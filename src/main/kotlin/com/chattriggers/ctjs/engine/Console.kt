@@ -32,7 +32,7 @@ object Console {
 enum class LogType {
     INFO,
     WARN,
-    ERROR,
+    ERROR;
 }
 
 fun Any.printToConsole(logType: LogType = LogType.INFO) {

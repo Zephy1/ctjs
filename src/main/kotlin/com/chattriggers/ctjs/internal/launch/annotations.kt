@@ -112,7 +112,7 @@ data class At(
         NONE,
         BEFORE,
         AFTER,
-        BY,
+        BY;
     }
 }
 

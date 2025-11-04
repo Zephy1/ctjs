@@ -81,6 +81,6 @@ abstract class Trigger protected constructor(
         HIGH,
         NORMAL,
         LOW,
-        LOWEST,
+        LOWEST;
     }
 }

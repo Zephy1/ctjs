@@ -51,6 +51,6 @@ abstract class Action(var slot: Int, var windowId: Int) {
         CLICK,
         DRAG,
         KEY,
-        DROP,
+        DROP;
     }
 }

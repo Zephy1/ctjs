@@ -29,7 +29,7 @@ class NBTTagCompound(override val mcValue: MCNbtCompound) : NBTBase(mcValue) {
         LONG_ARRAY,
         BOOLEAN,
         COMPOUND_TAG,
-        TAG_LIST,
+        TAG_LIST;
     }
 
     fun getTag(key: String): NBTBase? = mcValue.get(key)?.let(::fromMC)
