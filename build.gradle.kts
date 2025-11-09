@@ -27,6 +27,7 @@ if (!project.hasProperty("full")) {
     project.gradle.startParameter.excludedTaskNames.add("kspKotlin")
 }
 
+group = "com.chattriggers.ctjs"
 version = property("mod_version").toString()
 
 repositories {
@@ -226,4 +227,32 @@ fun getBranch(): String {
         standardOutput = stdout
     }
     return stdout.toString().trim()
+}
+
+tasks.register<Copy>("collectJars") {
+    val outputDir = projectDir.resolve("../../jars").normalize()
+    dependsOn("remapJar")
+
+    val mcVersion = project.findProperty("minecraft")?.toString()
+        ?: project.findProperty("yarn")?.toString()?.split("+")?.firstOrNull()
+        ?: "unknown"
+
+    from(tasks.named("remapJar")) {
+        include("*.jar")
+        exclude("*-all.jar")
+
+        exclude { fileTreeElement ->
+            fileTreeElement.name.contains(" 1.1")
+        }
+
+        rename { fileName ->
+            fileName
+                .replace(".jar", "-$mcVersion.jar")
+                .replace(" ", "-")
+        }
+    }
+    into(outputDir)
+}
+tasks.named("build") {
+    finalizedBy("collectJars")
 }

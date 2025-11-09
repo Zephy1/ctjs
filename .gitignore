@@ -38,3 +38,4 @@ replay_*.log
 
 # other
 versions/*/api/
+/jars
