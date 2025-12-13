@@ -8,7 +8,7 @@ import com.chattriggers.ctjs.internal.launch.Local
 import com.chattriggers.ctjs.internal.launch.Slice
 import com.chattriggers.ctjs.internal.utils.descriptorString
 import net.fabricmc.loader.impl.FabricLoaderImpl
-import net.fabricmc.loader.impl.lib.accesswidener.AccessWidenerReader
+import net.fabricmc.loader.impl.lib.classtweaker.api.visitor.AccessWidenerVisitor
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AnnotationNode
 import org.spongepowered.asm.mixin.transformer.ClassInfo
@@ -108,21 +108,20 @@ internal object Utils {
 
     fun widenField(mappedClass: Mappings.MappedClass, fieldName: String, isMutable: Boolean) {
         val field = mappedClass.fields[fieldName] ?: error("Unable to find field $fieldName in class ${mappedClass.name.original}")
+        val accessWidener = FabricLoaderImpl.INSTANCE.classTweaker.visitAccessWidener(mappedClass.name.value)!!
 
-        FabricLoaderImpl.INSTANCE.accessWidener.visitField(
+        accessWidener.visitField(
             mappedClass.name.value,
-            field.name.value,
             field.type.value,
-            AccessWidenerReader.AccessType.ACCESSIBLE,
+            AccessWidenerVisitor.AccessType.ACCESSIBLE,
             false,
         )
 
         if (isMutable) {
-            FabricLoaderImpl.INSTANCE.accessWidener.visitField(
+            accessWidener.visitField(
                 mappedClass.name.value,
-                field.name.value,
                 field.type.value,
-                AccessWidenerReader.AccessType.MUTABLE,
+                AccessWidenerVisitor.AccessType.MUTABLE,
                 false,
             )
         }
@@ -135,21 +134,20 @@ internal object Utils {
     ) {
         val descriptor = Descriptor.Parser(methodName).parseMethod(full = false)
         val mappedMethod = findMethod(mappedClass, descriptor).first
+        val accessWidener = FabricLoaderImpl.INSTANCE.classTweaker.visitAccessWidener(mappedClass.name.value)!!
 
-        FabricLoaderImpl.INSTANCE.accessWidener.visitMethod(
+        accessWidener.visitMethod(
             mappedClass.name.value,
-            mappedMethod.name.value,
             mappedMethod.toDescriptor(),
-            AccessWidenerReader.AccessType.ACCESSIBLE,
+            AccessWidenerVisitor.AccessType.ACCESSIBLE,
             false,
         )
 
         if (isMutable) {
-            FabricLoaderImpl.INSTANCE.accessWidener.visitMethod(
+            accessWidener.visitMethod(
                 mappedClass.name.value,
-                mappedMethod.name.value,
                 mappedMethod.toDescriptor(),
-                AccessWidenerReader.AccessType.MUTABLE,
+                AccessWidenerVisitor.AccessType.MUTABLE,
                 false,
             )
         }

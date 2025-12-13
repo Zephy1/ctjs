@@ -14,6 +14,11 @@ import java.awt.datatransfer.StringSelection
 import java.util.regex.Pattern
 import kotlin.math.roundToInt
 
+//#if MC>12110
+import com.chattriggers.ctjs.api.client.Settings
+import net.minecraft.client.gui.hud.ChatHud
+//#endif
+
 object ChatLib {
     private val chatLineIds = mutableMapOf<ChatHudLine, Int>()
     private val chatHudAccessor get() = Client.getChatGui()?.asMixin<ChatHudAccessor>()
@@ -130,7 +135,11 @@ object ChatLib {
      * @return the width of chat
      */
     @JvmStatic
-    fun getChatWidth(): Int = Client.getChatGui()?.width ?: 0
+    //#if MC<=12110
+    //$$fun getChatWidth(): Int = Client.getChatGui()?.width ?: 0
+    //#else
+    fun getChatWidth(): Int = ChatHud.getWidth(Settings.toMC().chatWidth.getValue())
+    //#endif
 
     /**
      * Remove all formatting

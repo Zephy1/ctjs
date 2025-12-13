@@ -9,7 +9,7 @@ devauth = "1.2.1"
 dokka = "1.9.20"
 elementa = "712"
 vigilance = "312"
-universalcraft = "436"
+universalcraft = "446"
 
 # Kotlin
 kotlin = "2.0.21"

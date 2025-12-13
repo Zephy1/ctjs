@@ -82,6 +82,10 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Predicate
 import kotlin.math.min
 
+//#if MC>12110
+import net.minecraft.command.permission.PermissionPredicate
+//#endif
+
 /**
  * An alternative to the command register that allows full use of the
  * functionality provided by Brigadier.
@@ -704,7 +708,11 @@ object DynamicCommands : CommandCollection() {
             Player.getBlockPos().toVec3d(),
             Player.getRotation(),
             null,
-            0,
+            //#if MC<=12110
+            //$$0,
+            //#else
+            PermissionPredicate.NONE,
+            //#endif
             Player.getName(),
             Player.getDisplayName(),
             null,
