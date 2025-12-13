@@ -1,6 +1,6 @@
 [versions]
 mapping-io = "0.7.1"
-rhino = "7c7c509668"
+#rhino = "7c7c509668"
 jackson-core = "2.19.1"
 textarea = "3.6.0"
 serialization = "1.8.1"
@@ -22,7 +22,7 @@ elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
 vigilance = { module = "gg.essential:vigilance", version.ref = "vigilance" }
 
 mapping-io = { module = "net.fabricmc:mapping-io", version.ref = "mapping-io" }
-rhino = { module = "com.github.ChatTriggers:rhino", version.ref = "rhino" }
+#rhino = { module = "com.github.ChatTriggers:rhino", version.ref = "rhino" }
 jackson-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson-core" }
 textarea = { module = "com.fifesoft:rsyntaxtextarea", version.ref = "textarea" }
 serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
@@ -36,7 +36,7 @@ gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.
 
 [bundles]
 #fabric = ["fabric-loader", "fabric-api", "fabric-kotlin"]
-included = ["mapping-io", "rhino", "jackson-core", "textarea", "serialization", "koffee"]
+included = ["mapping-io", "jackson-core", "textarea", "serialization", "koffee"]
 essential = ["elementa", "vigilance"]
 
 [plugins]

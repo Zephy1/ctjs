@@ -38,11 +38,16 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":rhino"))
+    include(project(":rhino"))
+
     val fabricApiVersion = project.findProperty("fabric-api").toString()
     val fabricLoaderVersion = libs.versions.fabricloader.get()
     val fabricKotlinVersion = libs.versions.fabrickotlin.get()
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion") {
+        exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
+    }
     modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
 
     modImplementation(libs.bundles.included) { include(this) }

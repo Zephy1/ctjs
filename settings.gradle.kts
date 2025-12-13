@@ -12,6 +12,8 @@ pluginManagement {
 
 // !! This uses my own fork of the toolkit, I couldn't get 1.21.9+ to build on the maven build (I couldn't update past Loom 1.9.x due to depreciated methods) !!
 includeBuild("../essential-gradle-toolkit")
+include("rhino")
+project(":rhino").projectDir = file("../rhino")
 rootProject.name = "ctjs"
 rootProject.buildFileName = "root.gradle.kts"
 
