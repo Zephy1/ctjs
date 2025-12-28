@@ -71,6 +71,29 @@ object Client {
         ClientListener.addTask(delay, callback)
     }
 
+    //#if MC>=12110
+    fun <T> synchronizedTask(task: () -> T): T {
+        val mc = getMinecraft()
+        if (mc.isOnThread) {
+            return task()
+        }
+
+        val latch = java.util.concurrent.CountDownLatch(1)
+        var result: T? = null
+
+        mc.execute {
+            try {
+                result = task()
+            } finally {
+                latch.countDown()
+            }
+        }
+
+        latch.await()
+        return result!!
+    }
+    //#endif
+
     /**
      * Quits the client back to the main menu.
      * This acts just like clicking the "Disconnect" or "Save and quit to title" button.

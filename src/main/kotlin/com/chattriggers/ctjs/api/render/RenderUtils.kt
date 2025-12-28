@@ -8,7 +8,6 @@ import com.mojang.blaze3d.pipeline.BlendFunction
 import com.mojang.blaze3d.platform.DepthTestFunction
 import com.mojang.blaze3d.platform.DestFactor
 import com.mojang.blaze3d.platform.SourceFactor
-import com.mojang.blaze3d.systems.RenderSystem
 import gg.essential.elementa.dsl.component1
 import gg.essential.elementa.dsl.component2
 import gg.essential.elementa.dsl.component3
@@ -27,6 +26,12 @@ import org.lwjgl.opengl.GL11
 //$$import com.mojang.blaze3d.textures.GpuTexture
 //#else
 import com.mojang.blaze3d.textures.GpuTextureView
+//#endif
+
+//#if MC<=12110
+//$$import com.mojang.blaze3d.systems.RenderSystem
+//#else
+import net.minecraft.client.render.BufferBuilder
 //#endif
 
 object RenderUtils {
@@ -199,8 +204,12 @@ object RenderUtils {
         if (!began) begin()
         if (!firstVertex) ucWorldRenderer.endVertex()
 
-        val camera = Client.getMinecraft().gameRenderer.camera.pos
-        ucWorldRenderer.pos(matrixStack, x - camera.x, y - camera.y, z - camera.z)
+        //#if MC<=12110
+        //$$val cameraPos = Client.getMinecraft().gameRenderer.camera.pos
+        //#else
+        val cameraPos = Client.getMinecraft().gameRenderer.camera.cameraPos
+        //#endif
+        ucWorldRenderer.pos(matrixStack, x - cameraPos.x, y - cameraPos.y, z - cameraPos.z)
 
         firstVertex = false
         vertexColor?.let {
@@ -252,8 +261,12 @@ object RenderUtils {
     @JvmStatic
     @JvmOverloads
     fun cameraPos(x: Double, y: Double, z: Double = 0.0) = apply {
-        val camera = Client.getMinecraft().gameRenderer.camera.pos
-        pos(x + camera.x, y + camera.y, z + camera.z)
+        //#if MC<=12110
+        //$$val cameraPos = Client.getMinecraft().gameRenderer.camera.pos
+        //#else
+        val cameraPos = Client.getMinecraft().gameRenderer.camera.cameraPos
+        //#endif
+        pos(x + cameraPos.x, y + cameraPos.y, z + cameraPos.z)
     }
 
     /**
@@ -410,7 +423,14 @@ object RenderUtils {
      */
     @JvmStatic
     fun lineWidth(width: Float) = apply {
-        RenderSystem.lineWidth(width)
+        //#if MC<=12110
+        //$$RenderSystem.lineWidth(width)
+        //#else
+        val field = UGraphics::class.java.getDeclaredField("instance")
+        field.setAccessible(true)
+        val instance = field.get(ucWorldRenderer) as BufferBuilder
+        instance.lineWidth(width)
+        //#endif
     }
 
     @JvmStatic
@@ -597,20 +617,34 @@ object RenderUtils {
     @JvmStatic
     //#if MC<=12105
     //$$fun setShaderTexture(textureIndex: Int, texture: GpuTexture?) = apply {
+    //#elseif MC<=12110
+    //$$fun setShaderTexture(textureIndex: Int, texture: GpuTextureView?) = apply {
     //#else
-    fun setShaderTexture(textureIndex: Int, texture: GpuTextureView?) = apply {
+    fun setShaderTexture(texture: GpuTextureView?) = apply {
     //#endif
-        RenderSystem.setShaderTexture(textureIndex, texture)
+    //#if MC<=12110
+    //$$RenderSystem.setShaderTexture(textureIndex, texture)
+    //#else
+        PipelineBuilder.setTexture(texture?.texture())
+    //#endif
     }
 
     @JvmStatic
-    fun setShaderTexture(textureIndex: Int, textureImage: Image) = apply {
+    //#if MC<=12110
+    //$$fun setShaderTexture(textureIndex: Int, textureImage: Image) = apply {
+    //#else
+    fun setShaderTexture(textureImage: Image) = apply {
+    //#endif
         val gpuTexture = textureImage.getTexture()
         gpuTexture?.let {
             //#if MC<=12105
             //$$RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTexture)
             //#else
-            RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTextureView)
+            //#if MC<=12110
+            //$$RenderSystem.setShaderTexture(textureIndex, gpuTexture.glTextureView)
+            //#else
+            PipelineBuilder.setTexture(gpuTexture.glTextureView.texture())
+            //#endif
             //#endif
         }
     }
@@ -713,8 +747,15 @@ object RenderUtils {
         }
     }
 
-    @JvmStatic
-    fun getStringWidth(text: String) = getFontRenderer().getWidth(ChatLib.addColor(text))
+    //#if MC<=12108
+    //$$fun getStringWidth(text: String) = getFontRenderer().getWidth(ChatLib.addColor(text))
+    //#else
+    fun getStringWidth(text: String): Int {
+        return Client.synchronizedTask {
+            getFontRenderer().getWidth(ChatLib.addColor(text))
+        }
+    }
+    //#endif
 
     @JvmStatic
     fun resetColor() = apply {

@@ -1,6 +1,10 @@
 package com.chattriggers.ctjs.api.render
 
-import net.minecraft.client.render.RenderPhase
+//#if MC<=12110
+//$$import net.minecraft.client.render.RenderPhase
+//#else
+import net.minecraft.client.render.LayeringTransform
+//#endif
 
 object CTRenderPipelines {
     private fun createPipelineBuilder(
@@ -12,7 +16,11 @@ object CTRenderPipelines {
         return PipelineBuilder
             .begin(drawMode, vertexFormat, snippet)
             .setLocation(location)
-            .setLayering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+            //#if MC<=12110
+            //$$.setLayering(RenderPhase.VIEW_OFFSET_Z_LAYERING)
+            //#else
+            .setLayering(LayeringTransform.VIEW_OFFSET_Z_LAYERING)
+            //#endif
             .disableCull()
             .enableBlend()
     }
@@ -23,7 +31,11 @@ object CTRenderPipelines {
         vertexFormat: VertexFormat = VertexFormat.POSITION_TEXTURE_COLOR,
         snippet: RenderSnippet = RenderSnippet.POSITION_TEX_COLOR_SNIPPET,
     ): PipelineBuilder = createPipelineBuilder(location, drawMode, vertexFormat, snippet)
-        .setLayering(RenderPhase.NO_LAYERING)
+        //#if MC<=12110
+        //$$.setLayering(RenderPhase.NO_LAYERING)
+        //#else
+        .setLayering(LayeringTransform.NO_LAYERING)
+        //#endif
         .disableDepth()
 
     @JvmStatic

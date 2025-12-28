@@ -68,12 +68,20 @@ public abstract class MinecraftClientMixin {
     }
 
     @Inject(
-        method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V",
+        //#if MC<=12110
+        //$$method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;Z)V",
+        //#else
+        method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;ZZ)V",
+        //#endif
         at = @At(
             value = "HEAD"
         )
     )
-    private void injectDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
+    //#if MC<=12110
+    //$$private void injectDisconnect(Screen disconnectionScreen, boolean transferring, CallbackInfo ci) {
+    //#else
+    private void injectDisconnect(Screen disconnectionScreen, boolean transferring, boolean bl, CallbackInfo ci) {
+    //#endif
         // disconnect() is also called when connecting, so we check that there is
         // an existing server
         if (this.isIntegratedServerRunning() || this.getCurrentServerEntry() != null) {

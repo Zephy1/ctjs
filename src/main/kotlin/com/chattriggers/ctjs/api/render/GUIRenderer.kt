@@ -559,7 +559,11 @@ object GUIRenderer {
             //#if MC<=12105
             //$$.setShaderTexture(0, texture.glTexture)
             //#else
-            .setShaderTexture(0, texture.glTextureView)
+            //#if MC<=12110
+            //$$.setShaderTexture(0, texture.glTextureView)
+            //#else
+            .setShaderTexture(texture.glTextureView)
+            //#endif
             //#endif
 
             .scale(1f, 1f, 50f)

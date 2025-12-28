@@ -51,7 +51,11 @@ object CTRenderLayers {
     @JvmStatic
     fun CT_LINES(
         drawMode: DrawMode = DrawMode.LINES,
-        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#if MC<=12110
+        //$$vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#else
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH,
+        //#endif
         snippet: RenderSnippet = RenderSnippet.RENDERTYPE_LINES_SNIPPET,
         lineThickness: Float = 1.0f,
     ): RenderLayer {
@@ -64,7 +68,11 @@ object CTRenderLayers {
     @JvmStatic
     fun CT_LINES_ESP(
         drawMode: DrawMode = DrawMode.LINES,
-        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#if MC<=12110
+        //$$vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#else
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH,
+        //#endif
         snippet: RenderSnippet = RenderSnippet.RENDERTYPE_LINES_SNIPPET,
         lineThickness: Float = 1.0f,
     ): RenderLayer {
@@ -77,7 +85,11 @@ object CTRenderLayers {
     @JvmStatic
     fun CT_LINE_STRIP(
         drawMode: DrawMode = DrawMode.LINE_STRIP,
-        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#if MC<=12110
+        //$$vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#else
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH,
+        //#endif
         snippet: RenderSnippet = RenderSnippet.RENDERTYPE_LINES_SNIPPET,
         lineThickness: Float = 1.0f,
     ): RenderLayer {
@@ -90,7 +102,11 @@ object CTRenderLayers {
     @JvmStatic
     fun CT_LINE_STRIP_ESP(
         drawMode: DrawMode = DrawMode.LINE_STRIP,
-        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#if MC<=12110
+        //$$vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL,
+        //#else
+        vertexFormat: VertexFormat = VertexFormat.POSITION_COLOR_NORMAL_LINE_WIDTH,
+        //#endif
         snippet: RenderSnippet = RenderSnippet.RENDERTYPE_LINES_SNIPPET,
         lineThickness: Float = 1.0f,
     ): RenderLayer {

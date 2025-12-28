@@ -41,9 +41,14 @@ import kotlin.math.roundToInt
 import net.minecraft.particle.TintedParticleEffect
 //#endif
 
+//#if MC>=12111
+import net.minecraft.world.MoonPhase
+import net.minecraft.world.attribute.EnvironmentAttributes
+//#endif
+
 object World {
     @JvmStatic
-    fun toMC() = Client.getMinecraft().world
+    fun toMC(): ClientWorld? = Client.getMinecraft().world
 
     @JvmField
     val spawn = SpawnWrapper()
@@ -79,7 +84,11 @@ object World {
     fun getDifficulty(): Settings.Difficulty? = toMC()?.difficulty?.let(Settings.Difficulty::fromMC)
 
     @JvmStatic
-    fun getMoonPhase(): Int = toMC()?.moonPhase ?: -1
+    //#if MC<=12110
+    //$$fun getMoonPhase(): Int = toMC()?.moonPhase ?: -1
+    //#else
+    fun getMoonPhase(): Int = toMC()?.environmentAttributes?.getAttributeValue(EnvironmentAttributes.MOON_PHASE_VISUAL)?.ordinal ?: -1
+    //#endif
 
     /**
      * Gets the [Block] at a location in the world.
@@ -316,7 +325,7 @@ object World {
 
         /**
          * Spawns a particle into the world with the given attributes,
-         * which can be configured further with the returned [com.chattriggers.ctjs.api.entity.Particle]
+         * which can be configured further with the returned [Particle]
          *
          * @param particle the name of the particle to spawn, see [getParticleNames]
          * @param x the x coordinate to spawn the particle at

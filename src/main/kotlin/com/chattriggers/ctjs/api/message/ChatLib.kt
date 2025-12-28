@@ -14,7 +14,7 @@ import java.awt.datatransfer.StringSelection
 import java.util.regex.Pattern
 import kotlin.math.roundToInt
 
-//#if MC>12110
+//#if MC>=12110
 import com.chattriggers.ctjs.api.client.Settings
 import net.minecraft.client.gui.hud.ChatHud
 //#endif
@@ -31,11 +31,17 @@ object ChatLib {
      */
     @JvmStatic
     fun chat(text: Any?) {
-        when (text) {
-            is TextComponent -> text
-            is CharSequence -> TextComponent(text)
-            else -> TextComponent(text.toString())
-        }.chat()
+        //#if MC>=12110
+        Client.getMinecraft().execute {
+        //#endif
+            when (text) {
+                is TextComponent -> text
+                is CharSequence -> TextComponent(text)
+                else -> TextComponent(text.toString())
+            }.chat()
+        //#if MC>=12110
+        }
+        //#endif
     }
 
     /**

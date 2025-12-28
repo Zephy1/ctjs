@@ -80,7 +80,11 @@ object WorldRenderer {
         val (lines, width, height) = RenderUtils.splitText(text)
         val fontRenderer = RenderUtils.getFontRenderer()
         val camera = Client.getMinecraft().gameRenderer.camera
-        val cameraPos = camera.pos
+        //#if MC<=12110
+        //$$val cameraPos = camera.pos
+        //#else
+        val cameraPos = camera.cameraPos
+        //#endif
         val vertexConsumers = Client.getMinecraft().bufferBuilders.entityVertexConsumers
 
         val matrix = Matrix4f()
