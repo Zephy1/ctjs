@@ -4,10 +4,22 @@
     "name": "ChatTriggers",
     "version": "$version",
     "description": "A framework for Minecraft that allows for live scripting and client modification using JavaScript",
-    "authors": ["Ecolsson", "FalseHonesty", "kerbybit"],
-    "contributors": ["Squagward", "Debuggings", "DJtheRedstoner", "srockw", "DocilElm"],
+    "authors": [
+        "Ecolsson",
+        "FalseHonesty",
+        "kerbybit"
+    ],
+    "contributors": [
+        "Squagward",
+        "Debuggings",
+        "DJtheRedstoner",
+        "srockw",
+        "DocilElm"
+    ],
     "icon": "assets/ctjs/logo.png",
-    "license": ["MIT"],
+    "license": [
+        "MIT"
+    ],
     "contact": {
         "homepage": "https://chattriggers.com",
         "sources": "https://github.com/ChatTriggers/ChatTriggers",
@@ -18,14 +30,18 @@
         "preLaunch": [
             "com.chattriggers.ctjs.internal.launch.CTJSPreLaunch"
         ],
-        "client": ["com.chattriggers.ctjs.CTJS"],
+        "client": [
+            "com.chattriggers.ctjs.CTJS"
+        ],
         "modmenu": [
             "com.chattriggers.ctjs.internal.compat.ModMenuEntry"
         ]
     },
-    "mixins": ["ctjs.mixins.json"],
+    "mixins": [
+        "ctjs.mixins.json"
+    ],
     "depends": {
-        "fabricloader": ">=0.16.14",
+        "fabricloader": ">=0.18.0",
         "fabric-api": ">=$fabric_api_version",
         "fabric-language-kotlin": ">=$fabric_kotlin_version"
     },
