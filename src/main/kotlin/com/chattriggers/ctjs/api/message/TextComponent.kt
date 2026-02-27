@@ -203,9 +203,15 @@ class TextComponent private constructor(
             Client.scheduleTask {
                 Client.getMinecraft().networkHandler?.onGameMessage(GameMessageS2CPacket(this, false))
             }
-        } else {
-            Player.toMC()?.sendMessage(this, false)
+            return@apply
         }
+        //#if MC>=12109
+        Client.synchronizedTask {
+        //#endif
+            Player.toMC()?.sendMessage(this, false)
+        //#if MC>=12109
+        }
+        //#endif
     }
 
     /**
@@ -222,9 +228,15 @@ class TextComponent private constructor(
             Client.scheduleTask {
                 Client.getMinecraft().networkHandler?.onGameMessage(GameMessageS2CPacket(this, true))
             }
-        } else {
-            Player.toMC()?.sendMessage(this, true)
+            return@apply
         }
+        //#if MC>=12109
+        Client.synchronizedTask {
+        //#endif
+            Player.toMC()?.sendMessage(this, false)
+        //#if MC>=12109
+        }
+        //#endif
     }
 
     override fun toString() = formattedText
