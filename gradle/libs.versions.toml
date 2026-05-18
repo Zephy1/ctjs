@@ -12,8 +12,6 @@ vigilance = "314"
 universalcraft = "494"
 
 # Kotlin
-fabricloader="0.18.4"
-fabrickotlin="1.12.3+kotlin.2.0.21"
 kotlin = "2.3.10"
 ksp = "2.3.8"
 

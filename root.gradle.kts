@@ -3,6 +3,7 @@ plugins {
     id("gg.essential.multi-version.root")
 }
 
+preprocess.strictExtraMappings.set(true)
 preprocess {
     val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
     val fabric12110 = createNode("1.21.10-fabric", 12110, "yarn")

@@ -41,15 +41,6 @@ dependencies {
     implementation(project(":rhino"))
     include(project(":rhino"))
 
-    val fabricApiVersion = project.findProperty("fabric-api").toString()
-    val fabricLoaderVersion = libs.versions.fabricloader.get()
-    val fabricKotlinVersion = libs.versions.fabrickotlin.get()
-    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion") {
-        exclude(group = "net.fabricmc.fabric-api", module = "fabric-content-registries-v0")
-    }
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricKotlinVersion")
-
     modImplementation(libs.bundles.included) { include(this) }
     modImplementation(libs.bundles.essential) { include(this) }
     val universalCraftVersion = project.findProperty("universalcraft").toString()
@@ -234,30 +225,37 @@ fun getBranch(): String {
     return stdout.toString().trim()
 }
 
-tasks.register<Copy>("collectJars") {
-    val outputDir = projectDir.resolve("../../jars").normalize()
-    dependsOn("remapJar")
+afterEvaluate {
+    val hasRemapJar = tasks.findByName("remapJar") != null
+    val outputTaskName = if (hasRemapJar) "remapJar" else "shadowJar"
 
-    val mcVersion = project.findProperty("minecraft")?.toString()
-        ?: project.findProperty("yarn")?.toString()?.split("+")?.firstOrNull()
-        ?: "unknown"
+    tasks.register<Copy>("collectJars") {
+        group = "build"
+        description = "Copies this version's non-shadowed JARs to main/jars"
 
-    from(tasks.named("remapJar")) {
-        include("*.jar")
-        exclude("*-all.jar")
+        val outputDir = projectDir.resolve("../../jars").normalize()
+        dependsOn(outputTaskName)
 
-        exclude { fileTreeElement ->
-            fileTreeElement.name.contains(" 1.1")
+        from(tasks.named(outputTaskName)) {
+            include("*.jar")
+            exclude { it.name.contains(" 1.2") && it.name.contains("-all") }
+            rename {
+                "${rootProject.name}-${version}+${project.platform.mcVersionStr}.jar"
+            }
         }
-
-        rename { fileName ->
-            fileName
-                .replace(".jar", "-$mcVersion.jar")
-                .replace(" ", "-")
-        }
+        into(outputDir)
     }
-    into(outputDir)
-}
-tasks.named("build") {
-    finalizedBy("collectJars")
+
+    tasks.named("build") {
+        finalizedBy("collectJars")
+    }
+
+    configurations.named("default") {
+        isCanBeConsumed = true
+        isCanBeResolved = false
+    }
+
+    artifacts {
+        add("default", tasks.named(outputTaskName))
+    }
 }
