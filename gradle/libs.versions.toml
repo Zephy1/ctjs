@@ -1,21 +1,21 @@
 [versions]
 mapping-io = "0.8.0"
 #rhino = "7c7c509668"
-jackson-core = "2.20.1"
-textarea = "3.6.0"
-serialization = "1.8.1"
+jackson-core = "2.21.3"
+textarea = "3.6.2"
+serialization = "1.11.0"
 koffee = "315bc11234"
 devauth = "1.2.1"
 dokka = "1.9.20"
-elementa = "714"
-vigilance = "312"
-universalcraft = "446"
+elementa = "743"
+vigilance = "314"
+universalcraft = "494"
 
 # Kotlin
-kotlin = "2.0.21"
 fabricloader="0.18.4"
 fabrickotlin="1.12.3+kotlin.2.0.21"
-ksp = "2.0.21-1.0.26"
+kotlin = "2.3.10"
+ksp = "2.3.8"
 
 [libraries]
 elementa = { module = "gg.essential:elementa", version.ref = "elementa" }
