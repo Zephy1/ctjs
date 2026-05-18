@@ -5,15 +5,14 @@ plugins {
 
 preprocess.strictExtraMappings.set(true)
 preprocess {
+    val fabric26_01_02 = createNode("26.1.2-fabric", 26_01_02, "srg")
     val fabric12111 = createNode("1.21.11-fabric", 12111, "yarn")
     val fabric12110 = createNode("1.21.10-fabric", 12110, "yarn")
-    val fabric12108 = createNode("1.21.8-fabric", 12108, "yarn")
-    val fabric12105 = createNode("1.21.5-fabric", 12105, "yarn")
 
+    fabric26_01_02.link(fabric12111)
     fabric12111.link(fabric12110)
-    fabric12110.link(fabric12108)
-    fabric12108.link(fabric12105)
 }
+
 subprojects {
     afterEvaluate {
         tasks.findByName("preprocessTestCode")?.enabled = false
