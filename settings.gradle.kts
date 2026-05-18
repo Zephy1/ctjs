@@ -1,6 +1,5 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
         maven("https://maven.fabricmc.net")
         maven("https://maven.architectury.dev")
@@ -12,18 +11,21 @@ pluginManagement {
 
 // !! This uses my own fork of the toolkit, I couldn't get 1.21.9+ to build on the maven build (I couldn't update past Loom 1.9.x due to depreciated methods) !!
 includeBuild("../essential-gradle-toolkit")
+include(":typing-generator")
 include("rhino")
 project(":rhino").projectDir = file("../rhino")
 rootProject.name = "ctjs"
 rootProject.buildFileName = "root.gradle.kts"
 
-include(":typing-generator")
-listOf(
-    "1.21.5-fabric",
-    "1.21.8-fabric",
+val versionList = listOf(
     "1.21.10-fabric",
     "1.21.11-fabric",
-).forEach { version ->
+)
+versionList.forEach { version ->
+    file("versions/$version").mkdirs()
+}
+
+versionList.forEach { version ->
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")

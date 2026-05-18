@@ -159,7 +159,7 @@ internal object CTEvents {
         }
     }
 
-    private inline fun <reified T> make(noinline reducer: (Array<T>) -> T): Event<T> {
+    private inline fun <reified T : Any> make(noinline reducer: (Array<T>) -> T): Event<T> {
         return EventFactory.createArrayBacked(T::class.java, reducer)
     }
 }

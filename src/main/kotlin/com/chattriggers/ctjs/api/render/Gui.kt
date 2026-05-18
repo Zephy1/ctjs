@@ -247,7 +247,7 @@ class Gui @JvmOverloads constructor(
      */
     override fun onMouseClicked(mouseX: Double, mouseY: Double, mouseButton: Int) {
         super.onMouseClicked(mouseX, mouseY, mouseButton)
-        onClick?.trigger(arrayOf(mouseX, mouseY, mouseButton))
+        onClick?.trigger(arrayOf(mouseX, mouseY, mouseButton.toDouble()))
     }
 
     /**
@@ -257,7 +257,7 @@ class Gui @JvmOverloads constructor(
      */
     override fun onMouseReleased(mouseX: Double, mouseY: Double, state: Int) {
         super.onMouseReleased(mouseX, mouseY, state)
-        onMouseReleased?.trigger(arrayOf(mouseX, mouseY, state))
+        onMouseReleased?.trigger(arrayOf(mouseX, mouseY, state.toDouble()))
     }
 
     /**
@@ -303,12 +303,12 @@ class Gui @JvmOverloads constructor(
      */
     override fun onKeyPressed(keyCode: Int, typedChar: Char, modifiers: UKeyboard.Modifiers?) {
         super.onKeyPressed(keyCode, typedChar, modifiers)
-
         if (keyCode != 0) {
             var char = keyCode.toChar()
-            if (modifiers?.isShift != true)
+            if (modifiers?.isShift != true) {
                 char = char.lowercaseChar()
-            onKeyTyped?.trigger(arrayOf(char, keyCode))
+            }
+            onKeyTyped?.trigger(arrayOf<Any>(char, keyCode))
         }
     }
 

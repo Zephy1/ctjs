@@ -14,3 +14,8 @@ preprocess {
     fabric12110.link(fabric12108)
     fabric12108.link(fabric12105)
 }
+subprojects {
+    afterEvaluate {
+        tasks.findByName("preprocessTestCode")?.enabled = false
+    }
+}
