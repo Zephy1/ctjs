@@ -208,7 +208,7 @@ class TextComponent private constructor(
         //#if MC>=12109
         Client.synchronizedTask {
         //#endif
-            Player.toMC()?.sendMessage(this, false)
+            Client.getMinecraft().inGameHud.chatHud.addMessage(this)
         //#if MC>=12109
         }
         //#endif
