@@ -90,10 +90,11 @@ object ConsoleHostProcess : Initializer {
         // then simply placing a breakpoint anywhere in the RemoteConsoleClient class.
 
         val urlObjects = (Thread.currentThread().contextClassLoader.parent as URLClassLoader).urLs
-        val urls = urlObjects.joinToString(File.pathSeparator) {
-            val str = if (Util.getOperatingSystem().equals(Util.OperatingSystem.WINDOWS)) it.toString().replace("file:/", "") else it.toString()
-            URLDecoder.decode(str, Charset.defaultCharset())
-        }
+        val urls = urlObjects
+            .filter { it.protocol == "file" }
+            .joinToString(File.pathSeparator) {
+                File(it.toURI()).absolutePath
+            }
 
         process = ProcessBuilder()
             .directory(File("."))
